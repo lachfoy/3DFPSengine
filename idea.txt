@@ -1,0 +1,13 @@
+The game is a scifi Vampire Survivors x Tower defense.
+
+You play as an engineer with a "repair shotgun". You have to build/protect turrets.
+Your turrets deal the most damage, however you can damage enemies with your shotgun as well.
+Your shotgun's other purpose is to heal your turrets.
+It costs currency ("Metal") to shoot your shotgun and to build new turrets.
+"Metal" is dropped by enemies. (Maybe XP as well?)
+
+Enemies spawn endlessly and ramp up in difficulty over time.
+The goal is to survive as long as possible.
+
+
+ 
