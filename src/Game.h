@@ -7,7 +7,7 @@
 class Renderer;
 
 class Input;
-//class Player;
+class Player;
 class Camera;
 
 class Panel;
@@ -42,7 +42,7 @@ private:
 	void Render(); // scene related
 	void Destroy(); // scene related
 
-	//Player* m_player;
+	Player* m_player;
 
 	Camera* m_camera;
 

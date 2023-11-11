@@ -8,9 +8,14 @@
 
 #include "TextRenderer.h"
 
-Player::Player() : Entity()
+#include "Mesh.h"
+
+Player::Player() : IRenderable()
 {
-	
+	m_mesh = new Mesh();
+	m_mesh->LoadFromFile("data/models/cube.obj");
+
+	m_texture = gTextureManager.GetTexture("cat");
 }
 
 void Player::HandleInput(Input* input)
@@ -29,7 +34,31 @@ void Player::HandleInput(Input* input)
 	}
 }
 
-void Player::Update(float dt)
+void Player::Damage(int amount)
+{
+	if (m_health > 0)
+	{
+		m_health -= amount;
+		printf("Player took %d damage! New hp = %d/%d\n", amount, m_health, m_maxHealth);
+
+		if (m_health <= 0)
+		{
+			printf("Dead!!!!!\n");
+		}
+		else
+		{
+			// kick immunity timer
+			m_immune = true;
+		}
+	}
+}
+
+void Player::Shoot()
+{
+
+}
+
+void Player::OnUpdate(float dt)
 {
 	if (m_immune) // replace this with a timer class probably
 	{
@@ -58,28 +87,3 @@ void Player::Update(float dt)
 
 	m_moveDir = glm::vec3(0.0f, 0.0f, 0.0f);
 }
-
-void Player::Damage(int amount)
-{
-	if (m_health > 0)
-	{
-		m_health -= amount;
-		printf("Player took %d damage! New hp = %d/%d\n", amount, m_health, m_maxHealth);
-
-		if (m_health <= 0)
-		{
-			printf("Dead!!!!!\n");
-		}
-		else
-		{
-			// kick immunity timer
-			m_immune = true;
-		}
-	}
-}
-
-void Player::Shoot()
-{
-
-}
-

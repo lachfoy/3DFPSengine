@@ -4,7 +4,7 @@
 #include "DebugRenderer.h"
 #include "Input.h"
 #include <iostream>
-//#include "Player.h"
+#include "Player.h"
 #include "Texture.h"
 #include "Camera.h"
 
@@ -208,6 +208,10 @@ void Game::SetupGL()
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	glEnable(GL_DEPTH_TEST);
+
+	glEnable(GL_CULL_FACE);
+
 	glViewport(0, 0, m_windowWidth, m_windowHeight);
 
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
@@ -215,11 +219,14 @@ void Game::SetupGL()
 
 void Game::Create()
 {
-	//gTextureManager.LoadTexture("guy", "data/images/guy.png");
-
+	gTextureManager.LoadTexture("cat", "data/images/round_cat.png");
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
 	m_camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f));
+
+	m_player = new Player();
+	m_renderer->AddToRenderList(m_player);
+
 
 	// GUI test stuff
 	m_rootPanel = new Panel("Root", m_guiRenderer, glm::vec2(0, 0), glm::vec2(m_viewportWidth, m_viewportHeight));
@@ -269,6 +276,8 @@ void Game::HandleInput()
 void Game::Update(float dt)
 {
 	m_camera->Update(dt);
+
+	m_player->OnUpdate(dt);
 }
 
 void Game::Render()

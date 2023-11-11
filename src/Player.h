@@ -1,27 +1,26 @@
 #pragma once
 
-#include "Entity.h"
+#include "IRenderable.h"
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
-#include <memory>
-#include <vector>
 
 class Input;
 
-class Player : public Entity
+class Player : public IRenderable
 {
 public:
 	Player();
 	~Player() {}
 
 	void HandleInput(Input* input);
-	void Update(float dt);
 
 	void Damage(int amount);
 	bool CanTakeDamage() const { return !m_immune; }
 
 	void Shoot();
+
+	void OnUpdate(float dt) override;
 
 private:
 	glm::vec3 m_moveDir{ 0.0f };

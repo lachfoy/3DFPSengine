@@ -27,7 +27,7 @@ private:
 	glm::vec3 m_up;
 	float m_yaw = -90.0f;
 	float m_pitch = 0.0f;
-	float m_speed = 0.01f; //6.0f;
+	float m_speed = 6.00f; //6.0f;
 	float m_mouseSensitivity = 0.25f;
 	float m_fov = 45.0f;
 	glm::vec3 m_front = glm::vec3(0.0f, 0.0f, -1.0f);

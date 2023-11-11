@@ -20,7 +20,7 @@ public:
 	~IRenderable() {}
 
 protected:
-	glm::mat4 m_transform;
+	//glm::mat4 m_transform;
 	Mesh* m_mesh;
 	Texture* m_texture;
 
