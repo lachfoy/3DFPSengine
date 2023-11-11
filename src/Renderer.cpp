@@ -125,10 +125,17 @@ void Renderer::CreateShaderProgram()
 
 			uniform vec3 u_cameraLocalPos;
 
+			vec3 lightDir = vec3(0.5, 1.0, 0.5);
+			vec3 ambient = vec3(0.1, 0.1, 0.1);
+
 			void main()
 			{
-				out_color = texture(u_sampler, v_texcoord);
-				//out_color = vec4(1, 0, 1, 1);
+				vec3 norm = normalize(v_normal);
+				float diff = max(dot(norm, lightDir), 0.0);
+
+				vec3 finalColor = texture(u_sampler, v_texcoord).rgb * (diff + ambient);
+
+				out_color = vec4(finalColor, 1.0);
 			}
 		)";
 

@@ -230,7 +230,6 @@ void Game::Create()
 	m_player = new Player();
 	m_renderer->AddToRenderList(m_player);
 
-
 	// GUI test stuff
 	m_rootPanel = new Panel("Root", m_guiRenderer, glm::vec2(0, 0), glm::vec2(m_viewportWidth, m_viewportHeight));
 	m_rootPanel->SetAlpha(0.0f);
