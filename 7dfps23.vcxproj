@@ -153,7 +153,6 @@
     <ClCompile Include="src\Panel.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
-    <ClCompile Include="src\SpriteRenderer.cpp" />
     <ClCompile Include="src\TextRenderer.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\TextureManager.cpp" />
@@ -175,7 +174,6 @@
     <ClInclude Include="src\Panel.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Renderer.h" />
-    <ClInclude Include="src\SpriteRenderer.h" />
     <ClInclude Include="src\stb_image.h" />
     <ClInclude Include="src\TextRenderer.h" />
     <ClInclude Include="src\Texture.h" />

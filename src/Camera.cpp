@@ -9,27 +9,27 @@ Camera::Camera(glm::vec3 position, glm::vec3 up)
 	UpdateCameraVectors();
 }
 
-void Camera::HandleInput(Input &input)
+void Camera::HandleInput(Input* input)
 {
-	if (input.IsKeyHeld(SDL_SCANCODE_W))
+	if (input->IsKeyHeld(SDL_SCANCODE_W))
 	{
 		m_position += m_speed * m_front;
 	}
-	if (input.IsKeyHeld(SDL_SCANCODE_A))
+	if (input->IsKeyHeld(SDL_SCANCODE_A))
 	{
 		m_position -= m_speed * m_right;
 	}
-	if (input.IsKeyHeld(SDL_SCANCODE_S))
+	if (input->IsKeyHeld(SDL_SCANCODE_S))
 	{
 		m_position -= m_speed * m_front;
 	}
-	if (input.IsKeyHeld(SDL_SCANCODE_D))
+	if (input->IsKeyHeld(SDL_SCANCODE_D))
 	{
 		m_position += m_speed * m_right;
 	}
 
 	// Mouse movement
-	glm::vec2 mouseRelPos = input.GetMouseRelPos();
+	glm::vec2 mouseRelPos = input->GetMouseRelPos();
 	float xOffset = mouseRelPos.x * m_mouseSensitivity;
 	float yOffset = -mouseRelPos.y * m_mouseSensitivity;
 	

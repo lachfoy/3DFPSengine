@@ -1,17 +1,18 @@
 #include "Game.h"
 
-#include "SpriteRenderer.h"
+#include "Renderer.h"
 #include "DebugRenderer.h"
 #include "Input.h"
 #include <iostream>
-#include "Player.h"
+//#include "Player.h"
 #include "Texture.h"
-#include "TileMap.h"
+#include "Camera.h"
+
 #include "Panel.h"
 #include "Button.h"
 #include "GuiRenderer.h"
 #include "TextureManager.h"
-#include "EnemySpawner.h"
+
 #include "TextRenderer.h"
 
 #include "World.h"
@@ -122,7 +123,7 @@ bool Game::Init(int width, int height, bool fullscreen, const char* title)
 	//SDL_GL_SetSwapInterval(0);
 
 	// Init systems
-	m_renderer = new SpriteRenderer();
+	m_renderer = new Renderer();
 	m_renderer->Init();
 	m_renderer->SetProjection(m_viewportWidth, m_viewportHeight);
 
@@ -185,7 +186,7 @@ void Game::Run()
 		// render
 		//glClear(GL_COLOR_BUFFER_BIT);
 		Render();
-		m_renderer->RenderObjects();
+		m_renderer->Render(m_camera);
 		m_guiRenderer->RenderQuads();
 		gTextRenderer.RenderQuads();
 
@@ -212,35 +213,11 @@ void Game::SetupGL()
 
 void Game::Create()
 {
-	gTextureManager.LoadTexture("guy", "data/images/guy.png");
-	gTextureManager.LoadTexture("diamond", "data/images/diamond.png");
-	gTextureManager.LoadTexture("turret", "data/images/turret3.png");
-	gTextureManager.LoadTexture("enemy", "data/images/droid.png");
-	gTextureManager.LoadTexture("tile", "data/images/tile.png");
-	gTextureManager.LoadTexture("shotgun", "data/images/shotgun.png");
-	gTextureManager.LoadTexture("repairclaw", "data/images/repairclaw2.png");
-	gTextureManager.LoadTexture("shot", "data/images/shot.png");
+	//gTextureManager.LoadTexture("guy", "data/images/guy.png");
 
-	m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
-	gWorld.AddSpriteEntity(m_player);
 
-	m_enemySpawner = new EnemySpawner(m_player);
-
-	gWorld.AddSpriteEntity(new Turret(glm::vec2(200, 150), m_enemies, &m_projectiles));
-	gWorld.AddSpriteEntity(new Turret(glm::vec2(230, 120), m_enemies, &m_projectiles));
-	gWorld.AddSpriteEntity(new Turret(glm::vec2(170, 150), m_enemies, &m_projectiles));
-	gWorld.AddSpriteEntity(new Turret(glm::vec2(200, 120), m_enemies, &m_projectiles));
-	gWorld.AddSpriteEntity(new Turret(glm::vec2(230, 170), m_enemies, &m_projectiles));
-
-	//m_turrets.push_back(new Turret(glm::vec2(200, 150), m_enemies, &m_projectiles));
-	//m_turrets.push_back(new Turret(glm::vec2(230, 120), m_enemies, &m_projectiles));
-	//m_turrets.push_back(new Turret(glm::vec2(170, 150), m_enemies, &m_projectiles));
-	//m_turrets.push_back(new Turret(glm::vec2(200, 120), m_enemies, &m_projectiles));
-	//m_turrets.push_back(new Turret(glm::vec2(230, 170), m_enemies, &m_projectiles));
-
-	m_tileMap = new TileMap(gTextureManager.GetTexture("tile"));
-	m_tileMap->CreateDebugMap();
-	m_tileMap->BuildTileMesh();
+	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
+	m_camera = new Camera();
 
 	// GUI test stuff
 	m_rootPanel = new Panel("Root", m_guiRenderer, glm::vec2(0, 0), glm::vec2(m_viewportWidth, m_viewportHeight));
@@ -280,158 +257,21 @@ void Game::Create()
 
 void Game::HandleInput()
 {
-	m_player->HandleInput(m_input);
+	//m_player->HandleInput(m_input);
 
-	PropogateInput(m_rootPanel, m_input);
+	m_camera->HandleInput(m_input);
 
-	if (m_input->IsKeyPressed(SDL_SCANCODE_Z))
-	{
-		if (!m_enemies.empty())
-		{
-			m_enemies[rand() % m_enemies.size()]->Damage(5);
-		}
-	}
+	//PropogateInput(m_rootPanel, m_input);
 }
 
 void Game::Update(float dt)
 {
-	m_player->Update(dt);
-
-	for (const auto& turret : m_turrets)
-	{
-		turret->Update(dt);
-	}
-
-	gWorld.UpdateEntities(dt);
-
-	m_enemySpawner->Update(dt);
-
-	for (const auto& metal : m_metal)
-	{
-		metal->Update(dt);
-	}
-
-	for (const auto& enemy : m_enemies)
-	{
-		enemy->Update(dt);
-	}
-
-	for (const auto& projectile : m_projectiles)
-	{
-		projectile->Update(dt);
-	}
-
-	// collisions after everything has been updated
-	for (const auto& enemy : m_enemies)
-	{
-		// Do collisions
-		for (const auto& other : m_enemies)
-		{
-			if (enemy == other) break;
-			//SpriteEntity::ResolveCollision(*enemy, *other);
-		}
-
-		//SpriteEntity::ResolveCollision(*enemy, *m_player);
-		//SpriteEntity::ResolveCollision(*enemy, *m_turret);
-
-		for (const auto& turret : m_turrets)
-		{
-			if (SpriteEntity::Collision(*turret, *enemy))
-			{
-				turret->Damage(enemy->GetDamage());
-				enemy->Remove();
-			}
-		}
-
-		if (SpriteEntity::Collision(*m_player, *enemy))
-		{
-			if (m_player->CanTakeDamage())
-			{
-				m_player->Damage(enemy->GetDamage());
-				//std::cout << "Collided\n";
-			}
-		}
-	}
-
-	for (const auto& projectile : m_projectiles)
-	{
-		for (const auto& enemy : m_enemies)
-		{
-			if (SpriteEntity::Collision(*projectile, *enemy))
-			{
-				enemy->Damage(1);
-				projectile->Remove();
-			}
-		}
-	}
-
-	for (const auto& metal : m_metal)
-	{
-		if (SpriteEntity::Collision(*m_player, *metal))
-		{
-			metal->Remove();
-			m_player->AddMetal(3);
-			printf("picked up metal!\n");
-		}
-	}
-
-	// Clean up entities
-	m_enemies.erase(std::remove_if(m_enemies.begin(), m_enemies.end(),
-		[&](Enemy* enemy) {
-			bool shouldRemove = enemy->GetRemove();
-			if (shouldRemove)
-			{
-				enemy->OnDestroy();
-
-				delete enemy;
-				enemy = nullptr;
-			}
-
-			return shouldRemove;
-		}),
-		m_enemies.end());
-
-	m_metal.erase(std::remove_if(m_metal.begin(), m_metal.end(),
-		[&](const std::unique_ptr<Metal>& metal) {
-			return metal->GetRemove();
-		}),
-		m_metal.end());
-
-	m_projectiles.erase(std::remove_if(m_projectiles.begin(), m_projectiles.end(),
-		[&](const std::unique_ptr<Projectile>& projectile) {
-			return projectile->GetRemove();
-		}),
-		m_projectiles.end());
+	
 }
 
 void Game::Render()
 {
-	m_tileMap->Render(m_renderer);
 
-	for (const auto& metal : m_metal)
-	{
-		metal->Render(m_renderer);
-	}
-
-	for (const auto& turret : m_turrets)
-	{
-		turret->Render(m_renderer);
-	}
-
-	gWorld.RenderEntities(m_renderer);
-
-	for (const auto& enemy : m_enemies)
-	{
-		enemy->Render(m_renderer);
-	}
-
-	m_player->Render(m_renderer);
-
-
-	for (const auto& projectile : m_projectiles)
-	{
-		projectile->Render(m_renderer);
-	}
 
 	//RenderChildren(m_rootPanel);
 
@@ -440,14 +280,10 @@ void Game::Render()
 
 void Game::Destroy()
 {
-	m_tileMap->Destroy();
-	delete m_tileMap;
 
-	delete m_enemySpawner;
-	m_enemySpawner = nullptr;
 
-	delete m_player;
-	m_player = nullptr;
+	//delete m_player;
+	//m_player = nullptr;
 
 	delete m_rootPanel;
 	delete m_testPanel;
@@ -458,7 +294,6 @@ void Game::Destroy()
 
 void Game::Cleanup()
 {
-	m_renderer->Dispose();
 	delete m_renderer;
 	m_renderer = nullptr;
 

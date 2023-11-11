@@ -4,30 +4,15 @@
 #include <glad/glad.h>
 #include <SDL_opengl.h>
 
-#include <memory>
-#include <vector>
-#include "Enemy.h"
-#include "Metal.h"
-#include "Projectile.h"
-#include "Turret.h"
-
-class SpriteRenderer;
+class Renderer;
 
 class Input;
-class Player;
-class Turret;
-class TileMap;
-
-class EnemySpawner;
+//class Player;
+class Camera;
 
 class Panel;
 class Button;
 class GuiRenderer;
-
-typedef std::vector<Enemy*> tEnemiesVec;
-typedef std::vector<std::unique_ptr<Metal>> tMetalVec;
-typedef std::vector<std::unique_ptr<Projectile>> tProjectilesVec;
-typedef std::vector<Turret*> tTurretVec;
 
 class Game
 {
@@ -35,8 +20,6 @@ public:
 	Game() {}
 	bool Init(int width, int height, bool fullscreen, const char* title);
 	void Run();
-
-	const tEnemiesVec& GetEnemies() const { return m_enemies; }
 
 private:
 	void SetupGL();
@@ -48,7 +31,7 @@ private:
 	int m_windowHeight;
 	int m_viewportWidth;
 	int m_viewportHeight;
-	SpriteRenderer* m_renderer;
+	Renderer* m_renderer;
 	Input* m_input;
 	GuiRenderer* m_guiRenderer;
 
@@ -59,15 +42,9 @@ private:
 	void Render(); // scene related
 	void Destroy(); // scene related
 
-	Player* m_player;
-	tEnemiesVec m_enemies;
-	tMetalVec m_metal;
-	tTurretVec m_turrets;
-	tProjectilesVec m_projectiles;
+	//Player* m_player;
 
-	EnemySpawner* m_enemySpawner;
-
-	TileMap* m_tileMap;
+	Camera* m_camera;
 
 	Panel* m_rootPanel;
 	Panel* m_testPanel;

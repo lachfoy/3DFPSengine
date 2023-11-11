@@ -35,7 +35,7 @@ bool Texture::LoadFromFile(const char *path, bool useMipMaps)
 	glBindTexture(GL_TEXTURE_2D, m_texture);
 
 	// set the texture data
-	GLint format;
+	GLint format = 0;
 	switch(numChannels)
 	{
 		case 3:

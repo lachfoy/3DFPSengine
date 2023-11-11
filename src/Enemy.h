@@ -1,20 +1,16 @@
 #pragma once
 
-#include "SpriteEntity.h"
+#include "Entity.h"
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
-#include <memory>
-#include <vector>
-#include "Metal.h"
-#include "Turret.h"
+
 
 class Input;
 class Player;
 
-class Turret;
 
-class Enemy : public SpriteEntity
+class Enemy : public Entity
 {
 public:
 	Enemy(glm::vec2 position);
@@ -24,16 +20,16 @@ public:
 	int GetDamage() const { return rand() % (m_maxDamage - m_minDamage + 1) + m_minDamage; }
 
 	void Think();
-	void Update(float dt) override;
+	void OnUpdate(float dt) override;
 
 	void OnDestroy() override;
 
 private:
-	glm::vec2 m_moveDir{ 0.0f };
+	glm::vec3 m_moveDir{ 0.0f };
 	
 	float m_acceleration = 400.0f;
 
-	glm::vec2 m_velocity{ 0.0f };
+	glm::vec3 m_velocity{ 0.0f };
 	float kFrictionCoef = 8.f;
 
 	float m_thinkTimer = 0.0f;
@@ -45,6 +41,5 @@ private:
 	int m_minDamage = 1;
 	int m_maxDamage = 5;
 
-	SpriteEntity* m_target = nullptr;
 
 };

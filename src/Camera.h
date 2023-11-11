@@ -15,7 +15,7 @@ public:
 
 	glm::mat4 GetView() const { return glm::lookAt(m_position, m_position + m_front, m_worldUp); }
 
-	void HandleInput(Input& input);
+	void HandleInput(Input* input);
 	//void Update();
 
 private:

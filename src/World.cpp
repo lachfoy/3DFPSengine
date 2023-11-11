@@ -1,6 +1,6 @@
 #include "World.h"
 
-#include "Projectile.h"
+#include "Entity.h"
 
 World gWorld;
 
@@ -11,20 +11,20 @@ World::World()
 
 World::~World()
 {
-	for (const auto& spriteEntity : m_spriteEntities)
+	for (Entity* entity : m_entities)
 	{
-		delete spriteEntity;
+		delete entity;
 	}
 }
 
-void World::AddSpriteEntity(SpriteEntity* spriteEntity)
+void World::AddEntity(Entity* Entity)
 {
-	m_spriteEntities.push_back(spriteEntity);
+	m_entities.push_back(Entity);
 }
 
-void World::AddToDeleteList(SpriteEntity* spriteEntity)
+void World::AddToDeleteList(Entity* Entity)
 {
-	m_deleteList.push_back(spriteEntity);
+	m_deleteList.push_back(Entity);
 }
 
 void World::CleanUpDeleteList()
@@ -34,16 +34,8 @@ void World::CleanUpDeleteList()
 
 void World::UpdateEntities(float dt)
 {
-	for (const auto& spriteEntity : m_spriteEntities)
+	for (Entity* entity : m_entities)
 	{
-		spriteEntity->Update(dt);
-	}
-}
-
-void World::RenderEntities(SpriteRenderer* renderer)
-{
-	for (const auto& spriteEntity : m_spriteEntities)
-	{
-		spriteEntity->Render(renderer);
+		entity->OnUpdate(dt);
 	}
 }
