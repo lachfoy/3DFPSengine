@@ -189,8 +189,11 @@ void Game::Run()
 		//glClear(GL_COLOR_BUFFER_BIT);
 		Render();
 		m_renderer->Render(m_camera);
+
+		glDisable(GL_DEPTH_TEST);
 		m_guiRenderer->RenderQuads();
 		gTextRenderer.RenderQuads();
+		glEnable(GL_DEPTH_TEST);
 
 		if (DEBUG_DRAW)
 			gDebugRenderer.Render();
