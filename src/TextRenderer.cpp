@@ -85,17 +85,17 @@ void TextRenderer::AddStringToBatch(std::string string, float x, float y, glm::v
 		// Define the vertex offset for indexing
 		const unsigned int vertexOffset = m_textVertices.size();
 
-		m_textVertices.push_back(UIVertex::Make(posx, posy, tx, ty));// Lower left vertex
-		m_textVertices.push_back(UIVertex::Make(posx + w, posy, tx + tw, ty));// Lower right vertex
-		m_textVertices.push_back(UIVertex::Make(posx, posy + h, tx, ty + th));// Upper left vertex
-		m_textVertices.push_back(UIVertex::Make(posx + w, posy + h, tx + tw, ty + th));// Upper right vertex
+		m_textVertices.push_back(UIVertex::Make(posx, posy, tx, ty)); // Lower left vertex
+		m_textVertices.push_back(UIVertex::Make(posx + w, posy, tx + tw, ty)); // Lower right vertex
+		m_textVertices.push_back(UIVertex::Make(posx, posy + h, tx, ty + th)); // Upper left vertex
+		m_textVertices.push_back(UIVertex::Make(posx + w, posy + h, tx + tw, ty + th)); // Upper right vertex
 
 		m_textIndices.push_back(vertexOffset);
-		m_textIndices.push_back(vertexOffset + 1);
 		m_textIndices.push_back(vertexOffset + 2);
 		m_textIndices.push_back(vertexOffset + 1);
+		m_textIndices.push_back(vertexOffset + 2);
 		m_textIndices.push_back(vertexOffset + 3);
-		m_textIndices.push_back(vertexOffset + 2);
+		m_textIndices.push_back(vertexOffset + 1);
 
 		renderX += charInfo.xadvance;
 
