@@ -181,7 +181,9 @@ void Game::Run()
 		Update(dt);
 		gDebugRenderer.Update(dt);
 
-		gTextRenderer.AddStringToBatch(std::to_string(fps), 0.0f, 0.0f, glm::vec3(1.0f));
+		//gTextRenderer.AddStringToBatch(std::to_string(fps), 0.0f, 0.0f, glm::vec3(1.0f));
+		std::string titleStr = "fps: " + std::to_string(fps);
+		SDL_SetWindowTitle(m_window, titleStr.c_str());
 
 		// render
 		//glClear(GL_COLOR_BUFFER_BIT);
@@ -217,7 +219,7 @@ void Game::Create()
 
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
-	m_camera = new Camera();
+	m_camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f));
 
 	// GUI test stuff
 	m_rootPanel = new Panel("Root", m_guiRenderer, glm::vec2(0, 0), glm::vec2(m_viewportWidth, m_viewportHeight));
@@ -266,7 +268,7 @@ void Game::HandleInput()
 
 void Game::Update(float dt)
 {
-	
+	m_camera->Update(dt);
 }
 
 void Game::Render()

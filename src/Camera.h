@@ -16,7 +16,7 @@ public:
 	glm::mat4 GetView() const { return glm::lookAt(m_position, m_position + m_front, m_worldUp); }
 
 	void HandleInput(Input* input);
-	//void Update();
+	void Update(float dt);
 
 private:
 	void UpdateCameraVectors();
@@ -31,6 +31,8 @@ private:
 	float m_mouseSensitivity = 0.25f;
 	float m_fov = 45.0f;
 	glm::vec3 m_front = glm::vec3(0.0f, 0.0f, -1.0f);
+
+	glm::vec3 m_moveDir;
 
 };
 

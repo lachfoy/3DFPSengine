@@ -45,9 +45,18 @@ void TextRenderer::AddStringToBatch(std::string string, float x, float y, glm::v
 	// Initialize lastChar with an invalid character ID
 	unsigned int lastChar = UINT_MAX;  // Maximum value means no last character
 
+	float renderX = x;
+
 	// iterate through all characters
 	for (char c : string)
 	{
+		if (c == '\n')
+		{
+			renderX = x; // reset x
+			y += m_font->m_lineHeight;
+			continue;
+		}
+		
 		CharInfo charInfo = m_font->GetInfo(c);
 
 		float textureW = static_cast<float>(m_font->m_texture->GetWidth());
@@ -56,7 +65,7 @@ void TextRenderer::AddStringToBatch(std::string string, float x, float y, glm::v
 		// If we had a previous character, look up the kerning pair and adjust x
 		if (lastChar != UINT_MAX) {
 			short kerningAmount = m_font->GetKerningAmount(lastChar, charInfo.id);
-			x += kerningAmount;
+			renderX += kerningAmount;
 		}
 
 		// Calculate the texture coordinates
@@ -66,7 +75,7 @@ void TextRenderer::AddStringToBatch(std::string string, float x, float y, glm::v
 		float th = charInfo.height / textureH;
 
 		// Calculate positions
-		float posx = x + charInfo.xoffset;
+		float posx = renderX + charInfo.xoffset;
 		float posy = y + charInfo.yoffset;
 		float w = charInfo.width;
 		float h = charInfo.height;
@@ -88,7 +97,7 @@ void TextRenderer::AddStringToBatch(std::string string, float x, float y, glm::v
 		m_textIndices.push_back(vertexOffset + 3);
 		m_textIndices.push_back(vertexOffset + 2);
 
-		x += charInfo.xadvance;
+		renderX += charInfo.xadvance;
 
 		lastChar = charInfo.id;
 	}
