@@ -12,7 +12,7 @@ class Projectile;//???? why do i need this forward declare? I dont understand
 
 class Input;
 
-class Player : public SpriteEntity
+class Player : public Entity
 {
 public:
 	Player(glm::vec2 position, std::vector<std::unique_ptr<Projectile>>* projectiles);
