@@ -187,7 +187,7 @@ void Game::Run()
 		// render
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		Render();
-		m_physicsWorld.Render();
+		m_physicsWorld.DebugDraw();
 		m_renderer->Render(m_camera);
 
 		if (DEBUG_DRAW)
@@ -233,7 +233,7 @@ void Game::Create()
 	m_camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f));
 
 	m_player = new Player();
-	m_renderer->AddToRenderList(m_player);
+	//m_renderer->AddToRenderList(m_player);
 
 	// GUI test stuff
 	m_rootPanel = new Panel("Root", m_guiRenderer, glm::vec2(0, 0), glm::vec2(m_viewportWidth, m_viewportHeight));
@@ -281,8 +281,9 @@ void Game::HandleInput()
 
 	if (m_input->IsKeyPressed(SDL_SCANCODE_Z))
 	{
-		glm::mat4 startTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0, 5.0f, 0));
-		m_physicsWorld.addBox(glm::vec3(0.5f), 1.0f, startTransform);
+		TestBox* testBox = m_physicsWorld.AddTestBox(glm::vec3(0, 5.0f, 0));
+		m_renderer->AddToRenderList(testBox);
+		m_testBoxes.push_back(testBox);
 	}
 }
 
@@ -291,6 +292,11 @@ void Game::Update(float dt)
 	m_camera->Update(dt);
 
 	m_player->OnUpdate(dt);
+
+	for (const auto& testBox : m_testBoxes)
+	{
+		testBox->UpdateTransform();
+	}
 }
 
 void Game::Render()

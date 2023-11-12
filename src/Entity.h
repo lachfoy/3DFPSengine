@@ -15,7 +15,7 @@ public:
 	virtual void OnDestroy() {};
 
 protected:
-	void UpdateTransform();
+	virtual void UpdateTransform();
 
 	glm::vec3 m_worldPosition;
 	glm::vec3 m_scale;

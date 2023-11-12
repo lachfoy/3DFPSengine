@@ -2,15 +2,40 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+#include "TextureManager.h"
+#include "Mesh.h"
+
+TestBox::TestBox(btRigidBody* rigidBody) : m_rigidBody(rigidBody)
+{
+	m_mesh = new Mesh();
+	m_mesh->LoadFromFile("data/models/cube.obj");
+
+	m_texture = gTextureManager.GetTexture("cat");
+}
+
+void TestBox::UpdateTransform()
+{
+	btMotionState* motionState = m_rigidBody->getMotionState();
+	
+	btTransform transform;
+	if (motionState)
+	{
+		motionState->getWorldTransform(transform);
+
+		float mat[16];
+		transform.getOpenGLMatrix(mat);
+		m_transform = glm::make_mat4(mat);
+	}
+}
 
 
 PhysicsWorld::PhysicsWorld()
 {
 	m_collisionConfiguration = new btDefaultCollisionConfiguration();
 	m_dispatcher = new btCollisionDispatcher(m_collisionConfiguration);
-	m_overlappingPairCache = new btDbvtBroadphase();
+	m_broadphase = new btDbvtBroadphase();
 	m_solver = new btSequentialImpulseConstraintSolver;
-	m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher, m_overlappingPairCache, m_solver, m_collisionConfiguration);
+	m_dynamicsWorld = new btDiscreteDynamicsWorld(m_dispatcher, m_broadphase, m_solver, m_collisionConfiguration);
 
 	m_dynamicsWorld->setGravity(btVector3(0, -9.81f, 0));  // Set gravity as needed
 
@@ -40,7 +65,7 @@ PhysicsWorld::~PhysicsWorld()
 {
 	delete m_dynamicsWorld;
 	delete m_solver;
-	delete m_overlappingPairCache;
+	delete m_broadphase;
 	delete m_dispatcher;
 	delete m_collisionConfiguration;
 	delete m_debugDrawer;
@@ -90,6 +115,38 @@ btRigidBody* PhysicsWorld::addBox(const glm::vec3& halfExtents, float mass, cons
 	return body;
 }
 
+TestBox* PhysicsWorld::AddTestBox(const glm::vec3& position)
+{
+	btScalar mass = 1.0f;
+	btVector3 btHalfExtents(0.5f, 0.5f, 0.5f);
+
+	// Create the box shape
+	btCollisionShape* boxShape = new btBoxShape(btHalfExtents);
+
+	// Calculate the local inertia
+	btVector3 localInertia(0, 0, 0);
+	if (mass != 0.f) {
+		boxShape->calculateLocalInertia(mass, localInertia);
+	}
+
+	glm::mat4 startTransform = glm::translate(glm::mat4(1.0f), position);
+	btTransform btStartTransform;
+	btStartTransform.setFromOpenGLMatrix(glm::value_ptr(startTransform));
+
+	// Create the rigid body's construction info
+	btDefaultMotionState* motionState = new btDefaultMotionState(btStartTransform);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, boxShape, localInertia);
+
+	// Create the rigid body
+	btRigidBody* body = new btRigidBody(rbInfo);
+
+	// Add the body to the dynamics world
+	m_dynamicsWorld->addRigidBody(body);
+
+	TestBox* testBox = new TestBox(body);
+	return testBox;
+}
+
 void PhysicsWorld::CreateCharacter()
 {
 	btPairCachingGhostObject* ghostObject = new btPairCachingGhostObject();
@@ -100,7 +157,7 @@ void PhysicsWorld::CreateCharacter()
 	ghostObject->setCollisionShape(capsule);
 	ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 
-	m_overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback((new btGhostPairCallback()));
+	m_broadphase->getOverlappingPairCache()->setInternalGhostPairCallback((new btGhostPairCallback()));
 
 	btScalar stepHeight = 0.35f;
 
@@ -117,10 +174,11 @@ void PhysicsWorld::CreateCharacter()
 	m_character->warp(btVector3(0.0f, 5.0f, 0.0f));
 }
 
-void PhysicsWorld::Render()
+void PhysicsWorld::DebugDraw()
 {
 	m_dynamicsWorld->debugDrawWorld();
 
 	btVector3 origin = m_character->getGhostObject()->getWorldTransform().getOrigin();
 	printf("pos: %f,%f,%f\n", origin.x(), origin.y(), origin.z());
 }
+
