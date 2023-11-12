@@ -34,7 +34,4 @@
     <ClInclude Include="src\Button.h" />
     <ClInclude Include="src\GuiRenderer.h" />
   </ItemGroup>
-  <ItemGroup>
-    <Text Include="todo.txt" />
-  </ItemGroup>
 </Project>

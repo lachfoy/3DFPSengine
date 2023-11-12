@@ -1,5 +1,0 @@
-*Add camera follow movement
-*Add proper tile rendering
-*Add twinstick shooter controls
-*And grid selection for placing towers
-*Add boids enemies
