@@ -1,9 +1,14 @@
 #pragma once
 
-#include <bullet/btBulletDynamicsCommon.h>
+#include <btBulletDynamicsCommon.h>
+
+
 #include "BulletDebugDraw.h"
 
 #include <glm/glm.hpp>
+
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
+#include <BulletDynamics/Character/btKinematicCharacterController.h>
 
 class PhysicsWorld
 {
@@ -18,6 +23,8 @@ public:
 
 	btRigidBody* addBox(const glm::vec3& halfExtents, float mass, const glm::mat4& startTransform);
 
+	void CreateCharacter();
+
 	void Render();
 
 private:
@@ -27,5 +34,8 @@ private:
 	btBroadphaseInterface* m_overlappingPairCache;
 	btSequentialImpulseConstraintSolver* m_solver;
 	BulletDebugDraw* m_debugDrawer;
+
+
+	btKinematicCharacterController* m_character;// temp
 
 };

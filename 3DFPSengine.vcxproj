@@ -72,11 +72,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(USERPROFILE)\dev\SDL2-2.28.3\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\Users\lachi\dev\vcpkg\installed\x64-windows\debug\lib</LibraryPath>
-    <IncludePath>C:\Users\lachi\dev\vcpkg\installed\x64-windows\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(USERPROFILE)\dev\vcpkg\installed\x64-windows\include\bullet;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(USERPROFILE)\dev\SDL2-2.28.3\lib\x64;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64);C:\Users\lachi\dev\vcpkg\installed\x64-windows\debug\lib</LibraryPath>
-    <IncludePath>C:\Users\lachi\dev\vcpkg\installed\x64-windows\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(USERPROFILE)\dev\vcpkg\installed\x64-windows\include\bullet;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>false</VcpkgEnableManifest>

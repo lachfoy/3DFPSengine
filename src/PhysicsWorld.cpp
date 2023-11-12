@@ -2,6 +2,8 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
+
+
 PhysicsWorld::PhysicsWorld()
 {
 	m_collisionConfiguration = new btDefaultCollisionConfiguration();
@@ -29,7 +31,9 @@ PhysicsWorld::PhysicsWorld()
 	btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
 
 	// Add the ground plane rigid body to the dynamics world
-	m_dynamicsWorld->addRigidBody(groundRigidBody);
+	int groundCollisionGroup = btBroadphaseProxy::StaticFilter;
+	int groundCollisionMask = btBroadphaseProxy::AllFilter;
+	m_dynamicsWorld->addRigidBody(groundRigidBody, groundCollisionGroup, groundCollisionMask);
 }
 
 PhysicsWorld::~PhysicsWorld()
@@ -86,7 +90,37 @@ btRigidBody* PhysicsWorld::addBox(const glm::vec3& halfExtents, float mass, cons
 	return body;
 }
 
+void PhysicsWorld::CreateCharacter()
+{
+	btPairCachingGhostObject* ghostObject = new btPairCachingGhostObject();
+	btScalar characterHeight = 1.8f;  // Height of the character
+	btScalar characterWidth = 0.5f;   // Width (radius) of the character
+	btConvexShape* capsule = new btCapsuleShape(characterWidth, characterHeight);
+
+	ghostObject->setCollisionShape(capsule);
+	ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
+
+	m_overlappingPairCache->getOverlappingPairCache()->setInternalGhostPairCallback((new btGhostPairCallback()));
+
+	btScalar stepHeight = 0.35f;
+
+	m_character = new btKinematicCharacterController(
+		ghostObject, capsule, stepHeight, btVector3(0.0f, 1.0f, 0.0f));
+
+	m_dynamicsWorld->addCollisionObject(ghostObject,
+		btBroadphaseProxy::CharacterFilter,
+		btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter);
+
+	m_dynamicsWorld->addAction(m_character);
+
+	m_character->setWalkDirection(btVector3(0.0f, 0.0f, 0.0f));
+	m_character->warp(btVector3(0.0f, 5.0f, 0.0f));
+}
+
 void PhysicsWorld::Render()
 {
 	m_dynamicsWorld->debugDrawWorld();
+
+	btVector3 origin = m_character->getGhostObject()->getWorldTransform().getOrigin();
+	printf("pos: %f,%f,%f\n", origin.x(), origin.y(), origin.z());
 }

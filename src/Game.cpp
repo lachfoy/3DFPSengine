@@ -227,7 +227,7 @@ void Game::Create()
 {
 	gTextureManager.LoadTexture("cat", "data/images/round_cat.png");
 
-	glm::mat4 startTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
+	m_physicsWorld.CreateCharacter();
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
 	m_camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f));
