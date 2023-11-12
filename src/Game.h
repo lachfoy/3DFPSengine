@@ -14,6 +14,8 @@ class Panel;
 class Button;
 class GuiRenderer;
 
+#include "PhysicsWorld.h"
+
 class Game
 {
 public:
@@ -51,5 +53,9 @@ private:
 	Button* m_button1;
 	Button* m_button2;
 	Button* m_button3;
+
+	PhysicsWorld m_physicsWorld;
+
+	btRigidBody* m_testBox;
 
 };

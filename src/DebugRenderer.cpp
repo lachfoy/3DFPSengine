@@ -8,10 +8,11 @@
 #include <iostream>
 #include <algorithm>
 
+#include "Camera.h"
+
 DebugRenderer gDebugRenderer;
 
 static const unsigned int kMaxLines = 1000;
-static const unsigned int kCircleSegments = 32;
 
 void DebugRenderer::Init()
 {
@@ -21,7 +22,7 @@ void DebugRenderer::Init()
 
 void DebugRenderer::SetProjection(unsigned int screenWidth, unsigned int screenHeight)
 {
-	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(screenWidth), static_cast<float>(screenHeight), 0.0f, -1.0f, 1.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, 100.0f);
 
 	glUseProgram(m_debugShaderProgram);
 	glUniformMatrix4fv(glGetUniformLocation(m_debugShaderProgram, "u_projection"), 1, false, glm::value_ptr(projection));
@@ -45,12 +46,14 @@ void DebugRenderer::AddLine(const glm::vec3& from, const glm::vec3& to, const gl
 	m_lines.push_back(line);
 }
 
-void DebugRenderer::Render()
+void DebugRenderer::Render(Camera* camera)
 {
 	glUseProgram(m_debugShaderProgram);
 	glBindVertexArray(m_lineVao);
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_lineVbo);
+
+	glUniformMatrix4fv(glGetUniformLocation(m_debugShaderProgram, "u_view"), 1, false, glm::value_ptr(camera->GetView()));
 
 	std::vector<glm::vec3> lineData;
 	for (const auto& debugLine : m_lines)
@@ -105,10 +108,11 @@ void DebugRenderer::CreateShaderProgram()
 		layout (location = 0) in vec3 a_position;
 
 		uniform mat4 u_projection;
+		uniform mat4 u_view;
 
 		void main()
 		{
-			gl_Position = u_projection * vec4(a_position, 1.0);
+			gl_Position = u_projection * u_view * vec4(a_position, 1.0);
 		}
 	)";
 

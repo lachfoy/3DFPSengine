@@ -15,6 +15,8 @@ struct DebugLine {
 	float duration;
 };
 
+class Camera;
+
 class DebugRenderer
 {
 public:
@@ -27,7 +29,7 @@ public:
 
 	void AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float duration = -1.0f);
 
-	void Render();
+	void Render(Camera* camera);
 	void PostRenderUpdate(float dt);
 
 private:

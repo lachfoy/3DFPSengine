@@ -179,6 +179,7 @@ void Game::Run()
 
 		// update
 		Update(dt);
+		m_physicsWorld.stepSimulation(1.0f / 60.0f);
 
 		std::string titleStr = "fps: " + std::to_string(fps);
 		SDL_SetWindowTitle(m_window, titleStr.c_str());
@@ -186,11 +187,12 @@ void Game::Run()
 		// render
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		Render();
+		m_physicsWorld.Render();
 		m_renderer->Render(m_camera);
 
 		if (DEBUG_DRAW)
 		{
-			gDebugRenderer.Render();
+			gDebugRenderer.Render(m_camera);
 			gDebugRenderer.PostRenderUpdate(dt);
 		}
 
@@ -224,6 +226,8 @@ void Game::SetupGL()
 void Game::Create()
 {
 	gTextureManager.LoadTexture("cat", "data/images/round_cat.png");
+
+	glm::mat4 startTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 10.0f, 0.0f));
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
 	m_camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -274,6 +278,12 @@ void Game::HandleInput()
 	m_camera->HandleInput(m_input);
 
 	//PropogateInput(m_rootPanel, m_input);
+
+	if (m_input->IsKeyPressed(SDL_SCANCODE_Z))
+	{
+		glm::mat4 startTransform = glm::translate(glm::mat4(1.0f), glm::vec3(0, 5.0f, 0));
+		m_physicsWorld.addBox(glm::vec3(0.5f), 1.0f, startTransform);
+	}
 }
 
 void Game::Update(float dt)
