@@ -9,8 +9,8 @@
 #include <map>
 
 struct DebugLine {
-	glm::vec2 p1;
-	glm::vec2 p2;
+	glm::vec3 from;
+	glm::vec3 to;
 	glm::vec3 color;
 	float duration;
 };
@@ -25,10 +25,10 @@ public:
 	void SetProjection(unsigned int screenWidth, unsigned int screenHeight);
 	void Dispose();
 
-	void AddLine(const glm::vec2& p1, const glm::vec2& p2, const glm::vec3& color, float duration = -1.0f);
-	void AddCircle(const glm::vec2& center, float radius, const glm::vec3& color, float duration = -1.0f);
-	void Update(float dt);
+	void AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float duration = -1.0f);
+
 	void Render();
+	void PostRenderUpdate(float dt);
 
 private:
 	void CreateShaderProgram();

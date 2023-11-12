@@ -16,56 +16,53 @@ Renderer::~Renderer()
 
 void Renderer::Init()
 {
-    CreateShaderProgram();
+	CreateShaderProgram();
 }
 
 void Renderer::SetProjection(int screenWidth, int screenHeight)
 {
-    glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, 100.0f);
+	glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, 100.0f);
 
-    glUseProgram(m_shaderProgram);
-    glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "u_projection"), 1, false, glm::value_ptr(projection));
+	glUseProgram(m_shaderProgram);
+	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "u_projection"), 1, false, glm::value_ptr(projection));
 
 }
 
 void Renderer::AddToRenderList(IRenderable *renderable)	
 {	
-    m_renderList.push_back(renderable);	
+	m_renderList.push_back(renderable);	
 }
 
 void Renderer::Render(Camera* camera)
 {
-    // render normal scene
-    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-
 	glUseProgram(m_shaderProgram);
 
 	// todo cache uniform locations
 	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "u_view"), 1, false, glm::value_ptr(camera->GetView()));
 	glUniform3fv(glGetUniformLocation(m_shaderProgram, "u_cameraLocalPos"), 1, glm::value_ptr(camera->m_position));
 
-    for (const auto& renderable : m_renderList)
-    {
-        // set transformation
+	for (const auto& renderable : m_renderList)
+	{
+		// set transformation
 		glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "u_model"), 1, false, glm::value_ptr(renderable->m_transform));
 
-        // bind texture 1
-        glActiveTexture(GL_TEXTURE0);
-        renderable->m_texture->Bind();
+		// bind texture 1
+		glActiveTexture(GL_TEXTURE0);
+		renderable->m_texture->Bind();
 
-        // set color
+		// set color
 		glUniform4fv(glGetUniformLocation(m_shaderProgram, "u_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
 
 
-        // draw
-        renderable->m_mesh->Draw();
+		// draw
+		renderable->m_mesh->Draw();
 
-        // unbind texture 1
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
-    }
+		// unbind texture 1
+		glActiveTexture(GL_TEXTURE0);
+		glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
+	}
 
-    glUseProgram(0);
+	glUseProgram(0);
 }
 
 void Renderer::CreateShaderProgram()

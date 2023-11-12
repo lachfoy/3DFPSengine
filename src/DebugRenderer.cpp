@@ -35,60 +35,14 @@ void DebugRenderer::Dispose()
 	glDeleteProgram(m_debugShaderProgram);
 }
 
-void DebugRenderer::AddLine(const glm::vec2& p1, const glm::vec2& p2, const glm::vec3& color, float duration)
+void DebugRenderer::AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float duration)
 {
 	DebugLine line;
-	line.p1 = p1;
-	line.p2 = p2;
+	line.from = from;
+	line.to = to;
 	line.color = color;
 	line.duration = duration;
 	m_lines.push_back(line);
-}
-
-void DebugRenderer::AddCircle(const glm::vec2& center, float radius, const glm::vec3& color, float duration)
-{
-	float angleIncrement = 2.0f * PI / kCircleSegments;
-
-	for (int i = 0; i < kCircleSegments; i++)
-	{
-		float angle1 = i * angleIncrement;
-		float angle2 = (i + 1) * angleIncrement;
-
-		glm::vec2 p1 = center + glm::vec2(radius * std::cos(angle1), radius * std::sin(angle1));
-		glm::vec2 p2 = center + glm::vec2(radius * std::cos(angle2), radius * std::sin(angle2));
-
-		DebugLine line;
-		line.p1 = p1;
-		line.p2 = p2;
-		line.color = color;
-		line.duration = duration;
-		m_lines.push_back(line);
-	}
-}
-
-void DebugRenderer::Update(float dt)
-{
-	auto it = m_lines.begin();
-	while (it != m_lines.end())
-	{
-		if (it->duration == -1.0f) // skip if the duration is -1
-		{
-			++it;
-		}
-		else
-		{
-			it->duration -= dt;
-			if (it->duration <= 0.0f)
-			{
-				it = m_lines.erase(it);
-			}
-			else
-			{
-				++it;
-			}
-		}
-		
-	}
 }
 
 void DebugRenderer::Render()
@@ -98,13 +52,13 @@ void DebugRenderer::Render()
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_lineVbo);
 
-	std::vector<glm::vec2> lineData;
+	std::vector<glm::vec3> lineData;
 	for (const auto& debugLine : m_lines)
 	{
-		lineData.push_back(debugLine.p1);
-		lineData.push_back(debugLine.p2);
+		lineData.push_back(debugLine.from);
+		lineData.push_back(debugLine.to);
 	}
-	glBufferSubData(GL_ARRAY_BUFFER, 0, lineData.size() * sizeof(glm::vec2), lineData.data());
+	glBufferSubData(GL_ARRAY_BUFFER, 0, lineData.size() * sizeof(glm::vec3), lineData.data());
 
 	for (size_t i = 0; i < m_lines.size(); ++i) {
 		// Set the color uniform for the current line
@@ -122,6 +76,24 @@ void DebugRenderer::Render()
 	glBindVertexArray(0);
 }
 
+void DebugRenderer::PostRenderUpdate(float dt)
+{
+	auto it = m_lines.begin();
+	while (it != m_lines.end())
+	{
+		it->duration -= dt;
+		if (it->duration <= 0.0f)
+		{
+			it = m_lines.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+
+	}
+}
+
 void DebugRenderer::CreateShaderProgram()
 {
 	// Create the vertex shader
@@ -130,13 +102,13 @@ void DebugRenderer::CreateShaderProgram()
 		const GLchar* vertexSource = R"(
 		#version 330 core
 
-		layout (location = 0) in vec2 a_position;
+		layout (location = 0) in vec3 a_position;
 
 		uniform mat4 u_projection;
 
 		void main()
 		{
-			gl_Position = u_projection * vec4(a_position, 0.0, 1.0);
+			gl_Position = u_projection * vec4(a_position, 1.0);
 		}
 	)";
 
@@ -210,11 +182,11 @@ void DebugRenderer::CreateRenderData()
 	// VBO
 	glGenBuffers(1, &m_lineVbo);
 	glBindBuffer(GL_ARRAY_BUFFER, m_lineVbo);
-	glBufferData(GL_ARRAY_BUFFER, kMaxLines * sizeof(glm::vec2) * 2, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, kMaxLines * sizeof(glm::vec3) * 2, NULL, GL_DYNAMIC_DRAW);
 
 	// Enable the vertex attribute arrays for position and texcoords
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, sizeof(glm::vec2), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
 
 	// Unbind
 	glBindVertexArray(0);

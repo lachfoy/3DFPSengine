@@ -179,24 +179,25 @@ void Game::Run()
 
 		// update
 		Update(dt);
-		gDebugRenderer.Update(dt);
 
-		//gTextRenderer.AddStringToBatch(std::to_string(fps), 0.0f, 0.0f, glm::vec3(1.0f));
 		std::string titleStr = "fps: " + std::to_string(fps);
 		SDL_SetWindowTitle(m_window, titleStr.c_str());
 
 		// render
-		//glClear(GL_COLOR_BUFFER_BIT);
+		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		Render();
 		m_renderer->Render(m_camera);
+
+		if (DEBUG_DRAW)
+		{
+			gDebugRenderer.Render();
+			gDebugRenderer.PostRenderUpdate(dt);
+		}
 
 		glDisable(GL_DEPTH_TEST);
 		m_guiRenderer->RenderQuads();
 		gTextRenderer.RenderQuads();
 		glEnable(GL_DEPTH_TEST);
-
-		if (DEBUG_DRAW)
-			gDebugRenderer.Render();
 
 		// swap buffers
 		SDL_GL_SwapWindow(m_window);
