@@ -15,7 +15,7 @@ TestBox::TestBox(btRigidBody* rigidBody) : m_rigidBody(rigidBody)
 
 void TestBox::UpdateTransform()
 {
-	btMotionState* motionState = m_rigidBody->getMotionState();
+	btMotionState* motionState = m_rigidBody->getMotionState(); // should derive a custom motion state instead
 	
 	btTransform transform;
 	if (motionState)
