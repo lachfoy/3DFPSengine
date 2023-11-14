@@ -184,6 +184,7 @@
     <ClInclude Include="src\DebugRenderer.h" />
     <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="src\Entity.h" />
+    <ClInclude Include="src\FirstPersonController.h" />
     <ClInclude Include="src\Font.h" />
     <ClInclude Include="src\Game.h" />
     <ClInclude Include="src\Input.h" />
