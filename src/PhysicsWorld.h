@@ -14,16 +14,19 @@
 
 #include "IRenderable.h"
 
-class TestBox : public IRenderable
+class CatCube : public IRenderable, public btMotionState
 {
 public:
-	TestBox(btRigidBody* body);
-	~TestBox();
+	CatCube(const glm::vec3& position);
+	~CatCube() = default;
 
-	void UpdateTransform();
+	void getWorldTransform(btTransform& worldTrans) const override;
+
+	//Bullet only calls the update of worldtransform for active objects
+	void setWorldTransform(const btTransform& worldTrans) override;
 
 private:
-	btRigidBody* m_rigidBody;
+	//btRigidBody* m_rigidBody; // doesnt need this tbh
 
 };
 
@@ -40,7 +43,7 @@ public:
 
 	btRigidBody* addBox(const glm::vec3& halfExtents, float mass, const glm::mat4& startTransform);
 
-	TestBox* AddTestBox(const glm::vec3& position);
+	CatCube* AddCatCube(const glm::vec3& position);
 
 
 	void CreateCharacter();

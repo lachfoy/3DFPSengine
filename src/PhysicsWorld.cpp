@@ -5,29 +5,27 @@
 #include "TextureManager.h"
 #include "Mesh.h"
 
-TestBox::TestBox(btRigidBody* rigidBody) : m_rigidBody(rigidBody)
+CatCube::CatCube(const glm::vec3& position)
 {
 	m_mesh = new Mesh();
 	m_mesh->LoadFromFile("data/models/cube.obj");
 
 	m_texture = gTextureManager.GetTexture("cat");
+
+	m_transform = glm::translate(glm::mat4(1.0f), position);
 }
 
-void TestBox::UpdateTransform()
+void CatCube::getWorldTransform(btTransform& worldTrans) const
 {
-	btMotionState* motionState = m_rigidBody->getMotionState(); // should derive a custom motion state instead
-	
-	btTransform transform;
-	if (motionState)
-	{
-		motionState->getWorldTransform(transform);
-
-		float mat[16];
-		transform.getOpenGLMatrix(mat);
-		m_transform = glm::make_mat4(mat);
-	}
+	worldTrans.setFromOpenGLMatrix(glm::value_ptr(m_transform));
 }
 
+void CatCube::setWorldTransform(const btTransform& worldTrans)
+{
+	float mat[16];
+	worldTrans.getOpenGLMatrix(mat);
+	m_transform = glm::make_mat4(mat);
+}
 
 PhysicsWorld::PhysicsWorld()
 {
@@ -115,7 +113,7 @@ btRigidBody* PhysicsWorld::addBox(const glm::vec3& halfExtents, float mass, cons
 	return body;
 }
 
-TestBox* PhysicsWorld::AddTestBox(const glm::vec3& position)
+CatCube* PhysicsWorld::AddCatCube(const glm::vec3& position)
 {
 	btScalar mass = 1.0f;
 	btVector3 btHalfExtents(0.5f, 0.5f, 0.5f);
@@ -125,26 +123,22 @@ TestBox* PhysicsWorld::AddTestBox(const glm::vec3& position)
 
 	// Calculate the local inertia
 	btVector3 localInertia(0, 0, 0);
-	if (mass != 0.f) {
+	if (mass != 0.f)
+	{
 		boxShape->calculateLocalInertia(mass, localInertia);
 	}
 
-	glm::mat4 startTransform = glm::translate(glm::mat4(1.0f), position);
-	btTransform btStartTransform;
-	btStartTransform.setFromOpenGLMatrix(glm::value_ptr(startTransform));
-
-	// Create the rigid body's construction info
-	btDefaultMotionState* motionState = new btDefaultMotionState(btStartTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, boxShape, localInertia);
+	CatCube* catCube = new CatCube(position);
+	
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, catCube, boxShape, localInertia);
 
 	// Create the rigid body
-	btRigidBody* body = new btRigidBody(rbInfo);
+	btRigidBody* body = new btRigidBody(rbInfo); // I have no idea if dynamics world handles this memory
 
 	// Add the body to the dynamics world
 	m_dynamicsWorld->addRigidBody(body);
 
-	TestBox* testBox = new TestBox(body);
-	return testBox;
+	return catCube;
 }
 
 void PhysicsWorld::CreateCharacter()
@@ -177,8 +171,5 @@ void PhysicsWorld::CreateCharacter()
 void PhysicsWorld::DebugDraw()
 {
 	m_dynamicsWorld->debugDrawWorld();
-
-	btVector3 origin = m_character->getGhostObject()->getWorldTransform().getOrigin();
-	printf("pos: %f,%f,%f\n", origin.x(), origin.y(), origin.z());
 }
 

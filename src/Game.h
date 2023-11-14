@@ -56,9 +56,4 @@ private:
 
 	PhysicsWorld m_physicsWorld;
 
-	btRigidBody* m_testBox;
-
-
-	std::vector<TestBox*> m_testBoxes;
-
 };

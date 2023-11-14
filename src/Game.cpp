@@ -281,9 +281,8 @@ void Game::HandleInput()
 
 	if (m_input->IsKeyPressed(SDL_SCANCODE_Z))
 	{
-		TestBox* testBox = m_physicsWorld.AddTestBox(glm::vec3(0, 5.0f, 0));
-		m_renderer->AddToRenderList(testBox);
-		m_testBoxes.push_back(testBox);
+		CatCube* catCube = m_physicsWorld.AddCatCube(glm::vec3(0, 5.0f, 0));
+		m_renderer->AddToRenderList(catCube);
 	}
 }
 
@@ -292,11 +291,6 @@ void Game::Update(float dt)
 	m_camera->Update(dt);
 
 	m_player->OnUpdate(dt);
-
-	for (const auto& testBox : m_testBoxes)
-	{
-		testBox->UpdateTransform();
-	}
 }
 
 void Game::Render()
