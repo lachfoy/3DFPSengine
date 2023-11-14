@@ -141,7 +141,7 @@ CatCube* PhysicsWorld::AddCatCube(const glm::vec3& position)
 	return catCube;
 }
 
-void PhysicsWorld::CreateCharacter()
+btKinematicCharacterController* PhysicsWorld::CreateCharacter()
 {
 	btPairCachingGhostObject* ghostObject = new btPairCachingGhostObject();
 	btScalar characterHeight = 1.8f;  // Height of the character
@@ -150,22 +150,23 @@ void PhysicsWorld::CreateCharacter()
 
 	ghostObject->setCollisionShape(capsule);
 	ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
-
+	
 	m_broadphase->getOverlappingPairCache()->setInternalGhostPairCallback((new btGhostPairCallback()));
 
 	btScalar stepHeight = 0.35f;
 
-	m_character = new btKinematicCharacterController(
+	btKinematicCharacterController* character = new btKinematicCharacterController(
 		ghostObject, capsule, stepHeight, btVector3(0.0f, 1.0f, 0.0f));
+
+	character->warp(btVector3(0.0f, 5.0f, 0.0f));
 
 	m_dynamicsWorld->addCollisionObject(ghostObject,
 		btBroadphaseProxy::CharacterFilter,
 		btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter);
 
-	m_dynamicsWorld->addAction(m_character);
+	m_dynamicsWorld->addAction(character);
 
-	m_character->setWalkDirection(btVector3(0.0f, 0.0f, 0.0f));
-	m_character->warp(btVector3(0.0f, 5.0f, 0.0f));
+	return character;
 }
 
 void PhysicsWorld::DebugDraw()

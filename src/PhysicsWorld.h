@@ -30,6 +30,11 @@ private:
 
 };
 
+class Character
+{
+
+};
+
 class PhysicsWorld
 {
 public:
@@ -46,7 +51,7 @@ public:
 	CatCube* AddCatCube(const glm::vec3& position);
 
 
-	void CreateCharacter();
+	btKinematicCharacterController* CreateCharacter();
 
 	void DebugDraw();
 
@@ -64,7 +69,7 @@ private:
 	BulletDebugDraw* m_debugDrawer;
 
 
-	btKinematicCharacterController* m_character; // temp
+	//btKinematicCharacterController* m_character; // temp
 
 	std::vector<btCollisionShape*> m_collisionShapes;
 

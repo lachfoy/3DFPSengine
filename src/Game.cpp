@@ -179,7 +179,7 @@ void Game::Run()
 
 		// update
 		Update(dt);
-		m_physicsWorld.stepSimulation(1.0f / 60.0f);
+		m_physicsWorld.stepSimulation(dt);
 
 		std::string titleStr = "fps: " + std::to_string(fps);
 		SDL_SetWindowTitle(m_window, titleStr.c_str());
@@ -227,7 +227,7 @@ void Game::Create()
 {
 	gTextureManager.LoadTexture("cat", "data/images/round_cat.png");
 
-	m_physicsWorld.CreateCharacter();
+	m_character = m_physicsWorld.CreateCharacter();
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
 	m_camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -284,6 +284,32 @@ void Game::HandleInput()
 		CatCube* catCube = m_physicsWorld.AddCatCube(glm::vec3(0, 5.0f, 0));
 		m_renderer->AddToRenderList(catCube);
 	}
+
+	glm::vec3 walkDir = glm::vec3(0.0f);
+	if (m_input->IsKeyHeld(SDL_SCANCODE_UP))
+	{
+		walkDir += glm::vec3(0.0f, 0.0f, -1.0f);
+	}
+	if (m_input->IsKeyHeld(SDL_SCANCODE_DOWN))
+	{
+		walkDir += glm::vec3(0.0f, 0.0f, 1.0f);
+	}
+	if (m_input->IsKeyHeld(SDL_SCANCODE_LEFT))
+	{
+		walkDir += glm::vec3(-1.0f, 0.0f, 0.0f);
+	}
+	if (m_input->IsKeyHeld(SDL_SCANCODE_RIGHT))
+	{
+		walkDir += glm::vec3(1.0f, 0.0f, 0.0f);
+	}
+
+	if (m_input->IsKeyPressed(SDL_SCANCODE_SPACE) && m_character->onGround())
+	{
+		m_character->jump(btVector3(0, 10, 0));
+	}
+	walkDir *= 0.1f; // todo dt
+	btVector3 btWalkDir(walkDir.x, walkDir.y, walkDir.z);
+	m_character->setWalkDirection(btWalkDir);
 }
 
 void Game::Update(float dt)

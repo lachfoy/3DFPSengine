@@ -56,4 +56,6 @@ private:
 
 	PhysicsWorld m_physicsWorld;
 
+	btKinematicCharacterController* m_character;
+
 };
