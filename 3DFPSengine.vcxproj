@@ -160,6 +160,7 @@
     <ClCompile Include="src\DebugRenderer.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\FirstPersonController.cpp" />
     <ClCompile Include="src\Font.cpp" />
     <ClCompile Include="src\Game.cpp" />
     <ClCompile Include="src\glad.c" />

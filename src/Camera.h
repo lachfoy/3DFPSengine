@@ -9,16 +9,16 @@ class Camera
 {
 friend class Renderer;
 public:
-	Camera() = default;
+	//Camera() = default;
 	Camera(glm::vec3 position, glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
 	~Camera() {}
 
 	glm::mat4 GetView() const { return glm::lookAt(m_position, m_position + m_front, m_worldUp); }
 
-	void HandleInput(Input* input);
-	void Update(float dt);
+	virtual void HandleInput(Input* input);
+	virtual void Update(float dt);
 
-private:
+protected:
 	void UpdateCameraVectors();
 	
 	glm::vec3 m_position;
@@ -29,7 +29,7 @@ private:
 	float m_pitch = 0.0f;
 	float m_speed = 6.00f; //6.0f;
 	float m_mouseSensitivity = 0.25f;
-	float m_fov = 45.0f;
+	float m_fov = 90.0f;
 	glm::vec3 m_front = glm::vec3(0.0f, 0.0f, -1.0f);
 
 	glm::vec3 m_moveDir;

@@ -16,6 +16,8 @@ class GuiRenderer;
 
 #include "PhysicsWorld.h"
 
+#include "FirstPersonController.h"
+
 class Game
 {
 public:
@@ -39,6 +41,7 @@ private:
 
 private:
 	void HandleInput();
+	void PhysicsUpdate(float dt);
 	void Update(float dt);
 	void Create(); // scene related
 	void Render(); // scene related
@@ -57,5 +60,7 @@ private:
 	PhysicsWorld m_physicsWorld;
 
 	btKinematicCharacterController* m_character;
+
+	FirstPersonController* m_fpsController;
 
 };

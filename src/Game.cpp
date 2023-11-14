@@ -178,8 +178,9 @@ void Game::Run()
 		float fps = 1.0f / averageFrameTime;
 
 		// update
-		Update(dt);
+		PhysicsUpdate(dt);
 		m_physicsWorld.stepSimulation(dt);
+		Update(dt);
 
 		std::string titleStr = "fps: " + std::to_string(fps);
 		SDL_SetWindowTitle(m_window, titleStr.c_str());
@@ -188,11 +189,11 @@ void Game::Run()
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		Render();
 		m_physicsWorld.DebugDraw();
-		m_renderer->Render(m_camera);
+		m_renderer->Render(m_fpsController);
 
 		if (DEBUG_DRAW)
 		{
-			gDebugRenderer.Render(m_camera);
+			gDebugRenderer.Render(m_fpsController);
 			gDebugRenderer.PostRenderUpdate(dt);
 		}
 
@@ -227,7 +228,9 @@ void Game::Create()
 {
 	gTextureManager.LoadTexture("cat", "data/images/round_cat.png");
 
-	m_character = m_physicsWorld.CreateCharacter();
+	//m_character = m_physicsWorld.CreateCharacter();
+	m_fpsController = new FirstPersonController(m_physicsWorld.CreateCharacter());
+
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
 	m_camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -275,8 +278,8 @@ void Game::HandleInput()
 {
 	//m_player->HandleInput(m_input);
 
-	m_camera->HandleInput(m_input);
-
+	//m_camera->HandleInput(m_input);
+	m_fpsController->HandleInput(m_input);
 	//PropogateInput(m_rootPanel, m_input);
 
 	if (m_input->IsKeyPressed(SDL_SCANCODE_Z))
@@ -285,38 +288,45 @@ void Game::HandleInput()
 		m_renderer->AddToRenderList(catCube);
 	}
 
-	glm::vec3 walkDir = glm::vec3(0.0f);
-	if (m_input->IsKeyHeld(SDL_SCANCODE_UP))
-	{
-		walkDir += glm::vec3(0.0f, 0.0f, -1.0f);
-	}
-	if (m_input->IsKeyHeld(SDL_SCANCODE_DOWN))
-	{
-		walkDir += glm::vec3(0.0f, 0.0f, 1.0f);
-	}
-	if (m_input->IsKeyHeld(SDL_SCANCODE_LEFT))
-	{
-		walkDir += glm::vec3(-1.0f, 0.0f, 0.0f);
-	}
-	if (m_input->IsKeyHeld(SDL_SCANCODE_RIGHT))
-	{
-		walkDir += glm::vec3(1.0f, 0.0f, 0.0f);
-	}
+	//glm::vec3 walkDir = glm::vec3(0.0f);
+	//if (m_input->IsKeyHeld(SDL_SCANCODE_UP))
+	//{
+	//	walkDir += glm::vec3(0.0f, 0.0f, -1.0f);
+	//}
+	//if (m_input->IsKeyHeld(SDL_SCANCODE_DOWN))
+	//{
+	//	walkDir += glm::vec3(0.0f, 0.0f, 1.0f);
+	//}
+	//if (m_input->IsKeyHeld(SDL_SCANCODE_LEFT))
+	//{
+	//	walkDir += glm::vec3(-1.0f, 0.0f, 0.0f);
+	//}
+	//if (m_input->IsKeyHeld(SDL_SCANCODE_RIGHT))
+	//{
+	//	walkDir += glm::vec3(1.0f, 0.0f, 0.0f);
+	//}
 
-	if (m_input->IsKeyPressed(SDL_SCANCODE_SPACE) && m_character->onGround())
-	{
-		m_character->jump(btVector3(0, 10, 0));
-	}
-	walkDir *= 0.1f; // todo dt
-	btVector3 btWalkDir(walkDir.x, walkDir.y, walkDir.z);
-	m_character->setWalkDirection(btWalkDir);
+	//if (m_input->IsKeyPressed(SDL_SCANCODE_SPACE) && m_character->onGround())
+	//{
+	//	m_character->jump(btVector3(0, 10, 0));
+	//}
+	//walkDir *= 0.1f; // todo dt
+	//btVector3 btWalkDir(walkDir.x, walkDir.y, walkDir.z);
+	//m_character->setWalkDirection(btWalkDir);
+}
+
+void Game::PhysicsUpdate(float dt)
+{
+	m_fpsController->PhysicsUpdate(dt);
 }
 
 void Game::Update(float dt)
 {
-	m_camera->Update(dt);
+	//m_camera->Update(dt);
 
 	m_player->OnUpdate(dt);
+
+	m_fpsController->Update(dt);
 }
 
 void Game::Render()

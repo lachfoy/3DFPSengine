@@ -21,7 +21,8 @@ void Renderer::Init()
 
 void Renderer::SetProjection(int screenWidth, int screenHeight)
 {
-	glm::mat4 projection = glm::perspective(glm::radians(45.0f), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, 100.0f);
+	// todo, actually get the projection from the camera
+	glm::mat4 projection = glm::perspective(glm::radians(90.0f), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, 100.0f);
 
 	glUseProgram(m_shaderProgram);
 	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "u_projection"), 1, false, glm::value_ptr(projection));
