@@ -82,8 +82,8 @@ bool Game::Init(int width, int height, bool fullscreen, const char* title)
 		m_windowWidth = displayMode.w;
 		m_windowHeight = displayMode.h;
 
-		//m_viewportWidth = m_windowWidth;
-		//m_viewportHeight = m_windowHeight;
+		m_viewportWidth = m_windowWidth;
+		m_viewportHeight = m_windowHeight;
 
 		windowFlags |= SDL_WINDOW_BORDERLESS;
 	}
@@ -156,6 +156,7 @@ void Game::Run()
 	while (running)
 	{
 		running = m_input->HandleEvents();
+		if (m_input->IsKeyPressed(SDL_SCANCODE_ESCAPE)) running = false;
 		HandleInput();
 		m_input->Update();
 

@@ -6,7 +6,7 @@ constexpr int kScreenHeight = 600;
 int main(int argc, char* argv[])
 {
 	Game game;
-	if (game.Init(kScreenWidth, kScreenHeight, false, "test"))
+	if (game.Init(kScreenWidth, kScreenHeight, true, "test"))
 		game.Run();
 
 	return 0;
