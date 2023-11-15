@@ -43,13 +43,7 @@ public:
 
 	void StepSimulation(float timeStep, int maxSubSteps = 10);
 
-	void addRigidBody(btRigidBody* body);
-	void removeRigidBody(btRigidBody* body);
-
-	btRigidBody* addBox(const glm::vec3& halfExtents, float mass, const glm::mat4& startTransform);
-
 	CatCube* AddCatCube(const glm::vec3& position);
-
 
 	btKinematicCharacterController* CreateCharacter();
 
@@ -57,15 +51,14 @@ public:
 
 private:
 	btDefaultCollisionConfiguration* m_collisionConfiguration;
-
 	btDiscreteDynamicsWorld* m_dynamicsWorld;
-
 	btBroadphaseInterface* m_broadphase;
-
 	btCollisionDispatcher* m_dispatcher; // can derive this to add events to collisions
-
 	btSequentialImpulseConstraintSolver* m_solver;
-	
 	BulletDebugDraw* m_debugDrawer;
+	std::vector<btCollisionObject*> m_collisionObjects;
+	std::vector<btActionInterface*> m_actions;
+	std::vector<btCollisionShape*> m_collisionShapes;
+	std::vector<btMotionState*> m_motionStates;
 
 };

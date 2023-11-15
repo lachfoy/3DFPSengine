@@ -1,6 +1,7 @@
 #include "PhysicsWorld.h"
 
 #include <glm/gtc/type_ptr.hpp>
+#include "Common.h"
 
 #include "TextureManager.h"
 #include "Mesh.h"
@@ -40,12 +41,13 @@ PhysicsWorld::PhysicsWorld()
 	m_debugDrawer = new BulletDebugDraw();
 	m_dynamicsWorld->setDebugDrawer(m_debugDrawer);
 
-	
 	/// create a ground plane
 	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 0);
+	m_collisionShapes.push_back(groundShape);
 
 	// Create a default motion state (position and rotation)
 	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
+	m_motionStates.push_back(groundMotionState);
 
 	// Create the rigid body construction info (mass = 0 => static body)
 	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
@@ -57,60 +59,64 @@ PhysicsWorld::PhysicsWorld()
 	int groundCollisionGroup = btBroadphaseProxy::StaticFilter;
 	int groundCollisionMask = btBroadphaseProxy::AllFilter;
 	m_dynamicsWorld->addRigidBody(groundRigidBody, groundCollisionGroup, groundCollisionMask);
+	m_collisionObjects.push_back(groundRigidBody);
 }
 
 PhysicsWorld::~PhysicsWorld()
 {
-	delete m_dynamicsWorld;
-	delete m_solver;
-	delete m_broadphase;
-	delete m_dispatcher;
-	delete m_collisionConfiguration;
-	delete m_debugDrawer;
+	printf("Cleaning up physics world\n");
+	printf("--------------------------------------------------------\n");
+	
+	printf("Deleting collision objects...\n");
+	for (btCollisionObject* collisionObject : m_collisionObjects)
+	{
+		m_dynamicsWorld->removeCollisionObject(collisionObject);
+		SAFE_DELETE(collisionObject);
+	}
+
+	printf("Deleting actions...\n");
+	for (btActionInterface* action : m_actions)
+	{
+		m_dynamicsWorld->removeAction(action);
+		SAFE_DELETE(action);
+	}
+
+	printf("Deleting collision shapes...\n");
+	for (btCollisionShape* collisionShape : m_collisionShapes)
+	{
+		SAFE_DELETE(collisionShape);
+	}
+
+	printf("Deleting motion states...\n");
+	for (btMotionState* motionState : m_motionStates)
+	{
+		SAFE_DELETE(motionState);
+	}
+
+	printf("Deleting dynamics world...\n");
+	SAFE_DELETE(m_dynamicsWorld);
+
+	printf("Deleting solver...\n");
+	SAFE_DELETE(m_solver);
+
+	printf("Deleting broadphase...\n");
+	SAFE_DELETE(m_broadphase);
+
+	printf("Deleting dispatcher...\n");
+	SAFE_DELETE(m_dispatcher);
+
+	printf("Deleting collision configuration...\n");
+	SAFE_DELETE(m_collisionConfiguration);
+
+	printf("Deleting debug drawer...\n");
+	SAFE_DELETE(m_debugDrawer);
+
+	printf("--------------------------------------------------------\n\n");
 }
 
 void PhysicsWorld::StepSimulation(float timeStep, int maxSubSteps)
 {
 	m_dynamicsWorld->stepSimulation(timeStep, maxSubSteps);
-}
-
-void PhysicsWorld::addRigidBody(btRigidBody* body)
-{
-	m_dynamicsWorld->addRigidBody(body);
-}
-
-void PhysicsWorld::removeRigidBody(btRigidBody* body)
-{
-	m_dynamicsWorld->removeRigidBody(body);
-}
-
-btRigidBody* PhysicsWorld::addBox(const glm::vec3& halfExtents, float mass, const glm::mat4& startTransform)
-{
-	btVector3 btHalfExtents(halfExtents.x, halfExtents.y, halfExtents.z);
-
-	// Create the box shape
-	btCollisionShape* boxShape = new btBoxShape(btHalfExtents);
-
-	// Calculate the local inertia
-	btVector3 localInertia(0, 0, 0);
-	if (mass != 0.f) {
-		boxShape->calculateLocalInertia(mass, localInertia);
-	}
-
-	btTransform btStartTransform;
-	btStartTransform.setFromOpenGLMatrix(glm::value_ptr(startTransform));
-
-	// Create the rigid body's construction info
-	btDefaultMotionState* motionState = new btDefaultMotionState(btStartTransform);
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, boxShape, localInertia);
-
-	// Create the rigid body
-	btRigidBody* body = new btRigidBody(rbInfo);
-
-	// Add the body to the dynamics world
-	m_dynamicsWorld->addRigidBody(body);
-
-	return body;
 }
 
 CatCube* PhysicsWorld::AddCatCube(const glm::vec3& position)
@@ -120,6 +126,7 @@ CatCube* PhysicsWorld::AddCatCube(const glm::vec3& position)
 
 	// Create the box shape
 	btCollisionShape* boxShape = new btBoxShape(btHalfExtents);
+	m_collisionShapes.push_back(boxShape);
 
 	// Calculate the local inertia
 	btVector3 localInertia(0, 0, 0);
@@ -129,7 +136,8 @@ CatCube* PhysicsWorld::AddCatCube(const glm::vec3& position)
 	}
 
 	CatCube* catCube = new CatCube(position);
-	
+	m_motionStates.push_back(catCube);
+
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, catCube, boxShape, localInertia);
 
 	// Create the rigid body
@@ -137,6 +145,7 @@ CatCube* PhysicsWorld::AddCatCube(const glm::vec3& position)
 
 	// Add the body to the dynamics world
 	m_dynamicsWorld->addRigidBody(body);
+	m_collisionObjects.push_back(body);
 
 	return catCube;
 }
@@ -147,6 +156,7 @@ btKinematicCharacterController* PhysicsWorld::CreateCharacter()
 	btScalar characterHeight = 1.8f;  // Height of the character
 	btScalar characterWidth = 0.5f;   // Width (radius) of the character
 	btConvexShape* capsule = new btCapsuleShape(characterWidth, characterHeight);
+	m_collisionShapes.push_back(capsule);
 
 	ghostObject->setCollisionShape(capsule);
 	ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
@@ -158,13 +168,14 @@ btKinematicCharacterController* PhysicsWorld::CreateCharacter()
 	btKinematicCharacterController* character = new btKinematicCharacterController(
 		ghostObject, capsule, stepHeight, btVector3(0.0f, 1.0f, 0.0f));
 
+	m_dynamicsWorld->addAction(character);
+	m_actions.push_back(character);
 	character->warp(btVector3(0.0f, 5.0f, 0.0f));
 
 	m_dynamicsWorld->addCollisionObject(ghostObject,
 		btBroadphaseProxy::CharacterFilter,
 		btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter);
-
-	m_dynamicsWorld->addAction(character);
+	m_collisionObjects.push_back(ghostObject);
 
 	return character;
 }
@@ -173,4 +184,3 @@ void PhysicsWorld::DebugDraw()
 {
 	m_dynamicsWorld->debugDrawWorld();
 }
-
