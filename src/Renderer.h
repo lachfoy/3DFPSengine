@@ -20,7 +20,7 @@ public:
 	~Renderer();
 
 	void Init();
-	void SetProjection(int screenWidth, int screenHeight);
+	void SetProjection(const glm::mat4& projection);
 
 	void AddToRenderList(IRenderable* renderable);
 	void Render(Camera* camera);

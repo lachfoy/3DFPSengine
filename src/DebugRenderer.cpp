@@ -20,11 +20,8 @@ void DebugRenderer::Init()
 	CreateRenderData();
 }
 
-void DebugRenderer::SetProjection(unsigned int screenWidth, unsigned int screenHeight)
+void DebugRenderer::SetProjection(const glm::mat4& projection)
 {
-	// todo actually get the projection from the camera
-	glm::mat4 projection = glm::perspective(glm::radians(90.0f), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), 0.1f, 100.0f);
-
 	glUseProgram(m_debugShaderProgram);
 	glUniformMatrix4fv(glGetUniformLocation(m_debugShaderProgram, "u_projection"), 1, false, glm::value_ptr(projection));
 }

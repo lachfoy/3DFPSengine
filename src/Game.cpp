@@ -21,7 +21,7 @@
  
 #define DEBUG_DRAW 1
 #define TARGET_FPS 60
-#define CAP_FRAMERATE 1
+#define CAP_FRAMERATE 0
 
 void RenderChildren(Panel* panel)
 {
@@ -62,10 +62,10 @@ bool PropogateInput(Panel* panel, Input* input)
 	return inputHandled;
 }
 
-bool Game::Init(int width, int height, bool fullscreen, const char* title)
+bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 {
-	m_windowWidth = width;
-	m_windowHeight = height;
+	m_windowWidth = windowedWidth;
+	m_windowHeight = windowedHeight;
 	m_viewportWidth = m_windowWidth / 2; // for now
 	m_viewportHeight = m_windowHeight / 2; // for now
 
@@ -90,7 +90,7 @@ bool Game::Init(int width, int height, bool fullscreen, const char* title)
 		windowFlags |= SDL_WINDOW_BORDERLESS;
 	}
 
-	m_window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_windowWidth, m_windowHeight, windowFlags);
+	m_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_windowWidth, m_windowHeight, windowFlags);
 	if (!m_window)
 	{
 		std::cerr << "An error occurred while creating an SDL2 window:" << SDL_GetError() << ".\n";
@@ -127,11 +127,9 @@ bool Game::Init(int width, int height, bool fullscreen, const char* title)
 	// Init systems
 	m_renderer = new Renderer();
 	m_renderer->Init();
-	m_renderer->SetProjection(m_viewportWidth, m_viewportHeight);
 
 	gDebugRenderer.Init();
-	gDebugRenderer.SetProjection(m_viewportWidth, m_viewportHeight);
-
+	
 	m_guiRenderer = new GuiRenderer();
 	m_guiRenderer->Init();
 	m_guiRenderer->SetProjection(m_viewportWidth, m_viewportHeight);
@@ -148,7 +146,7 @@ void Game::Run()
 {
 	Create();
 
-	Uint32 last_time = SDL_GetTicks();
+	Uint32 lastTime = SDL_GetTicks();
 	std::deque<float> frameTimes;
 	const size_t maxFrameSamples = 100;
 	float frameTimeAccumulator = 0.0f;
@@ -165,16 +163,16 @@ void Game::Run()
 		m_input->Update();
 
 		// calculate delta time
-		Uint32 current_time = SDL_GetTicks();
-		float dt = (current_time - last_time) / 1000.0f;
-		last_time = current_time;
+		Uint32 currentTime = SDL_GetTicks();
+		float dt = (currentTime - lastTime) / 1000.0f;
+		lastTime = currentTime;
 
 		if (CAP_FRAMERATE && dt < targetFrameTime) // cap FPS
 		{
-			SDL_Delay(static_cast<Uint32>((targetFrameTime - dt) * 1000.0f));
-			current_time = SDL_GetTicks();
-			dt = (current_time - last_time) / 1000.0f;
-			last_time = current_time;
+			SDL_Delay(static_cast<Uint32>((targetFrameTime - dt) * 1000.0f)); // I dont think this works very well
+			currentTime = SDL_GetTicks();
+			dt = (currentTime - lastTime) / 1000.0f;
+			lastTime = currentTime;
 		}
 
 		// maintain a fixed-size deque of frame times
@@ -243,6 +241,8 @@ void Game::Create()
 
 	//m_character = m_physicsWorld.CreateCharacter();
 	m_fpsController = new FirstPersonController(m_physicsWorld.CreateCharacter());
+	m_renderer->SetProjection(m_fpsController->GetProjection(m_viewportWidth, m_viewportHeight));
+	gDebugRenderer.SetProjection(m_fpsController->GetProjection(m_viewportWidth, m_viewportHeight));
 
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);

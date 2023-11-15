@@ -24,7 +24,7 @@ public:
 	~DebugRenderer() {}
 
 	void Init();
-	void SetProjection(unsigned int screenWidth, unsigned int screenHeight);
+	void SetProjection(const glm::mat4& projection);
 	void Dispose();
 
 	void AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float duration = -1.0f);

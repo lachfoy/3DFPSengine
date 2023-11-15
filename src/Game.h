@@ -22,7 +22,7 @@ class Game
 {
 public:
 	Game() {}
-	bool Init(int width, int height, bool fullscreen, const char* title);
+	bool Init(int windowedWidth, int windowedHeight, bool fullscreen);
 	void Run();
 
 private:

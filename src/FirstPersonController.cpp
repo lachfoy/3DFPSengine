@@ -16,8 +16,6 @@ FirstPersonController::FirstPersonController(btKinematicCharacterController* cha
 
 void FirstPersonController::HandleInput(Input* input)
 {
-	//Camera::HandleInput(input);
-
 	m_walkDirection = glm::vec3(0.0f);
 	if (input->IsKeyHeld(SDL_SCANCODE_W) || input->IsKeyHeld(SDL_SCANCODE_UP))
 	{
@@ -68,9 +66,6 @@ void FirstPersonController::PhysicsUpdate(float dt)
 
 void FirstPersonController::Update(float dt)
 {
-	//Camera::Update(dt);
-
-
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped
 	if (m_pitch > 89.0f)
 	{
@@ -84,19 +79,9 @@ void FirstPersonController::Update(float dt)
 
 	UpdateCameraVectors();
 
-
-
-	//std::string debugString;
-	//debugString += "pos:" + std::to_string(m_position.x) + ", " + std::to_string(m_position.y) + ", " + std::to_string(m_position.z) + "\n"; // position is camera position
-	//debugString += "pitch:" + std::to_string(m_pitch) + "\n";
-	//debugString += "yaw:" + std::to_string(m_yaw) + "\n";
-	//gTextRenderer.AddStringToBatch(debugString, 0, 0, glm::vec3(1.0f));
-	// 
 	// make the camera actually follow the character controller
 	btTransform btWorldTransform = m_characterController->getGhostObject()->getWorldTransform();
 	btVector3 origin = btWorldTransform.getOrigin();
-	//glm::mat4 worldTransform;
-	//btWorldTransform.getOpenGLMatrix(glm::value_ptr(worldTransform));
 
 	m_position = glm::vec3(origin.x(), origin.y() + 0.9f, origin.z());
 }
