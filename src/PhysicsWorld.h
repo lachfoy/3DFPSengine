@@ -41,7 +41,7 @@ public:
 	PhysicsWorld();
 	~PhysicsWorld();
 
-	void stepSimulation(float timeStep, int maxSubSteps = 10);
+	void StepSimulation(float timeStep, int maxSubSteps = 10);
 
 	void addRigidBody(btRigidBody* body);
 	void removeRigidBody(btRigidBody* body);
@@ -67,10 +67,5 @@ private:
 	btSequentialImpulseConstraintSolver* m_solver;
 	
 	BulletDebugDraw* m_debugDrawer;
-
-
-	//btKinematicCharacterController* m_character; // temp
-
-	std::vector<btCollisionShape*> m_collisionShapes;
 
 };

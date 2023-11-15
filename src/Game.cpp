@@ -19,7 +19,7 @@
 
 #include <deque>
 
-#define DEBUG_DRAW 1
+#define DEBUG_DRAW 0
 
 void RenderChildren(Panel* panel)
 {
@@ -84,7 +84,7 @@ bool Game::Init(int width, int height, bool fullscreen, const char* title)
 
 		m_viewportWidth = m_windowWidth;
 		m_viewportHeight = m_windowHeight;
-
+		 
 		windowFlags |= SDL_WINDOW_BORDERLESS;
 	}
 
@@ -180,7 +180,7 @@ void Game::Run()
 
 		// update
 		PhysicsUpdate(dt);
-		m_physicsWorld.stepSimulation(dt);
+		m_physicsWorld.StepSimulation(dt);
 		Update(dt);
 
 		std::string titleStr = "fps: " + std::to_string(fps);

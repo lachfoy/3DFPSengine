@@ -69,7 +69,7 @@ PhysicsWorld::~PhysicsWorld()
 	delete m_debugDrawer;
 }
 
-void PhysicsWorld::stepSimulation(float timeStep, int maxSubSteps)
+void PhysicsWorld::StepSimulation(float timeStep, int maxSubSteps)
 {
 	m_dynamicsWorld->stepSimulation(timeStep, maxSubSteps);
 }
