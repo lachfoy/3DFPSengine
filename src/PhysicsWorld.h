@@ -30,8 +30,11 @@ private:
 
 };
 
-class Character
+class Level : public IRenderable
 {
+public:
+	Level();
+	~Level() = default;
 
 };
 

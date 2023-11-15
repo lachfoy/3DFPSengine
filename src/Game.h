@@ -62,5 +62,6 @@ private:
 	btKinematicCharacterController* m_character;
 
 	FirstPersonController* m_fpsController;
+	Level* m_level;
 
 };

@@ -21,7 +21,7 @@ public:
 
 protected:
 	//glm::mat4 m_transform;
-	Mesh* m_mesh;
-	Texture* m_texture;
+	Mesh* m_mesh = nullptr;
+	Texture* m_texture = nullptr;
 
 };

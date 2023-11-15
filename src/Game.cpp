@@ -84,9 +84,9 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 		m_windowWidth = displayMode.w;
 		m_windowHeight = displayMode.h;
 
-		m_viewportWidth = m_windowWidth;
-		m_viewportHeight = m_windowHeight;
-		 
+		m_viewportWidth = m_windowWidth / 2;
+		m_viewportHeight = m_windowHeight / 2;
+
 		windowFlags |= SDL_WINDOW_BORDERLESS;
 	}
 
@@ -238,12 +238,15 @@ void Game::SetupGL()
 void Game::Create()
 {
 	gTextureManager.LoadTexture("cat", "data/images/round_cat.png");
+	gTextureManager.LoadTexture("missing", "data/images/missing.png");
 
 	//m_character = m_physicsWorld.CreateCharacter();
 	m_fpsController = new FirstPersonController(m_physicsWorld.CreateCharacter());
 	m_renderer->SetProjection(m_fpsController->GetProjection(m_viewportWidth, m_viewportHeight));
 	gDebugRenderer.SetProjection(m_fpsController->GetProjection(m_viewportWidth, m_viewportHeight));
 
+	m_level = new Level();
+	m_renderer->AddToRenderList(m_level);
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
 	m_camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f));

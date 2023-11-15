@@ -28,6 +28,16 @@ void CatCube::setWorldTransform(const btTransform& worldTrans)
 	m_transform = glm::make_mat4(mat);
 }
 
+Level::Level()
+{
+	m_mesh = new Mesh();
+	m_mesh->LoadFromFile("data/models/level.obj");
+
+	m_texture = gTextureManager.GetTexture("missing");
+
+	m_transform = glm::mat4(1.0f);
+}
+
 PhysicsWorld::PhysicsWorld()
 {
 	m_collisionConfiguration = new btDefaultCollisionConfiguration();
