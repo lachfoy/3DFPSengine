@@ -18,8 +18,10 @@
 #include "World.h"
 
 #include <deque>
-
-#define DEBUG_DRAW 0
+ 
+#define DEBUG_DRAW 1
+#define TARGET_FPS 60
+#define CAP_FRAMERATE 1
 
 void RenderChildren(Panel* panel)
 {
@@ -151,6 +153,8 @@ void Game::Run()
 	const size_t maxFrameSamples = 100;
 	float frameTimeAccumulator = 0.0f;
 
+	const float targetFrameTime = 1.0f / TARGET_FPS;
+
 	// main loop
 	bool running = true;
 	while (running)
@@ -164,6 +168,14 @@ void Game::Run()
 		Uint32 current_time = SDL_GetTicks();
 		float dt = (current_time - last_time) / 1000.0f;
 		last_time = current_time;
+
+		if (CAP_FRAMERATE && dt < targetFrameTime) // cap FPS
+		{
+			SDL_Delay(static_cast<Uint32>((targetFrameTime - dt) * 1000.0f));
+			current_time = SDL_GetTicks();
+			dt = (current_time - last_time) / 1000.0f;
+			last_time = current_time;
+		}
 
 		// maintain a fixed-size deque of frame times
 		frameTimeAccumulator += dt;
