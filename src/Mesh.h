@@ -4,6 +4,9 @@
 #include <glm/glm.hpp>
 
 #include <vector>
+#include <string>
+
+#include <bullet/btBulletDynamicsCommon.h>
 
 class Mesh
 {
@@ -11,7 +14,10 @@ public:
 	Mesh() = default;
 	~Mesh();
 
-	bool LoadFromFile(const char* filepath);
+	// todo split this out into an ObjLoader helper file
+	static Mesh* CreateMeshFromFile(std::string filepath);
+	//static btTriangleMesh* CreateCollisionMeshFromFile(std::string filepath);
+
 	void Draw() const;
 
 	int NumTriangles() const { return m_numTriangles; }

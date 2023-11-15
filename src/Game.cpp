@@ -248,6 +248,8 @@ void Game::Create()
 	m_level = new Level();
 	m_renderer->AddToRenderList(m_level);
 
+	//m_physicsWorld.CreateStaticLevelGeometry("data/models/level.obj");
+
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
 	m_camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f));
 

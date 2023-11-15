@@ -50,6 +50,9 @@ public:
 
 	btKinematicCharacterController* CreateCharacter();
 
+	void CreateStaticLevelGeometry(std::string pathToObj);
+
+
 	void DebugDraw();
 
 private:
@@ -59,9 +62,12 @@ private:
 	btCollisionDispatcher* m_dispatcher; // can derive this to add events to collisions
 	btSequentialImpulseConstraintSolver* m_solver;
 	BulletDebugDraw* m_debugDrawer;
+
 	std::vector<btCollisionObject*> m_collisionObjects;
 	std::vector<btActionInterface*> m_actions;
 	std::vector<btCollisionShape*> m_collisionShapes;
 	std::vector<btMotionState*> m_motionStates;
+
+	//btTriangleMesh* m_mesh; // see if this gets deleted
 
 };

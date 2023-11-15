@@ -8,8 +8,7 @@
 
 CatCube::CatCube(const glm::vec3& position)
 {
-	m_mesh = new Mesh();
-	m_mesh->LoadFromFile("data/models/cube.obj");
+	m_mesh = Mesh::CreateMeshFromFile("data/models/cube.obj");
 
 	m_texture = gTextureManager.GetTexture("cat");
 
@@ -30,8 +29,7 @@ void CatCube::setWorldTransform(const btTransform& worldTrans)
 
 Level::Level()
 {
-	m_mesh = new Mesh();
-	m_mesh->LoadFromFile("data/models/level.obj");
+	m_mesh = Mesh::CreateMeshFromFile("data/models/level.obj");
 
 	m_texture = gTextureManager.GetTexture("missing");
 
@@ -188,6 +186,31 @@ btKinematicCharacterController* PhysicsWorld::CreateCharacter()
 	m_collisionObjects.push_back(ghostObject);
 
 	return character;
+}
+
+void PhysicsWorld::CreateStaticLevelGeometry(std::string pathToObj)
+{
+	//btTriangleMesh* triangleMesh = Mesh::CreateCollisionMeshFromFile(pathToObj);
+	//m_mesh = triangleMesh; // see if this gets deleted
+
+	//bool useQuantizedAABBCompression = true;
+	//btBvhTriangleMeshShape* shape = new btBvhTriangleMeshShape(triangleMesh, useQuantizedAABBCompression);
+	//m_collisionShapes.push_back(shape);
+
+	//btTransform transform;
+	//transform.setIdentity();
+	//transform.setOrigin(btVector3(0, 0, 0)); // Position the mesh accordingly
+
+	//btScalar mass(0); // Mass of 0 for static objects
+	//btVector3 localInertia(0, 0, 0);
+	//btDefaultMotionState* motionState = new btDefaultMotionState(transform);
+	//m_motionStates.push_back(motionState);
+
+	//btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, localInertia);
+	//btRigidBody* body = new btRigidBody(rbInfo);
+
+	//m_dynamicsWorld->addRigidBody(body);
+	//m_collisionObjects.push_back(body);
 }
 
 void PhysicsWorld::DebugDraw()

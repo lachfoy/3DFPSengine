@@ -12,8 +12,7 @@
 
 Player::Player() : IRenderable()
 {
-	m_mesh = new Mesh();
-	m_mesh->LoadFromFile("data/models/cube.obj");
+	m_mesh = Mesh::CreateMeshFromFile("data/models/cube.obj");
 
 	m_texture = gTextureManager.GetTexture("cat");
 }
