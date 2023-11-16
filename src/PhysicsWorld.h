@@ -68,6 +68,6 @@ private:
 	std::vector<btCollisionShape*> m_collisionShapes;
 	std::vector<btMotionState*> m_motionStates;
 
-	//btTriangleMesh* m_mesh; // see if this gets deleted
+	btTriangleMesh* m_mesh; // see if this gets deleted
 
 };

@@ -189,8 +189,8 @@ void Game::Run()
 		float fps = 1.0f / averageFrameTime;
 
 		// update
-		PhysicsUpdate(dt);
-		m_physicsWorld.StepSimulation(dt);
+		PhysicsUpdate(1.0f / 50.0f);
+		m_physicsWorld.StepSimulation(1.0f/ 50.0f, 16);
 		Update(dt);
 
 		std::string titleStr = "fps: " + std::to_string(fps);
@@ -248,7 +248,7 @@ void Game::Create()
 	m_level = new Level();
 	m_renderer->AddToRenderList(m_level);
 
-	//m_physicsWorld.CreateStaticLevelGeometry("data/models/level.obj");
+	m_physicsWorld.CreateStaticLevelGeometry("data/models/level.obj");
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
 	m_camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f));

@@ -190,27 +190,27 @@ btKinematicCharacterController* PhysicsWorld::CreateCharacter()
 
 void PhysicsWorld::CreateStaticLevelGeometry(std::string pathToObj)
 {
-	//btTriangleMesh* triangleMesh = Mesh::CreateCollisionMeshFromFile(pathToObj);
-	//m_mesh = triangleMesh; // see if this gets deleted
+	btTriangleMesh* triangleMesh = Mesh::CreateCollisionMeshFromFile(pathToObj);
+	m_mesh = triangleMesh; // see if this gets deleted
 
-	//bool useQuantizedAABBCompression = true;
-	//btBvhTriangleMeshShape* shape = new btBvhTriangleMeshShape(triangleMesh, useQuantizedAABBCompression);
-	//m_collisionShapes.push_back(shape);
+	bool useQuantizedAABBCompression = true;
+	btBvhTriangleMeshShape* shape = new btBvhTriangleMeshShape(triangleMesh, useQuantizedAABBCompression);
+	m_collisionShapes.push_back(shape);
 
-	//btTransform transform;
-	//transform.setIdentity();
-	//transform.setOrigin(btVector3(0, 0, 0)); // Position the mesh accordingly
+	btTransform transform;
+	transform.setIdentity();
+	transform.setOrigin(btVector3(0, 0, 0)); // Position the mesh accordingly
 
-	//btScalar mass(0); // Mass of 0 for static objects
-	//btVector3 localInertia(0, 0, 0);
-	//btDefaultMotionState* motionState = new btDefaultMotionState(transform);
-	//m_motionStates.push_back(motionState);
+	btScalar mass(0); // Mass of 0 for static objects
+	btVector3 localInertia(0, 0, 0);
+	btDefaultMotionState* motionState = new btDefaultMotionState(transform);
+	m_motionStates.push_back(motionState);
 
-	//btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, localInertia);
-	//btRigidBody* body = new btRigidBody(rbInfo);
+	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, localInertia);
+	btRigidBody* body = new btRigidBody(rbInfo);
 
-	//m_dynamicsWorld->addRigidBody(body);
-	//m_collisionObjects.push_back(body);
+	m_dynamicsWorld->addRigidBody(body);
+	m_collisionObjects.push_back(body);
 }
 
 void PhysicsWorld::DebugDraw()

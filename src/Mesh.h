@@ -6,7 +6,7 @@
 #include <vector>
 #include <string>
 
-#include <bullet/btBulletDynamicsCommon.h>
+#include <btBulletDynamicsCommon.h>
 
 class Mesh
 {
@@ -16,7 +16,7 @@ public:
 
 	// todo split this out into an ObjLoader helper file
 	static Mesh* CreateMeshFromFile(std::string filepath);
-	//static btTriangleMesh* CreateCollisionMeshFromFile(std::string filepath);
+	static btTriangleMesh* CreateCollisionMeshFromFile(std::string filepath);
 
 	void Draw() const;
 

@@ -12,6 +12,4 @@
 #include <cassert>
 #define ASSERT(_Expression) assert(_Expression)
 
-#define lerp(norm, min, max) ( (norm) * ((max) - (min)) + (min) )
-
 #define SAFE_DELETE(p) { if(p) { delete (p); (p) = nullptr; } }

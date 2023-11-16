@@ -175,48 +175,47 @@ Mesh* Mesh::CreateMeshFromFile(std::string filepath)
 	return mesh;
 }
 
-//btTriangleMesh* Mesh::CreateCollisionMeshFromFile(std::string filepath)
-//{
-//	tinyobj::attrib_t attrib;
-//	std::vector<tinyobj::shape_t> shapes;
-//	std::vector<tinyobj::material_t> materials;
-//
-//	std::string err;
-//	bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, filepath.c_str());
-//
-//	if (!err.empty()) {
-//		std::cerr << err << std::endl;
-//	}
-//
-//	if (!ret) {
-//		printf("Could not load .obj file %s\n", filepath.c_str());
-//		return nullptr;
-//	}
-//
-//	//btTriangleMesh* mesh = new btTriangleMesh();
-//
-//	//for (size_t s = 0; s < shapes.size(); s++) {
-//	//	size_t index_offset = 0;
-//	//	for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
-//	//		int fv = shapes[s].mesh.num_face_vertices[f];
-//
-//	//		std::vector<btVector3> vertices;
-//	//		for (size_t v = 0; v < fv; v++) {
-//	//			tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
-//	//			tinyobj::real_t vx = attrib.vertices[3 * idx.vertex_index + 0];
-//	//			tinyobj::real_t vy = attrib.vertices[3 * idx.vertex_index + 1];
-//	//			tinyobj::real_t vz = attrib.vertices[3 * idx.vertex_index + 2];
-//	//			vertices.push_back(btVector3(vx, vy, vz));
-//	//		}
-//
-//	//		mesh->addTriangle(vertices[0], vertices[1], vertices[2]);
-//	//		index_offset += fv;
-//	//	}
-//	//}
-//
-//	//return mesh;
-//	return nullptr;
-//}
+btTriangleMesh* Mesh::CreateCollisionMeshFromFile(std::string filepath)
+{
+	tinyobj::attrib_t attrib;
+	std::vector<tinyobj::shape_t> shapes;
+	std::vector<tinyobj::material_t> materials;
+
+	std::string err;
+	bool ret = tinyobj::LoadObj(&attrib, &shapes, &materials, &err, filepath.c_str());
+
+	if (!err.empty()) {
+		std::cerr << err << std::endl;
+	}
+
+	if (!ret) {
+		printf("Could not load .obj file %s\n", filepath.c_str());
+		return nullptr;
+	}
+
+	btTriangleMesh* mesh = new btTriangleMesh();
+
+	for (size_t s = 0; s < shapes.size(); s++) {
+		size_t index_offset = 0;
+		for (size_t f = 0; f < shapes[s].mesh.num_face_vertices.size(); f++) {
+			int fv = shapes[s].mesh.num_face_vertices[f];
+
+			std::vector<btVector3> vertices;
+			for (size_t v = 0; v < fv; v++) {
+				tinyobj::index_t idx = shapes[s].mesh.indices[index_offset + v];
+				tinyobj::real_t vx = attrib.vertices[3 * idx.vertex_index + 0];
+				tinyobj::real_t vy = attrib.vertices[3 * idx.vertex_index + 1];
+				tinyobj::real_t vz = attrib.vertices[3 * idx.vertex_index + 2];
+				vertices.push_back(btVector3(vx, vy, vz));
+			}
+
+			mesh->addTriangle(vertices[0], vertices[1], vertices[2]);
+			index_offset += fv;
+		}
+	}
+
+	return mesh;
+}
 
 void Mesh::Draw() const
 {

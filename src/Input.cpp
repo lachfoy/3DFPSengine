@@ -23,7 +23,6 @@ Input::~Input()
 
 bool Input::HandleEvents()
 {
-	int a, b, c;
 	// handle input events
 	while (SDL_PollEvent(&m_event) != 0) {
 		switch(m_event.type) {
