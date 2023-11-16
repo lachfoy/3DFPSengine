@@ -141,6 +141,8 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 
 	m_input = new Input();
 
+	SDL_ShowCursor(SDL_DISABLE);
+
 	return true;
 }
 
@@ -163,6 +165,15 @@ void Game::Run()
 		if (m_input->IsKeyPressed(SDL_SCANCODE_ESCAPE)) running = false;
 		HandleInput();
 		m_input->Update();
+
+		// TODO This sort of thing could be handled in a window class with events SDL_WINDOWEVENT_FOCUS_GAINED and SDL_WINDOWEVENT_FOCUS_LOST instead
+		// so input shouldnt actually handle the event loop. a window class probably should instead
+		// BUT.... its fine for now
+		Uint32 windowFlags = SDL_GetWindowFlags(m_window);
+		if (windowFlags & SDL_WINDOW_INPUT_FOCUS)
+		{
+			SDL_WarpMouseInWindow(m_window, m_windowWidth / 2, m_windowHeight / 2);
+		}
 
 		// calculate delta time
 		Uint32 currentTime = SDL_GetTicks();
