@@ -201,7 +201,9 @@
     <ClInclude Include="src\PhysicsWorld.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Renderer.h" />
+    <ClInclude Include="src\Screenshot.h" />
     <ClInclude Include="src\stb_image.h" />
+    <ClInclude Include="src\stb_image_write.h" />
     <ClInclude Include="src\TextRenderer.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\TextureManager.h" />

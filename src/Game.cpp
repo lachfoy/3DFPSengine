@@ -17,11 +17,13 @@
 
 #include "World.h"
 
+#include "Screenshot.h"
+
 #include <deque>
  
-#define DEBUG_DRAW 1
-#define TARGET_FPS 60
-#define CAP_FRAMERATE 0
+#define DEBUG_DRAW 0
+#define TARGET_FPS 60 // broken dont use this
+#define CAP_FRAMERATE 0 // broken dont use this
 
 void RenderChildren(Panel* panel)
 {
@@ -304,6 +306,11 @@ void Game::HandleInput()
 	{
 		CatCube* catCube = m_physicsWorld.AddCatCube(glm::vec3(0, 5.0f, 0));
 		m_renderer->AddToRenderList(catCube);
+	}
+
+	if (m_input->IsKeyPressed(SDL_SCANCODE_0))
+	{
+		Screenshot::TakeScreenshot(m_windowWidth, m_windowHeight);
 	}
 
 	//glm::vec3 walkDir = glm::vec3(0.0f);
