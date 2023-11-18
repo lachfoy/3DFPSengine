@@ -14,6 +14,8 @@ class Panel;
 class Button;
 class GuiRenderer;
 
+#include "NavGraph.h"
+
 #include "PhysicsWorld.h"
 
 #include "FirstPersonController.h"
@@ -56,5 +58,7 @@ private:
 	FirstPersonController* m_fpsController;
 	
 	Level* m_level;
+
+	NavGraph m_navGraph;
 
 };

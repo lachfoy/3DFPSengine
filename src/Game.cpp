@@ -22,7 +22,7 @@
 
 #include <deque>
  
-#define DEBUG_DRAW 0
+#define DEBUG_DRAW 1
 #define TARGET_FPS 60 // broken dont use this
 #define CAP_FRAMERATE 0 // broken dont use this
 
@@ -230,6 +230,8 @@ void Game::Create()
 
 	m_player = new Player();
 	//m_renderer->AddToRenderList(m_player);
+
+	m_navGraph.Load("art/nav_graph.txt");
 }
 
 void Game::HandleInput()
@@ -268,6 +270,7 @@ void Game::Update(float dt)
 void Game::Render()
 {
 	//gTextRenderer.AddStringToBatch("Hello World!!", 0.0f, 0.0f, glm::vec3(1.0f));
+	m_navGraph.DebugDraw();
 }
 
 void Game::Destroy()
