@@ -14,4 +14,4 @@ TODO
 * (low priority) Basic particle system
 * Fix physics update, fixed update. need to do some research on this
 * (low priority) Remove bullet dynamics but keep the collision detection. Basically just create a kinematic character controller from scratch instead of relying on bullet.
-
+* Better lighting

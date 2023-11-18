@@ -10,7 +10,7 @@ class Camera
 friend class Renderer;
 public:
 	//Camera() = default;
-	Camera(glm::vec3 position, glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f));
+	Camera(const glm::vec3& position, const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f));
 	~Camera() {}
 
 	glm::mat4 GetView() const { return glm::lookAt(m_position, m_position + m_front, m_worldUp); }

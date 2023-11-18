@@ -7,7 +7,7 @@
 
 #include "TextRenderer.h"
 
-Camera::Camera(glm::vec3 position, glm::vec3 up)
+Camera::Camera(const glm::vec3& position, const glm::vec3& up)
 	: m_position(position), m_worldUp(up)
 {
 	UpdateCameraVectors();

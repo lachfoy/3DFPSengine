@@ -50,7 +50,7 @@ public:
 
 	btKinematicCharacterController* CreateCharacter();
 
-	void CreateStaticLevelGeometry(std::string pathToObj);
+	void CreateStaticLevelGeometry(const std::string& pathToObj);
 
 
 	void DebugDraw();

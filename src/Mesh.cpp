@@ -13,7 +13,7 @@ Mesh::~Mesh()
 	glDeleteBuffers(1, &m_vertexBufferId);
 }
 
-Mesh* Mesh::CreateMeshFromFile(std::string filepath)
+Mesh* Mesh::CreateMeshFromFile(const std::string& filepath)
 {
 	tinyobj::attrib_t inattrib;
 	std::vector<tinyobj::shape_t> inshapes;
@@ -175,7 +175,7 @@ Mesh* Mesh::CreateMeshFromFile(std::string filepath)
 	return mesh;
 }
 
-btTriangleMesh* Mesh::CreateCollisionMeshFromFile(std::string filepath)
+btTriangleMesh* Mesh::CreateCollisionMeshFromFile(const std::string& filepath)
 {
 	tinyobj::attrib_t attrib;
 	std::vector<tinyobj::shape_t> shapes;

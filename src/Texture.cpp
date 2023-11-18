@@ -5,7 +5,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-Texture::Texture(const char* path, bool useMipMaps)
+Texture::Texture(const std::string& path, bool useMipMaps)
 	: Texture()
 {
 	LoadFromFile(path, useMipMaps);
@@ -17,10 +17,10 @@ Texture::~Texture()
 	glDeleteTextures(1, &m_texture);
 }
 
-bool Texture::LoadFromFile(const char *path, bool useMipMaps)
+bool Texture::LoadFromFile(const std::string& path, bool useMipMaps)
 {
 	int width, height, numChannels;
-	unsigned char *data = stbi_load(path, &width, &height, &numChannels, 0);
+	unsigned char *data = stbi_load(path.c_str(), &width, &height, &numChannels, 0);
 	if (data == nullptr)
 	{
 		printf("Error loading texture %s: %s\n", path, stbi_failure_reason());

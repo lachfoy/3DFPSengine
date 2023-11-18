@@ -1,15 +1,16 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <string>
 
 class Texture
 {
 public:
 	Texture() = default;
-	Texture(const char* path, bool useMipMaps = false);
+	Texture(const std::string& path, bool useMipMaps = false);
 	~Texture();
 
-	bool LoadFromFile(const char* path, bool useMipMaps = false);
+	bool LoadFromFile(const std::string& path, bool useMipMaps = false);
 	void Bind() const;
 
 	static Texture* CreateUtilTexture();

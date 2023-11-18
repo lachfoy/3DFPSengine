@@ -188,7 +188,7 @@ btKinematicCharacterController* PhysicsWorld::CreateCharacter()
 	return character;
 }
 
-void PhysicsWorld::CreateStaticLevelGeometry(std::string pathToObj)
+void PhysicsWorld::CreateStaticLevelGeometry(const std::string& pathToObj)
 {
 	btTriangleMesh* triangleMesh = Mesh::CreateCollisionMeshFromFile(pathToObj);
 	m_mesh = triangleMesh; // see if this gets deleted

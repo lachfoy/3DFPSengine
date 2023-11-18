@@ -19,6 +19,8 @@ private:
 	btKinematicCharacterController* m_characterController;
 
 	glm::vec3 m_walkDirection;
-	float m_walkSpeed = 10.0f;
+	float m_walkSpeed = 6.0f;
+	float m_jumpAmount = 10.0f;
+	float m_cameraHeight = 0.9f;
 
 };

@@ -120,7 +120,7 @@ void Renderer::CreateShaderProgram()
 			uniform vec3 u_cameraLocalPos;
 
 			vec3 lightDir = vec3(0.5, 1.0, 0.5);
-			vec3 ambient = vec3(0.1, 0.1, 0.1);
+			vec3 ambient = vec3(0.3, 0.3, 0.3);
 
 			void main()
 			{

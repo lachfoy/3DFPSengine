@@ -173,6 +173,7 @@
     <ClCompile Include="src\Input.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\MeshManager.cpp" />
     <ClCompile Include="src\Panel.cpp" />
     <ClCompile Include="src\PhysicsWorld.cpp" />
     <ClCompile Include="src\Player.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\IRenderable.h" />
     <ClInclude Include="src\Mesh.h" />
+    <ClInclude Include="src\MeshManager.h" />
     <ClInclude Include="src\Panel.h" />
     <ClInclude Include="src\PhysicsWorld.h" />
     <ClInclude Include="src\Player.h" />

@@ -40,7 +40,7 @@ public:
 
 	short GetKerningAmount(unsigned int first, unsigned int second);
 
-	void Load(const char* path);
+	void Load(const std::string& path);
 
 private:
 	Texture* m_texture; // temp, when we do proper font rendering 

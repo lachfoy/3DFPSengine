@@ -19,7 +19,7 @@ short Font::GetKerningAmount(unsigned int first, unsigned int second)
 	return 0;
 }
 
-void Font::Load(const char* path)
+void Font::Load(const std::string& path)
 {
 	std::ifstream myfile(path, std::ios::binary | std::ios::ate);
 	if (!myfile.is_open()) {

@@ -40,7 +40,7 @@ void TextRenderer::Dispose()
 	glDeleteProgram(m_shaderProgram);
 }
 
-void TextRenderer::AddStringToBatch(std::string string, float x, float y, glm::vec3 color, float alpha)
+void TextRenderer::AddStringToBatch(const std::string& string, float x, float y, const glm::vec3& color, float alpha)
 {
 	// Initialize lastChar with an invalid character ID
 	unsigned int lastChar = UINT_MAX;  // Maximum value means no last character

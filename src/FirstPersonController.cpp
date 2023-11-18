@@ -36,7 +36,7 @@ void FirstPersonController::HandleInput(Input* input)
 
 	if (input->IsKeyPressed(SDL_SCANCODE_SPACE) && m_characterController->onGround())
 	{
-		m_characterController->jump(btVector3(0, 10, 0));
+		m_characterController->jump(btVector3(0.0f, m_jumpAmount, 0.0f));
 	}
 
 	// Mouse movement
@@ -83,5 +83,5 @@ void FirstPersonController::Update(float dt)
 	btTransform btWorldTransform = m_characterController->getGhostObject()->getWorldTransform();
 	btVector3 origin = btWorldTransform.getOrigin();
 
-	m_position = glm::vec3(origin.x(), origin.y() + 0.9f, origin.z());
+	m_position = glm::vec3(origin.x(), origin.y() + m_cameraHeight, origin.z());
 }

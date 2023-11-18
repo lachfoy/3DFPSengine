@@ -21,7 +21,7 @@ public:
 	void SetProjection(unsigned int screenWidth, unsigned int screenHeight);
 	void Dispose();
 
-	void AddStringToBatch(std::string string, float x, float y, glm::vec3 color, float alpha = 1.0f);
+	void AddStringToBatch(const std::string& string, float x, float y, const glm::vec3& color, float alpha = 1.0f);
 
 	void RenderQuads();
 
