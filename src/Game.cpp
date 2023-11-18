@@ -221,7 +221,7 @@ void Game::Create()
 	gDebugRenderer.SetProjection(m_fpsController->GetProjection(m_viewportWidth, m_viewportHeight));
 
 	m_level = new Level();
-	m_renderer->AddToRenderList(m_level);
+	//m_renderer->AddToRenderList(m_level);
 
 	m_physicsWorld.CreateStaticLevelGeometry("data/models/level.obj");
 

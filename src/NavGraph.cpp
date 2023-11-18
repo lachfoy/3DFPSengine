@@ -5,15 +5,14 @@
 #include <sstream>
 #include <iostream>
 
-#include <glm/glm.hpp>
 #include "DebugRenderer.h"
 
 void NavGraph::Load(const std::string& path)
 {
 	// Parse the nav graph file
 	// the format is:
-	// Vertex data starts with "# Vertices", then each line is read as "index x y z"
-	// Edge data starts with "# Edges", then each line is read as "to from"
+	// Vertex data starts with "# Vertices" then each line is read as "x y z", in order of its id
+	// Edge data starts with "# Edges" then each line is read as "to from" ids
 	std::ifstream file(path);
 	std::string line;
 
@@ -36,18 +35,21 @@ void NavGraph::Load(const std::string& path)
 		switch (parseMode)
 		{
 		case NavFileParseMode::PARSING_VERTICES:
-			Vertex v;
-			if (iss >> v.id >> v.x >> v.y >> v.z)
+			float x, y, z;
+			if (iss >> x >> y >> z)
 			{
-				m_vertices.push_back(v);
+				NavNode navNode;
+				navNode.pos = glm::vec3(x, y, z);
+				nodes.push_back(navNode);
 			}
-
 			break;
 		case NavFileParseMode::PARSING_EDGES:
-			Edge e;
-			if (iss >> e.from >> e.to)
+			int from, to;
+			if (iss >> from >> to)
 			{
-				m_edges.push_back(e);
+				// add an edge to the adjancency list
+				adjList[from].push_back(to);
+				adjList[to].push_back(from); // undirected graph
 			}
 			break;
 		default:
@@ -56,21 +58,22 @@ void NavGraph::Load(const std::string& path)
 	}
 }
 
+std::vector<glm::vec3> NavGraph::FindPath(const glm::vec3& start, const glm::vec3& goal)
+{
+
+	
+}
+
 void NavGraph::DebugDraw()
 {
-	for (const Edge& edge : m_edges)
+	for (const auto& it : adjList)
 	{
-		// Ensure the edge indices are valid
-		if (edge.from >= 0 && edge.from < m_vertices.size() &&
-			edge.to >= 0 && edge.to < m_vertices.size())
+		NavNode from = nodes[it.first];
+		for (int id : it.second)
 		{
-			const Vertex& fromVertex = m_vertices[edge.from];
-			const Vertex& toVertex = m_vertices[edge.to];
+			NavNode to = nodes[id];
 
-			glm::vec3 from(fromVertex.x, fromVertex.y, fromVertex.z);
-			glm::vec3 to(toVertex.x, toVertex.y, toVertex.z);
-
-			gDebugRenderer.AddLine(from, to, glm::vec3(0.0f, 1.0f, 1.0f));
+			gDebugRenderer.AddLine(from.pos, to.pos, glm::vec3(0.0f, 1.0f, 1.0f));
 		}
 	}
 }
