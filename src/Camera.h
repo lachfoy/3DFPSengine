@@ -23,6 +23,10 @@ public:
 	virtual void HandleInput(Input* input);
 	virtual void Update(float dt);
 
+	// very temp getters, delete these
+	const glm::vec3 GetPosition() const { return m_position; }
+	const glm::vec3 GetFront() const { return m_front; }
+
 protected:
 	void UpdateCameraVectors();
 	

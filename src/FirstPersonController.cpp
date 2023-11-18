@@ -59,9 +59,9 @@ void FirstPersonController::PhysicsUpdate(float dt)
 	btVector3 btWalkDirection(walkDirection.x, walkDirection.y, walkDirection.z);
 	m_characterController->setWalkDirection(btWalkDirection);
 
-	std::string debugString;
-	debugString += "walk dir:" + std::to_string(m_walkDirection.x) + ", " + std::to_string(m_walkDirection.y) + ", " + std::to_string(m_walkDirection.z) + "\n"; // position is camera position
-	gTextRenderer.AddStringToBatch(debugString, 0, 0, glm::vec3(1.0f));
+	//std::string debugString;
+	//debugString += "walk dir:" + std::to_string(m_walkDirection.x) + ", " + std::to_string(m_walkDirection.y) + ", " + std::to_string(m_walkDirection.z) + "\n"; // position is camera position
+	//gTextRenderer.AddStringToBatch(debugString, 0, 0, glm::vec3(1.0f));
 }
 
 void FirstPersonController::Update(float dt)
@@ -83,5 +83,9 @@ void FirstPersonController::Update(float dt)
 	btTransform btWorldTransform = m_characterController->getGhostObject()->getWorldTransform();
 	btVector3 origin = btWorldTransform.getOrigin();
 
-	m_position = glm::vec3(origin.x(), origin.y() + m_cameraHeight, origin.z());
+	m_position = glm::vec3(origin.x(), origin.y() + m_cameraYOffsetFromOrigin, origin.z());
+
+	std::string debugString;
+	debugString += "origin:" + std::to_string(origin.x()) + ", " + std::to_string(origin.y()) + ", " + std::to_string(origin.z()) + "\n"; // position is camera position
+	gTextRenderer.AddStringToBatch(debugString, 0, 0, glm::vec3(1.0f));
 }

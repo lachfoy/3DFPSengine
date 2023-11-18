@@ -5,6 +5,7 @@
 
 #include "TextureManager.h"
 #include "Mesh.h"
+#include "DebugRenderer.h"
 
 CatCube::CatCube(const glm::vec3& position)
 {
@@ -158,9 +159,10 @@ CatCube* PhysicsWorld::AddCatCube(const glm::vec3& position)
 	return catCube;
 }
 
-btKinematicCharacterController* PhysicsWorld::CreateCharacter()
+btKinematicCharacterController* PhysicsWorld::CreateCharacter(const glm::vec3& position)
 {
 	btPairCachingGhostObject* ghostObject = new btPairCachingGhostObject();
+
 	btScalar characterHeight = 1.8f;  // Height of the character
 	btScalar characterWidth = 0.5f;   // Width (radius) of the character
 	btConvexShape* capsule = new btCapsuleShape(characterWidth, characterHeight);
@@ -169,7 +171,9 @@ btKinematicCharacterController* PhysicsWorld::CreateCharacter()
 	ghostObject->setCollisionShape(capsule);
 	ghostObject->setCollisionFlags(btCollisionObject::CF_CHARACTER_OBJECT);
 	
-	m_broadphase->getOverlappingPairCache()->setInternalGhostPairCallback((new btGhostPairCallback()));
+	btGhostPairCallback* ghostPairCallback = new btGhostPairCallback();
+	m_ghostPairCallback = ghostPairCallback;
+	m_broadphase->getOverlappingPairCache()->setInternalGhostPairCallback(ghostPairCallback);
 
 	btScalar stepHeight = 0.35f;
 
@@ -178,12 +182,17 @@ btKinematicCharacterController* PhysicsWorld::CreateCharacter()
 
 	m_dynamicsWorld->addAction(character);
 	m_actions.push_back(character);
-	character->warp(btVector3(0.0f, 5.0f, 0.0f));
 
 	m_dynamicsWorld->addCollisionObject(ghostObject,
 		btBroadphaseProxy::CharacterFilter,
 		btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter);
 	m_collisionObjects.push_back(ghostObject);
+
+	btVector3 btPosition(position.x, position.y, position.z);
+	btTransform startTransform;
+	startTransform.setIdentity();
+	startTransform.setOrigin(btPosition);
+	ghostObject->setWorldTransform(startTransform);
 
 	return character;
 }
@@ -211,6 +220,30 @@ void PhysicsWorld::CreateStaticLevelGeometry(const std::string& pathToObj)
 
 	m_dynamicsWorld->addRigidBody(body);
 	m_collisionObjects.push_back(body);
+}
+
+bool PhysicsWorld::RayCast(const glm::vec3& from, const glm::vec3& direction)
+{
+	// Convert glm::vec3 to btVector3
+	btVector3 btFrom(from.x, from.y, from.z);
+
+	btVector3 btTo = btFrom + btVector3(direction.x, direction.y, direction.z) * 1000000.0f;
+
+	// Perform raycast
+	btCollisionWorld::ClosestRayResultCallback rayCallback(btFrom, btTo);
+	m_dynamicsWorld->rayTest(btFrom, btTo, rayCallback);
+
+	if (rayCallback.hasHit())
+	{
+		btVector3 btHit = rayCallback.m_hitPointWorld;
+		glm::vec3 hit = glm::vec3(btHit.x(), btHit.y(), btHit.z());
+		gDebugRenderer.AddLine(from, hit, glm::vec3(0.0f, 1.0f, 1.0f), 2.0f);
+
+		// Ray hit something
+		return true;
+	}
+
+	return false;
 }
 
 void PhysicsWorld::DebugDraw()

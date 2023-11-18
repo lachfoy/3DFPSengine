@@ -48,10 +48,12 @@ public:
 
 	CatCube* AddCatCube(const glm::vec3& position);
 
-	btKinematicCharacterController* CreateCharacter();
+	btKinematicCharacterController* CreateCharacter(const glm::vec3& position);
 
 	void CreateStaticLevelGeometry(const std::string& pathToObj);
 
+
+	bool RayCast(const glm::vec3& from, const glm::vec3& direction);
 
 	void DebugDraw();
 
@@ -69,5 +71,5 @@ private:
 	std::vector<btMotionState*> m_motionStates;
 
 	btTriangleMesh* m_mesh; // see if this gets deleted
-
+	btGhostPairCallback* m_ghostPairCallback; //see if this gets deleted
 };

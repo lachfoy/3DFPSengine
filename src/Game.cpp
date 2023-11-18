@@ -216,7 +216,7 @@ void Game::Create()
 	gTextureManager.LoadTexture("missing", "data/images/missing.png");
 
 	//m_character = m_physicsWorld.CreateCharacter();
-	m_fpsController = new FirstPersonController(m_physicsWorld.CreateCharacter());
+	m_fpsController = new FirstPersonController(m_physicsWorld.CreateCharacter(glm::vec3(0.0f, 5.0f, 0.0f)));
 	m_renderer->SetProjection(m_fpsController->GetProjection(m_viewportWidth, m_viewportHeight));
 	gDebugRenderer.SetProjection(m_fpsController->GetProjection(m_viewportWidth, m_viewportHeight));
 
@@ -245,6 +245,11 @@ void Game::HandleInput()
 	{
 		CatCube* catCube = m_physicsWorld.AddCatCube(glm::vec3(0, 5.0f, 0));
 		m_renderer->AddToRenderList(catCube);
+	}
+
+	if (m_input->IsMouseButtonPressed(SDL_BUTTON_LEFT))
+	{
+		m_physicsWorld.RayCast(m_fpsController->GetPosition(), m_fpsController->GetFront());
 	}
 
 	if (m_input->IsKeyPressed(SDL_SCANCODE_0))

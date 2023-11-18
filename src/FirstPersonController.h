@@ -21,6 +21,6 @@ private:
 	glm::vec3 m_walkDirection;
 	float m_walkSpeed = 6.0f;
 	float m_jumpAmount = 10.0f;
-	float m_cameraHeight = 0.9f;
+	float m_cameraYOffsetFromOrigin = 0.9f; // // this makes the total height of the camera 1.4
 
 };
