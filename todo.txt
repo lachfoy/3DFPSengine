@@ -1,0 +1,14 @@
+TODO
+* Add MeshManager, SoundManager classes. Could add a ResourceManager instead, or have ResourceManager keep an intstance of each other manager for organisation
+* Add sound to the game!!! (OpenALSoft, libsndfile)
+* Seperate OBJ loading into its own class so Collision Mesh loading can be seperated from renderable mesh loading
+* (low pri) Add Window class and move event loop into that, so there is more control over window events that arent necessarily input related (on focus)
+* Add configuration file for things like Windowed width and height, mouse sensitivity, field of view, music volume, sound effect volume...
+* Add XML loading for entities and levels
+* Create a blender script for exporting levels. Export an .OBJ of the level mesh and then export positions of entities etc. to structure an XML file
+* Actually set up a good entity system with enemies
+* (low priority) Animated sprites/billboard enemies
+* Enemy pathfinding. Probably do something where pathfinding nodes can be placed in blender and just do AStar 
+* (low priority) Decals for bullet holes
+* Raycast collision for attacking enemies , adding particles or bullet decals on walls
+* (low priority) Basic particle system
