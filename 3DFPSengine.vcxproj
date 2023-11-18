@@ -194,6 +194,7 @@
     <ClInclude Include="src\FirstPersonController.h" />
     <ClInclude Include="src\Font.h" />
     <ClInclude Include="src\Game.h" />
+    <ClInclude Include="src\GuiManager.h" />
     <ClInclude Include="src\Input.h" />
     <ClInclude Include="src\IRenderable.h" />
     <ClInclude Include="src\Mesh.h" />
@@ -201,7 +202,7 @@
     <ClInclude Include="src\PhysicsWorld.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Renderer.h" />
-    <ClInclude Include="src\Screenshot.h" />
+    <ClInclude Include="src\ScreenshotManager.h" />
     <ClInclude Include="src\stb_image.h" />
     <ClInclude Include="src\stb_image_write.h" />
     <ClInclude Include="src\TextRenderer.h" />
@@ -211,6 +212,9 @@
     <ClInclude Include="src\tiny_obj_loader.h" />
     <ClInclude Include="src\UIVertex.h" />
     <ClInclude Include="src\World.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="todo.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -9,7 +9,7 @@ class FirstPersonController : public Camera
 {
 public:
 	FirstPersonController(btKinematicCharacterController* characterController);
-	~FirstPersonController();
+	~FirstPersonController() = default;
 
 	void HandleInput(Input* input);
 	void PhysicsUpdate(float dt);

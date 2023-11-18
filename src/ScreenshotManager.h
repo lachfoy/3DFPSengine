@@ -9,11 +9,11 @@
 #define STB_IMAGE_WRITE_IMPLEMENTATION
 #include "stb_image_write.h"
 
-class Screenshot
+class ScreenshotManager
 {
 public:
-	Screenshot() {}
-	~Screenshot() {}
+	ScreenshotManager() {}
+	~ScreenshotManager() {}
 
 	static void TakeScreenshot(int width, int height)
 	{
@@ -55,6 +55,6 @@ private:
 
 };
 
-const std::string Screenshot::s_directoryPath = "./screenshots";
-const std::string Screenshot::s_baseName = "screenshot_";
-const std::string Screenshot::s_extension = ".png";
+const std::string ScreenshotManager::s_directoryPath = "./screenshots";
+const std::string ScreenshotManager::s_baseName = "screenshot_";
+const std::string ScreenshotManager::s_extension = ".png";

@@ -51,12 +51,6 @@ private:
 
 	Camera* m_camera;
 
-	Panel* m_rootPanel;
-	Panel* m_testPanel;
-	Button* m_button1;
-	Button* m_button2;
-	Button* m_button3;
-
 	PhysicsWorld m_physicsWorld;
 
 	FirstPersonController* m_fpsController;

@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include "Common.h"
 #include "Renderer.h"
 #include "DebugRenderer.h"
 #include "Input.h"
@@ -17,52 +18,13 @@
 
 #include "World.h"
 
-#include "Screenshot.h"
+#include "ScreenshotManager.h"
 
 #include <deque>
  
 #define DEBUG_DRAW 0
 #define TARGET_FPS 60 // broken dont use this
 #define CAP_FRAMERATE 0 // broken dont use this
-
-void RenderChildren(Panel* panel)
-{
-	if (panel)
-	{
-		//printf("Rendering %s...\n", panel->GetName());
-		
-		panel->Render();
-
-		for (Panel* child : panel->GetChildren())
-		{
-			RenderChildren(child);
-		}
-	}
-}
-
-bool PropogateInput(Panel* panel, Input* input)
-{
-	bool inputHandled = false;
-
-	if (panel)
-	{
-		if (panel->HandleInput(input))
-		{
-			inputHandled = true;
-		}
-
-		for (Panel* child : panel->GetChildren())
-		{
-			if (PropogateInput(child, input))
-			{
-				inputHandled = true;
-				break;
-			}
-		}
-	}
-
-	return inputHandled;
-}
 
 bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 {
@@ -152,7 +114,7 @@ void Game::Run()
 
 	Uint32 lastTime = SDL_GetTicks();
 	std::deque<float> frameTimes;
-	const size_t maxFrameSamples = 100;
+	const size_t maxFrameSamples = 10;
 	float frameTimeAccumulator = 0.0f;
 
 	const float targetFrameTime = 1.0f / TARGET_FPS;
@@ -268,41 +230,6 @@ void Game::Create()
 
 	m_player = new Player();
 	//m_renderer->AddToRenderList(m_player);
-
-	// GUI test stuff
-	m_rootPanel = new Panel("Root", m_guiRenderer, glm::vec2(0, 0), glm::vec2(m_viewportWidth, m_viewportHeight));
-	m_rootPanel->SetAlpha(0.0f);
-
-	m_testPanel = new Panel("Panel", m_guiRenderer, glm::vec2(0, 0), glm::vec2(150, 170));
-	m_rootPanel->AddChild(m_testPanel);
-	m_testPanel->SetColor(glm::vec3(0.4, 0.4, 0.4));
-	m_testPanel->CenterX();
-	m_testPanel->CenterY();
-
-	m_button1 = new Button("Button1", m_guiRenderer);
-	m_testPanel->AddChild(m_button1);
-	m_button1->SetPosition(glm::vec2(25, 20));
-	m_button1->SetSize(glm::vec2(100, 30));
-	m_button1->AddCallback([]()
-		{
-			printf("Button1 callback!\n");
-		});
-
-
-	m_button2 = new Button("Button2", m_guiRenderer);
-	m_testPanel->AddChild(m_button2);
-	m_button2->SetPosition(glm::vec2(25, 70));
-	m_button2->SetSize(glm::vec2(100, 30));
-	m_button2->AddCallback([]()
-		{
-			printf("Button2 callback!\n");
-		});
-
-	m_button3 = new Button("Button3", m_guiRenderer);
-	m_testPanel->AddChild(m_button3);
-	m_button3->SetPosition(glm::vec2(25, 120));
-	m_button3->SetSize(glm::vec2(100, 30));
-	m_button3->SetEnabled(false);
 }
 
 void Game::HandleInput()
@@ -311,7 +238,6 @@ void Game::HandleInput()
 
 	//m_camera->HandleInput(m_input);
 	m_fpsController->HandleInput(m_input);
-	//PropogateInput(m_rootPanel, m_input);
 
 	if (m_input->IsKeyPressed(SDL_SCANCODE_Z))
 	{
@@ -321,34 +247,8 @@ void Game::HandleInput()
 
 	if (m_input->IsKeyPressed(SDL_SCANCODE_0))
 	{
-		Screenshot::TakeScreenshot(m_windowWidth, m_windowHeight);
+		ScreenshotManager::TakeScreenshot(m_windowWidth, m_windowHeight);
 	}
-
-	//glm::vec3 walkDir = glm::vec3(0.0f);
-	//if (m_input->IsKeyHeld(SDL_SCANCODE_UP))
-	//{
-	//	walkDir += glm::vec3(0.0f, 0.0f, -1.0f);
-	//}
-	//if (m_input->IsKeyHeld(SDL_SCANCODE_DOWN))
-	//{
-	//	walkDir += glm::vec3(0.0f, 0.0f, 1.0f);
-	//}
-	//if (m_input->IsKeyHeld(SDL_SCANCODE_LEFT))
-	//{
-	//	walkDir += glm::vec3(-1.0f, 0.0f, 0.0f);
-	//}
-	//if (m_input->IsKeyHeld(SDL_SCANCODE_RIGHT))
-	//{
-	//	walkDir += glm::vec3(1.0f, 0.0f, 0.0f);
-	//}
-
-	//if (m_input->IsKeyPressed(SDL_SCANCODE_SPACE) && m_character->onGround())
-	//{
-	//	m_character->jump(btVector3(0, 10, 0));
-	//}
-	//walkDir *= 0.1f; // todo dt
-	//btVector3 btWalkDir(walkDir.x, walkDir.y, walkDir.z);
-	//m_character->setWalkDirection(btWalkDir);
 }
 
 void Game::PhysicsUpdate(float dt)
@@ -367,38 +267,26 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
-
-
-	//RenderChildren(m_rootPanel);
-
 	//gTextRenderer.AddStringToBatch("Hello World!!", 0.0f, 0.0f, glm::vec3(1.0f));
 }
 
 void Game::Destroy()
 {
+	SAFE_DELETE(m_player);
+	SAFE_DELETE(m_camera);
 
-
-	//delete m_player;
-	//m_player = nullptr;
-
-	delete m_rootPanel;
-	delete m_testPanel;
-	delete m_button1;
-	delete m_button2;
-	delete m_button3;
+	SAFE_DELETE(m_fpsController);
+	SAFE_DELETE(m_level);
 }
 
 void Game::Cleanup()
 {
-	delete m_renderer;
-	m_renderer = nullptr;
+	SAFE_DELETE(m_renderer);
 
 	m_guiRenderer->Dispose();
-	delete m_guiRenderer;
-	m_guiRenderer = nullptr;
+	SAFE_DELETE(m_guiRenderer);
 	
-	delete m_input;
-	m_input = nullptr;
+	SAFE_DELETE(m_input);
 
 	gTextureManager.UnloadResources();
 
