@@ -21,13 +21,15 @@
 #include "ScreenshotManager.h"
 
 #include <deque>
- 
+
+
 #define DEBUG_DRAW 1
 #define TARGET_FPS 60 // broken dont use this
 #define CAP_FRAMERATE 0 // broken dont use this
 
 bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 {
+	srand(time(NULL));
 	m_windowWidth = windowedWidth;
 	m_windowHeight = windowedHeight;
 	m_viewportWidth = m_windowWidth / 2; // for now
@@ -223,7 +225,7 @@ void Game::Create()
 	m_level = new Level();
 	//m_renderer->AddToRenderList(m_level);
 
-	m_physicsWorld.CreateStaticLevelGeometry("data/models/level.obj");
+	//m_physicsWorld.CreateStaticLevelGeometry("data/models/level.obj");
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
 	m_camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -256,6 +258,11 @@ void Game::HandleInput()
 	{
 		ScreenshotManager::TakeScreenshot(m_windowWidth, m_windowHeight);
 	}
+
+	if (m_input->IsKeyPressed(SDL_SCANCODE_N))
+	{
+		m_navGraph.DebugDrawPath(m_navGraph.RandomPath());
+	}
 }
 
 void Game::PhysicsUpdate(float dt)
@@ -270,12 +277,18 @@ void Game::Update(float dt)
 	m_player->OnUpdate(dt);
 
 	m_fpsController->Update(dt);
+
+
 }
 
 void Game::Render()
 {
 	//gTextRenderer.AddStringToBatch("Hello World!!", 0.0f, 0.0f, glm::vec3(1.0f));
 	m_navGraph.DebugDraw();
+
+	m_navGraph.DebugDrawPath(
+		m_navGraph.FindPath(m_navGraph.GetRandomStartNode(), m_navGraph.NodeClosestTo(m_fpsController->GetPosition()))
+	);
 }
 
 void Game::Destroy()
