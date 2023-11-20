@@ -37,7 +37,7 @@ with open(export_path, 'w') as f:
     f.write("# Vertices\n")
     for idx, vertex in enumerate(vertices):
         # Swap from blender to OpenGL coordinates here as well
-        f.write(f"{idx} {vertex.x} {vertex.z} {-vertex.y}\n")
+        f.write(f"{vertex.x} {vertex.z} {-vertex.y}\n")
 
     # Write edges
     f.write("\n# Edges\n")
