@@ -12,7 +12,7 @@
 
 DebugRenderer gDebugRenderer;
 
-static const unsigned int kMaxLines = 1000;
+static const unsigned int kMaxLines = 10000;
 
 void DebugRenderer::Init()
 {
@@ -44,6 +44,36 @@ void DebugRenderer::AddLine(const glm::vec3& from, const glm::vec3& to, const gl
 	m_lines.push_back(line);
 }
 
+void DebugRenderer::AddSphere(const glm::vec3& center, float radius, const glm::vec3& color, float duration)
+{
+	int latitudeLines = 8;//  # Number of lines along the latitude.Increase for higher detail.
+	int longitudeLines = 8;//  # Number of lines along the longitude.Increase for higher detail.
+
+	for (int i = 0; i < latitudeLines; i++)
+	{
+		float lat1 = PI * (-0.5 + float(i) / latitudeLines);
+		float lat2 = PI * (-0.5 + float(i + 1) / latitudeLines);
+
+		for (int j = 0; j < longitudeLines; j++)
+		{
+			float long1 = 2 * PI * float(j) / longitudeLines;
+			float long2 = 2 * PI * float(j + 1) / longitudeLines;
+
+			//# Calculate the four vertices of the current segment
+			glm::vec3 vertex1 = center + radius * glm::vec3(cos(lat1) * cos(long1), cos(lat1) * sin(long1), sin(lat1));
+			glm::vec3 vertex2 = center + radius * glm::vec3(cos(lat2) * cos(long1), cos(lat2) * sin(long1), sin(lat2));
+			glm::vec3 vertex3 = center + radius * glm::vec3(cos(lat1) * cos(long2), cos(lat1) * sin(long2), sin(lat1));
+			glm::vec3 vertex4 = center + radius * glm::vec3(cos(lat2) * cos(long2), cos(lat2) * sin(long2), sin(lat2));
+
+			//# Draw lines between these vertices
+			AddLine(vertex1, vertex2, color, duration);
+			AddLine(vertex1, vertex3, color, duration);
+			AddLine(vertex2, vertex4, color, duration);
+			AddLine(vertex3, vertex4, color, duration);
+		}
+	}
+}
+
 void DebugRenderer::Render(Camera* camera)
 {
 	glUseProgram(m_debugShaderProgram);
@@ -66,6 +96,7 @@ void DebugRenderer::Render(Camera* camera)
 		glUniform3fv(m_colorUniformLocation, 1, glm::value_ptr(m_lines[i].color));
 
 		// Render the line
+		// todo.... batch these
 		glDrawArrays(GL_LINES, i * 2, 2);
 	}
 

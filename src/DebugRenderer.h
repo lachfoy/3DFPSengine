@@ -29,6 +29,8 @@ public:
 
 	void AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float duration = -1.0f);
 
+	void AddSphere(const glm::vec3& center, float radius, const glm::vec3& color, float duration = -1.0f);
+
 	void Render(Camera* camera);
 	void PostRenderUpdate(float dt);
 

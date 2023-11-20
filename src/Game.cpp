@@ -233,7 +233,7 @@ void Game::Create()
 	m_player = new Player();
 	//m_renderer->AddToRenderList(m_player);
 
-	m_navGraph.Load("art/nav_graph.txt");
+	m_navGrid.Generate(&m_physicsWorld);
 }
 
 void Game::HandleInput()
@@ -261,7 +261,7 @@ void Game::HandleInput()
 
 	if (m_input->IsKeyPressed(SDL_SCANCODE_N))
 	{
-		m_navGraph.DebugDrawPath(m_navGraph.RandomPath());
+		//m_navGrid.DebugDrawPath(m_navGrid.RandomPath());
 	}
 }
 
@@ -284,11 +284,11 @@ void Game::Update(float dt)
 void Game::Render()
 {
 	//gTextRenderer.AddStringToBatch("Hello World!!", 0.0f, 0.0f, glm::vec3(1.0f));
-	m_navGraph.DebugDraw();
+	//m_navGrid.DebugDraw();
 
-	m_navGraph.DebugDrawPath(
-		m_navGraph.FindPath(m_navGraph.GetRandomStartNode(), m_navGraph.NodeClosestTo(m_fpsController->GetPosition()))
-	);
+	//m_navGrid.DebugDrawPath(
+	//	m_navGrid.FindPath(m_navGrid.GetRandomStartNode(), m_navGrid.NodeClosestTo(m_fpsController->GetPosition()))
+	//);
 }
 
 void Game::Destroy()

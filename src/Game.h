@@ -14,7 +14,7 @@ class Panel;
 class Button;
 class GuiRenderer;
 
-#include "NavGraph.h"
+#include "NavGrid.h"
 
 #include "PhysicsWorld.h"
 
@@ -59,6 +59,6 @@ private:
 	
 	Level* m_level;
 
-	NavGraph m_navGraph;
+	NavGrid m_navGrid;
 
 };
