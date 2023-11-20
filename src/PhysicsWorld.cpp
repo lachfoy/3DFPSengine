@@ -121,6 +121,10 @@ PhysicsWorld::~PhysicsWorld()
 	SAFE_DELETE(m_debugDrawer);
 
 	printf("--------------------------------------------------------\n\n");
+
+
+	SAFE_DELETE(m_mesh);
+	SAFE_DELETE(m_ghostPairCallback);
 }
 
 void PhysicsWorld::StepSimulation(float timeStep, int maxSubSteps)
@@ -150,7 +154,7 @@ CatCube* PhysicsWorld::AddCatCube(const glm::vec3& position)
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, catCube, boxShape, localInertia);
 
 	// Create the rigid body
-	btRigidBody* body = new btRigidBody(rbInfo); // I have no idea if dynamics world handles this memory
+	btRigidBody* body = new btRigidBody(rbInfo);
 
 	// Add the body to the dynamics world
 	m_dynamicsWorld->addRigidBody(body);
@@ -200,7 +204,7 @@ btKinematicCharacterController* PhysicsWorld::CreateCharacter(const glm::vec3& p
 void PhysicsWorld::CreateStaticLevelGeometry(const std::string& pathToObj)
 {
 	btTriangleMesh* triangleMesh = Mesh::CreateCollisionMeshFromFile(pathToObj);
-	m_mesh = triangleMesh; // see if this gets deleted
+	m_mesh = triangleMesh; // store reference so it can be deleted
 
 	bool useQuantizedAABBCompression = true;
 	btBvhTriangleMeshShape* shape = new btBvhTriangleMeshShape(triangleMesh, useQuantizedAABBCompression);
@@ -220,6 +224,7 @@ void PhysicsWorld::CreateStaticLevelGeometry(const std::string& pathToObj)
 
 	m_dynamicsWorld->addRigidBody(body);
 	m_collisionObjects.push_back(body);
+	m_levelCollisionObject = body; // Save a reference to the body
 }
 
 bool PhysicsWorld::RayCast(const glm::vec3& from, const glm::vec3& direction)
@@ -237,13 +242,35 @@ bool PhysicsWorld::RayCast(const glm::vec3& from, const glm::vec3& direction)
 	{
 		btVector3 btHit = rayCallback.m_hitPointWorld;
 		glm::vec3 hit = glm::vec3(btHit.x(), btHit.y(), btHit.z());
+
 		gDebugRenderer.AddLine(from, hit, glm::vec3(0.0f, 1.0f, 1.0f), 2.0f);
+		gDebugRenderer.AddBox(hit, glm::vec3(0.1f), glm::vec3(0.0f, 1.0f, 1.0f), 2.0f);
 
 		// Ray hit something
 		return true;
 	}
 
 	return false;
+}
+
+bool PhysicsWorld::ExpensiveAABBTestVsLevelGeometry(const glm::vec3& position, const glm::vec3& halfExtents)
+{
+	btTransform worldTransform;
+	worldTransform.setIdentity();
+	btVector3 btOrigin = btVector3(position.x, position.y, position.z);
+	worldTransform.setOrigin(btOrigin);
+
+	btVector3 btHalfExtents = btVector3(halfExtents.x, halfExtents.y, halfExtents.z);
+	btBoxShape aabbShape(btHalfExtents);
+
+	btCollisionObject aabbObject;
+	aabbObject.setCollisionShape(&aabbShape);
+	aabbObject.setWorldTransform(worldTransform);
+
+	MyContactCallback callback;
+	m_dynamicsWorld->contactPairTest(&aabbObject, m_levelCollisionObject, callback);
+
+	return callback.m_collisionDetected;
 }
 
 void PhysicsWorld::DebugDraw()

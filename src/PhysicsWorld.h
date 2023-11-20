@@ -38,6 +38,22 @@ public:
 
 };
 
+// Setup a collision detection callback
+struct MyContactCallback : public btCollisionWorld::ContactResultCallback
+{
+	bool m_collisionDetected;
+
+	MyContactCallback() : m_collisionDetected(false) {}
+
+	btScalar addSingleResult(btManifoldPoint& cp,
+		const btCollisionObjectWrapper* colObj0, int partId0, int index0,
+		const btCollisionObjectWrapper* colObj1, int partId1, int index1) override
+	{
+		m_collisionDetected = true;
+		return 0; // Return 0 to ignore this collision pair in the future
+	}
+};
+
 class PhysicsWorld
 {
 public:
@@ -52,8 +68,9 @@ public:
 
 	void CreateStaticLevelGeometry(const std::string& pathToObj);
 
-
 	bool RayCast(const glm::vec3& from, const glm::vec3& direction);
+
+	bool ExpensiveAABBTestVsLevelGeometry(const glm::vec3& position, const glm::vec3& halfExtents);
 
 	void DebugDraw();
 
@@ -70,6 +87,9 @@ private:
 	std::vector<btCollisionShape*> m_collisionShapes;
 	std::vector<btMotionState*> m_motionStates;
 
-	btTriangleMesh* m_mesh; // see if this gets deleted
-	btGhostPairCallback* m_ghostPairCallback; //see if this gets deleted
+	btTriangleMesh* m_mesh; // see if this gets deleted (it doesnt..)
+	btGhostPairCallback* m_ghostPairCallback; //see if this gets deleted (it doesnt..)
+
+	btRigidBody* m_levelCollisionObject; // added to m_collisionObjects, so no need to delete
+
 };

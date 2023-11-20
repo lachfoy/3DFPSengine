@@ -46,6 +46,8 @@ void DebugRenderer::AddLine(const glm::vec3& from, const glm::vec3& to, const gl
 
 void DebugRenderer::AddSphere(const glm::vec3& center, float radius, const glm::vec3& color, float duration)
 {
+	ASSERT(false && "Don't use this its broken for some reason");
+
 	int latitudeLines = 8;//  # Number of lines along the latitude.Increase for higher detail.
 	int longitudeLines = 8;//  # Number of lines along the longitude.Increase for higher detail.
 
@@ -72,6 +74,36 @@ void DebugRenderer::AddSphere(const glm::vec3& center, float radius, const glm::
 			AddLine(vertex3, vertex4, color, duration);
 		}
 	}
+}
+
+void DebugRenderer::AddBox(const glm::vec3& center, const glm::vec3& halfExtents, const glm::vec3& color, float duration)
+{
+	// Calculate the vertices of the box
+	glm::vec3 vertices[8];
+	for (int i = 0; i < 8; ++i)
+	{
+		vertices[i].x = center.x + halfExtents.x * ((i & 1) ? 1 : -1);
+		vertices[i].y = center.y + halfExtents.y * ((i & 2) ? 1 : -1);
+		vertices[i].z = center.z + halfExtents.z * ((i & 4) ? 1 : -1);
+	}
+
+	// Lines along the x-axis
+	AddLine(vertices[0], vertices[1], color, duration);
+	AddLine(vertices[2], vertices[3], color, duration);
+	AddLine(vertices[4], vertices[5], color, duration);
+	AddLine(vertices[6], vertices[7], color, duration);
+
+	// Lines along the y-axis
+	AddLine(vertices[0], vertices[2], color, duration);
+	AddLine(vertices[1], vertices[3], color, duration);
+	AddLine(vertices[4], vertices[6], color, duration);
+	AddLine(vertices[5], vertices[7], color, duration);
+
+	// Lines along the z-axis
+	AddLine(vertices[0], vertices[4], color, duration);
+	AddLine(vertices[1], vertices[5], color, duration);
+	AddLine(vertices[2], vertices[6], color, duration);
+	AddLine(vertices[3], vertices[7], color, duration);
 }
 
 void DebugRenderer::Render(Camera* camera)

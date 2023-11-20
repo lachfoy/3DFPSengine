@@ -225,7 +225,8 @@ void Game::Create()
 	m_level = new Level();
 	//m_renderer->AddToRenderList(m_level);
 
-	//m_physicsWorld.CreateStaticLevelGeometry("data/models/level.obj");
+	m_physicsWorld.CreateStaticLevelGeometry("data/models/level.obj");
+	m_navGrid.Generate(&m_physicsWorld);
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
 	m_camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f));
@@ -233,7 +234,7 @@ void Game::Create()
 	m_player = new Player();
 	//m_renderer->AddToRenderList(m_player);
 
-	m_navGrid.Generate(&m_physicsWorld);
+	
 }
 
 void Game::HandleInput()
@@ -277,8 +278,6 @@ void Game::Update(float dt)
 	m_player->OnUpdate(dt);
 
 	m_fpsController->Update(dt);
-
-
 }
 
 void Game::Render()
@@ -289,6 +288,7 @@ void Game::Render()
 	//m_navGrid.DebugDrawPath(
 	//	m_navGrid.FindPath(m_navGrid.GetRandomStartNode(), m_navGrid.NodeClosestTo(m_fpsController->GetPosition()))
 	//);
+	
 }
 
 void Game::Destroy()
