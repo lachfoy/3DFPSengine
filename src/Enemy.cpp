@@ -7,10 +7,20 @@
 #include "Player.h"
 
 #include "World.h"
+#include "Mesh.h"
+#include <glm/gtc/matrix_transform.hpp>
 
-Enemy::Enemy(glm::vec2 position)
-	: Entity()
+#include "PhysicsWorld.h"
+
+Enemy::Enemy(const glm::vec3& position)
 {
+	m_mesh = Mesh::CreateMeshFromFile("data/models/cube.obj");
+
+	m_texture = gTextureManager.GetTexture("cat");
+
+	m_transform = glm::translate(glm::mat4(1.0f), position);
+
+	m_characterController = gPhysicsWorld.CreateCharacter(position);
 }
 
 void Enemy::Damage(int amount)
@@ -31,20 +41,14 @@ void Enemy::Think()
 
 void Enemy::OnUpdate(float dt)
 {
-	m_thinkTimer += dt;
-	if (m_thinkTimer >= kThinkInterval)
-	{
-		m_thinkTimer = 0.0f;
-		Think();
-	}
+	btTransform btWorldTransform = m_characterController->getGhostObject()->getWorldTransform();
+	btVector3 origin = btWorldTransform.getOrigin();
 
+	m_worldPosition = glm::vec3(origin.x(), origin.y(), origin.z());
 
+	m_rotation.y += dt * 2.0f;
 
-	// Apply movement
-	m_velocity -= m_velocity * kFrictionCoef * dt;
-	m_velocity += m_acceleration * m_moveDir * dt;
-
-	m_worldPosition += m_velocity * dt;
+	UpdateTransform();
 }
 
 void Enemy::OnDestroy()

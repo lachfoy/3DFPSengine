@@ -93,3 +93,5 @@ private:
 	btRigidBody* m_levelCollisionObject; // added to m_collisionObjects, so no need to delete
 
 };
+
+extern PhysicsWorld gPhysicsWorld;

@@ -9,6 +9,7 @@ class Renderer;
 class Input;
 class Player;
 class Camera;
+class Entity;
 
 class Panel;
 class Button;
@@ -53,12 +54,13 @@ private:
 
 	Camera* m_camera;
 
-	PhysicsWorld m_physicsWorld;
-
 	FirstPersonController* m_fpsController;
 	
 	Level* m_level;
 
 	NavGrid m_navGrid;
+
+	std::vector<Entity*> m_entities;
+
 
 };

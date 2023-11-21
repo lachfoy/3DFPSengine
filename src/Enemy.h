@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Entity.h"
+#include "IRenderable.h"
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -9,11 +9,12 @@
 class Input;
 class Player;
 
+class btKinematicCharacterController;
 
-class Enemy : public Entity
+class Enemy : public IRenderable
 {
 public:
-	Enemy(glm::vec2 position);
+	Enemy(const glm::vec3& position);
 	~Enemy() {}
 
 	void Damage(int amount);
@@ -41,5 +42,6 @@ private:
 	int m_minDamage = 1;
 	int m_maxDamage = 5;
 
+	btKinematicCharacterController* m_characterController;
 
 };

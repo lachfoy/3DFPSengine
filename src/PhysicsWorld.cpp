@@ -37,6 +37,8 @@ Level::Level()
 	m_transform = glm::mat4(1.0f);
 }
 
+PhysicsWorld gPhysicsWorld;
+
 PhysicsWorld::PhysicsWorld()
 {
 	m_collisionConfiguration = new btDefaultCollisionConfiguration();
