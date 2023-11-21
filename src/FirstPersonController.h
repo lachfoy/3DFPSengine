@@ -5,7 +5,7 @@
 class Input;
 class btKinematicCharacterController;
 
-class FirstPersonController : public Camera
+class FirstPersonController : public Camera // dont inherit from camera. not worth doing. Make a player and have the player have a rigid body controller and camera instead
 {
 public:
 	FirstPersonController(btKinematicCharacterController* characterController);

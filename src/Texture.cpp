@@ -19,6 +19,8 @@ Texture::~Texture()
 
 bool Texture::LoadFromFile(const std::string& path, bool useMipMaps)
 {
+	stbi_set_flip_vertically_on_load(true);
+
 	int width, height, numChannels;
 	unsigned char *data = stbi_load(path.c_str(), &width, &height, &numChannels, 0);
 	if (data == nullptr)

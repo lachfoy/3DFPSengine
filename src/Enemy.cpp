@@ -4,7 +4,9 @@
 
 #include "DebugRenderer.h"
 #include "TextureManager.h"
-#include "Player.h"
+#include "FirstPersonController.h" // stupid, again
+
+#include "Common.h"
 
 #include "World.h"
 #include "Mesh.h"
@@ -12,9 +14,10 @@
 
 #include "PhysicsWorld.h"
 
-Enemy::Enemy(const glm::vec3& position)
+Enemy::Enemy(const glm::vec3& position, FirstPersonController* player)
+	: m_player(player)
 {
-	m_mesh = Mesh::CreateMeshFromFile("data/models/cube.obj");
+	m_mesh = Mesh::CreateQuad(glm::vec2(1.0f, 2.8f));
 
 	m_texture = gTextureManager.GetTexture("cat");
 
@@ -46,7 +49,17 @@ void Enemy::OnUpdate(float dt)
 
 	m_worldPosition = glm::vec3(origin.x(), origin.y(), origin.z());
 
-	m_rotation.y += dt * 2.0f;
+	glm::vec3 playerPos = m_player->GetPosition();
+
+	glm::vec3 dirToPlayer = glm::normalize(playerPos - m_worldPosition);
+
+	dirToPlayer.y = 0.0f;
+	glm::vec3 walkDirection = dirToPlayer * 5.0f * dt;
+	btVector3 btWalkDirection(walkDirection.x, walkDirection.y, walkDirection.z);
+	m_characterController->setWalkDirection(btWalkDirection);
+
+	//float radiansToPlayer =  atan2(dirToPlayer.x, dirToPlayer.z);
+	//m_rotation.y = radiansToPlayer; // Welp. Rotations are not correct. Only works when rotating around the origin
 
 	UpdateTransform();
 }

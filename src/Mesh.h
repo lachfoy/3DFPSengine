@@ -18,6 +18,8 @@ public:
 	static Mesh* CreateMeshFromFile(const std::string& filepath);
 	static btTriangleMesh* CreateCollisionMeshFromFile(const std::string& filepath);
 
+	static Mesh* CreateQuad(const glm::vec2& size);
+
 	void Draw() const;
 
 	int NumTriangles() const { return m_numTriangles; }

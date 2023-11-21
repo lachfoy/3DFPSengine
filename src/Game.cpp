@@ -235,7 +235,7 @@ void Game::Create()
 	m_player = new Player();
 	//m_renderer->AddToRenderList(m_player);
 
-	Enemy* enemy = new Enemy(glm::vec3(0.0f, 10.0f, 0.0f));
+	Enemy* enemy = new Enemy(glm::vec3(0.0f, 10.0f, 0.0f), m_fpsController);
 	m_renderer->AddToRenderList(enemy);
 	m_entities.push_back(enemy);
 }
