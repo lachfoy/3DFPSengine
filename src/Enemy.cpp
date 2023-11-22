@@ -53,10 +53,10 @@ void Enemy::OnUpdate(float dt)
 
 	glm::vec3 dirToPlayer = glm::normalize(playerPos - m_worldPosition);
 
-	dirToPlayer.y = 0.0f;
-	glm::vec3 walkDirection = dirToPlayer * 5.0f * dt;
-	btVector3 btWalkDirection(walkDirection.x, walkDirection.y, walkDirection.z);
-	m_characterController->setWalkDirection(btWalkDirection);
+	//dirToPlayer.y = 0.0f;
+	//glm::vec3 walkDirection = dirToPlayer * 5.0f * dt;
+	//btVector3 btWalkDirection(walkDirection.x, walkDirection.y, walkDirection.z);
+	//m_characterController->setWalkDirection(btWalkDirection);
 
 	//float radiansToPlayer =  atan2(dirToPlayer.x, dirToPlayer.z);
 	//m_rotation.y = radiansToPlayer; // Welp. Rotations are not correct. Only works when rotating around the origin
