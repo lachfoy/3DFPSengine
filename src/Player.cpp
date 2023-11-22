@@ -1,88 +1,90 @@
 #include "Player.h"
 
-#include "Common.h"
 #include "Input.h"
 
-#include "DebugRenderer.h"
-#include "TextureManager.h"
 
+#include <string>
 #include "TextRenderer.h"
 
-#include "Mesh.h"
+#include <glm/gtc/type_ptr.hpp>
 
-Player::Player() : IRenderable()
+
+#include "Camera.h"
+
+#include "PhysicsWorld.h"
+
+Player::Player(btKinematicCharacterController* characterController)
+	: m_characterController(characterController)
 {
-	m_mesh = Mesh::CreateMeshFromFile("data/models/cube.obj");
+	m_camera = new FirstPersonCamera();
 
-	m_texture = gTextureManager.GetTexture("cat");
 }
 
 void Player::HandleInput(Input* input)
 {
-	if (input->IsKeyHeld(SDL_SCANCODE_W) || input->IsKeyHeld(SDL_SCANCODE_UP)) {
-		m_moveDir.y = -1.0f;
+	m_walkDirection = glm::vec3(0.0f);
+
+	m_camera->HandleInput(input);
+
+	glm::vec3 front = m_camera->GetFront();
+	glm::vec3 right = m_camera->GetRight();
+
+	if (input->IsKeyHeld(SDL_SCANCODE_W) || input->IsKeyHeld(SDL_SCANCODE_UP))
+	{
+		m_walkDirection += glm::vec3(front.x, 0.0f, front.z);
 	}
-	if (input->IsKeyHeld(SDL_SCANCODE_A) || input->IsKeyHeld(SDL_SCANCODE_LEFT)) {
-		m_moveDir.x = -1.0f;
+	if (input->IsKeyHeld(SDL_SCANCODE_S) || input->IsKeyHeld(SDL_SCANCODE_DOWN))
+	{
+		m_walkDirection -= glm::vec3(front.x, 0.0f, front.z);
 	}
-	if (input->IsKeyHeld(SDL_SCANCODE_S) || input->IsKeyHeld(SDL_SCANCODE_DOWN)) {
-		m_moveDir.y = 1.0f;
+	if (input->IsKeyHeld(SDL_SCANCODE_A) || input->IsKeyHeld(SDL_SCANCODE_LEFT))
+	{
+		m_walkDirection -= glm::vec3(right.x, 0.0f, right.z);
 	}
-	if (input->IsKeyHeld(SDL_SCANCODE_D) || input->IsKeyHeld(SDL_SCANCODE_RIGHT)) {
-		m_moveDir.x = 1.0f;
+	if (input->IsKeyHeld(SDL_SCANCODE_D) || input->IsKeyHeld(SDL_SCANCODE_RIGHT))
+	{
+		m_walkDirection += glm::vec3(right.x, 0.0f, right.z);
+	}
+
+	if (input->IsKeyPressed(SDL_SCANCODE_SPACE) && m_characterController->onGround())
+	{
+		m_characterController->jump(btVector3(0.0f, m_jumpAmount, 0.0f));
+	}
+
+	if (input->IsMouseButtonPressed(SDL_BUTTON_LEFT))
+	{
+		// Raycast from center of camera
+		gPhysicsWorld.RayCast(m_camera->GetPosition(), m_camera->GetFront());
 	}
 }
 
-void Player::Damage(int amount)
+void Player::PhysicsUpdate(float dt)
 {
-	if (m_health > 0)
+	if (glm::length(m_walkDirection) > 0.0f)
 	{
-		m_health -= amount;
-		printf("Player took %d damage! New hp = %d/%d\n", amount, m_health, m_maxHealth);
-
-		if (m_health <= 0)
-		{
-			printf("Dead!!!!!\n");
-		}
-		else
-		{
-			// kick immunity timer
-			m_immune = true;
-		}
+		m_walkDirection = glm::normalize(m_walkDirection);
 	}
+
+	glm::vec3 walkDirection = m_walkDirection * m_walkSpeed * dt;
+	btVector3 btWalkDirection(walkDirection.x, walkDirection.y, walkDirection.z);
+	m_characterController->setWalkDirection(btWalkDirection);
+
+	//std::string debugString;
+	//debugString += "walk dir:" + std::to_string(m_walkDirection.x) + ", " + std::to_string(m_walkDirection.y) + ", " + std::to_string(m_walkDirection.z) + "\n"; // position is camera position
+	//gTextRenderer.AddStringToBatch(debugString, 0, 0, glm::vec3(1.0f));
 }
 
-void Player::Shoot()
+void Player::Update(float dt)
 {
+	m_camera->Update(dt);
 
-}
+	// make the camera actually follow the character controller
+	btTransform btWorldTransform = m_characterController->getGhostObject()->getWorldTransform();
+	btVector3 origin = btWorldTransform.getOrigin();
 
-void Player::OnUpdate(float dt)
-{
-	if (m_immune) // replace this with a timer class probably
-	{
-		m_immuneTimer += dt;
-		if (m_immuneTimer >= kImmuneInterval)
-		{
-			m_immuneTimer = 0.0f;
-			m_immune = false;
-		}
-	}
+	m_camera->SetPosition(glm::vec3(origin.x(), origin.y() + m_cameraYOffsetFromOrigin, origin.z()));
 
-	if (glm::length(m_moveDir) > 0.0f)
-	{
-		m_moveDir = glm::normalize(m_moveDir);
-	}
-
-
-	// Apply movement
-	//float damping = pow(1.0f - kFrictionAmount, dt); // Calculate the damping factor based on friction coefficient and elapsed time
-	//m_velocity *= damping;
-
-	m_velocity -= m_velocity * kFrictionAmount * dt; // Apply friction first
-	m_velocity += m_acceleration * m_moveDir * dt;
-
-	m_worldPosition += m_velocity * dt;
-
-	m_moveDir = glm::vec3(0.0f, 0.0f, 0.0f);
+	std::string debugString;
+	debugString += "origin:" + std::to_string(origin.x()) + ", " + std::to_string(origin.y()) + ", " + std::to_string(origin.z()) + "\n"; // position is camera position
+	gTextRenderer.AddStringToBatch(debugString, 0, 0, glm::vec3(1.0f));
 }

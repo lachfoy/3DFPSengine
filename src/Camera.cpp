@@ -7,13 +7,54 @@
 
 #include "TextRenderer.h"
 
+Camera::Camera(const glm::vec3& up) : m_worldUp(up)
+{
+}
+
 Camera::Camera(const glm::vec3& position, const glm::vec3& up)
 	: m_position(position), m_worldUp(up)
 {
+}
+
+void Camera::UpdateCameraVectors()
+{
+	glm::vec3 front;
+	front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	front.y = sin(glm::radians(m_pitch));
+	front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
+	m_front = glm::normalize(front);
+
+	m_right = glm::normalize(glm::cross(m_front, m_worldUp));
+	m_up = glm::normalize(glm::cross(m_right, m_front));
+}
+
+void FirstPersonCamera::HandleInput(Input* input)
+{
+	// Mouse movement
+	glm::vec2 mouseRelPos = input->GetMouseRelPos();
+	float xOffset = mouseRelPos.x * m_mouseSensitivity;
+	float yOffset = -mouseRelPos.y * m_mouseSensitivity;
+
+	m_yaw += xOffset;
+	m_pitch += yOffset;
+}
+
+void FirstPersonCamera::Update(float dt)
+{
+	if (m_pitch > 89.0f)
+	{
+		m_pitch = 89.0f;
+	}
+
+	if (m_pitch < -89.0f)
+	{
+		m_pitch = -89.0f;
+	}
+
 	UpdateCameraVectors();
 }
 
-void Camera::HandleInput(Input* input)
+void FlyingCamera::HandleInput(Input* input)
 {
 	m_moveDir = glm::vec3(0.0f);
 
@@ -38,12 +79,12 @@ void Camera::HandleInput(Input* input)
 	glm::vec2 mouseRelPos = input->GetMouseRelPos();
 	float xOffset = mouseRelPos.x * m_mouseSensitivity;
 	float yOffset = -mouseRelPos.y * m_mouseSensitivity;
-	
+
 	m_yaw += xOffset;
 	m_pitch += yOffset;
 }
 
-void Camera::Update(float dt)
+void FlyingCamera::Update(float dt)
 {
 	m_position += m_moveDir * m_speed * dt;
 
@@ -65,16 +106,4 @@ void Camera::Update(float dt)
 	debugString += "pitch:" + std::to_string(m_pitch) + "\n";
 	debugString += "yaw:" + std::to_string(m_yaw) + "\n";
 	gTextRenderer.AddStringToBatch(debugString, 0, 0, glm::vec3(1.0f));
-}
-
-void Camera::UpdateCameraVectors()
-{
-	glm::vec3 front;
-	front.x = cos(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-	front.y = sin(glm::radians(m_pitch));
-	front.z = sin(glm::radians(m_yaw)) * cos(glm::radians(m_pitch));
-	m_front = glm::normalize(front);
-
-	m_right = glm::normalize(glm::cross(m_front, m_worldUp));
-	m_up = glm::normalize(glm::cross(m_right, m_front));
 }

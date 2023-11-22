@@ -7,14 +7,14 @@
 
 
 class Input;
-class FirstPersonController;
+class Player;
 
 class btKinematicCharacterController;
 
 class Enemy : public IRenderable
 {
 public:
-	Enemy(const glm::vec3& position, FirstPersonController* player);
+	Enemy(const glm::vec3& position, Player* player);
 	~Enemy() {}
 
 	void Damage(int amount);
@@ -44,6 +44,6 @@ private:
 
 	btKinematicCharacterController* m_characterController;
 
-	FirstPersonController* m_player; // this is stupid. Rename the class to player, not FirstPersonController
+	Player* m_player; // this is stupid. Rename the class to player, not FirstPersonController
 
 };

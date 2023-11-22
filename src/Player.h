@@ -1,40 +1,40 @@
 #pragma once
 
-#include "IRenderable.h"
-
-#include <glad/glad.h>
 #include <glm/glm.hpp>
+#include <btBulletDynamicsCommon.h>
 
 class Input;
+//class btKinematicCharacterController;
+#include <BulletCollision/CollisionDispatch/btGhostObject.h>
+#include <BulletDynamics/Character/btKinematicCharacterController.h>
+class Camera;
 
-class Player : public IRenderable
+class Player
 {
 public:
-	Player();
-	~Player() {}
+	Player(btKinematicCharacterController* characterController);
+	~Player() = default;
 
 	void HandleInput(Input* input);
+	void PhysicsUpdate(float dt);
+	void Update(float dt);
 
-	void Damage(int amount);
-	bool CanTakeDamage() const { return !m_immune; }
+	Camera* GetCamera() const { return m_camera; }
 
-	void Shoot();
-
-	void OnUpdate(float dt) override;
+	glm::vec3 GetPosition() const
+	{
+		btVector3 btPosition = m_characterController->getGhostObject()->getWorldTransform().getOrigin(); // ugh
+		return glm::vec3(btPosition.x(), btPosition.y(), btPosition.z());
+	}
 
 private:
-	glm::vec3 m_moveDir{ 0.0f };
-	float m_acceleration = 800.0f;
+	btKinematicCharacterController* m_characterController;
 
-	glm::vec3 m_velocity{ 0.0f };
-	float kFrictionAmount = 8.f;
-	float kMaxSpeed = 400.0f;
+	Camera* m_camera;
 
-	int m_maxHealth = 100;
-	int m_health = m_maxHealth;
-
-	float m_immuneTimer = 0.0f;
-	const float kImmuneInterval = 0.5f;
-	bool m_immune = false;
+	glm::vec3 m_walkDirection;
+	float m_walkSpeed = 6.0f;
+	float m_jumpAmount = 10.0f;
+	float m_cameraYOffsetFromOrigin = 0.9f; // // this makes the total height of the camera 1.4
 
 };

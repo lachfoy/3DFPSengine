@@ -1,5 +1,4 @@
-#ifndef CAMERA_H_
-#define CAMERA_H_
+#pragma once
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -9,7 +8,7 @@ class Camera
 {
 friend class Renderer;
 public:
-	//Camera() = default;
+	Camera(const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f)); // Not a great constructor
 	Camera(const glm::vec3& position, const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f));
 	~Camera() {}
 
@@ -20,12 +19,15 @@ public:
 		return glm::perspective(glm::radians(m_fov), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), m_nearClip, m_farClip);
 	}
 
-	virtual void HandleInput(Input* input);
-	virtual void Update(float dt);
+	virtual void HandleInput(Input* input) {}
+	virtual void Update(float dt) {}
 
 	// very temp getters, delete these
 	const glm::vec3 GetPosition() const { return m_position; }
 	const glm::vec3 GetFront() const { return m_front; }
+	const glm::vec3 GetRight() const { return m_right; }
+
+	void SetPosition(const glm::vec3& position) { m_position = position; }
 
 protected:
 	void UpdateCameraVectors();
@@ -42,11 +44,25 @@ protected:
 
 	float m_nearClip = 0.1f;
 	float m_farClip = 100.0f;
-	
-	// dont use these... make a derived flying cam instead
-	float m_speed = 6.00f; //6.0f;
-	glm::vec3 m_moveDir; 
 
 };
 
-#endif
+class FirstPersonCamera : public Camera
+{
+public:
+	virtual void HandleInput(Input* input);
+	virtual void Update(float dt);
+};
+
+class FlyingCamera: public Camera
+{
+public:
+	virtual void HandleInput(Input* input);
+	virtual void Update(float dt);
+
+private:
+	float m_speed = 6.0f;
+	glm::vec3 m_moveDir;
+
+};
+

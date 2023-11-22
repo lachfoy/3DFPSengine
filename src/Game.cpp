@@ -178,11 +178,11 @@ void Game::Run()
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		Render();
 		gPhysicsWorld.DebugDraw();
-		m_renderer->Render(m_fpsController);
+		m_renderer->Render(m_player->GetCamera());
 
 		if (DEBUG_DRAW)
 		{
-			gDebugRenderer.Render(m_fpsController);
+			gDebugRenderer.Render(m_player->GetCamera());
 			gDebugRenderer.PostRenderUpdate(dt);
 		}
 
@@ -219,9 +219,9 @@ void Game::Create()
 	gTextureManager.LoadTexture("missing", "data/images/missing.png");
 
 	//m_character = gPhysicsWorld.CreateCharacter();
-	m_fpsController = new FirstPersonController(gPhysicsWorld.CreateCharacter(glm::vec3(0.0f, 5.0f, 0.0f)));
-	m_renderer->SetProjection(m_fpsController->GetProjection(m_viewportWidth, m_viewportHeight));
-	gDebugRenderer.SetProjection(m_fpsController->GetProjection(m_viewportWidth, m_viewportHeight));
+	m_player = new Player(gPhysicsWorld.CreateCharacter(glm::vec3(0.0f, 5.0f, 0.0f)));
+	m_renderer->SetProjection(m_player->GetCamera()->GetProjection(m_viewportWidth, m_viewportHeight));
+	gDebugRenderer.SetProjection(m_player->GetCamera()->GetProjection(m_viewportWidth, m_viewportHeight));
 
 	m_level = new Level();
 	//m_renderer->AddToRenderList(m_level);
@@ -230,12 +230,9 @@ void Game::Create()
 	m_navGrid.Generate(&gPhysicsWorld);
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
-	m_camera = new Camera(glm::vec3(0.0f, 0.0f, 0.0f));
+	m_debugCamera = new Camera();
 
-	m_player = new Player();
-	//m_renderer->AddToRenderList(m_player);
-
-	Enemy* enemy = new Enemy(glm::vec3(0.0f, 10.0f, 0.0f), m_fpsController);
+	Enemy* enemy = new Enemy(glm::vec3(0.0f, 10.0f, 0.0f), m_player);
 	m_renderer->AddToRenderList(enemy);
 	m_entities.push_back(enemy);
 }
@@ -245,17 +242,12 @@ void Game::HandleInput()
 	//m_player->HandleInput(m_input);
 
 	//m_camera->HandleInput(m_input);
-	m_fpsController->HandleInput(m_input);
+	m_player->HandleInput(m_input);
 
 	if (m_input->IsKeyPressed(SDL_SCANCODE_Z))
 	{
 		CatCube* catCube = gPhysicsWorld.AddCatCube(glm::vec3(0, 5.0f, 0));
 		m_renderer->AddToRenderList(catCube);
-	}
-
-	if (m_input->IsMouseButtonPressed(SDL_BUTTON_LEFT))
-	{
-		gPhysicsWorld.RayCast(m_fpsController->GetPosition(), m_fpsController->GetFront());
 	}
 
 	if (m_input->IsKeyPressed(SDL_SCANCODE_0))
@@ -271,16 +263,14 @@ void Game::HandleInput()
 
 void Game::PhysicsUpdate(float dt)
 {
-	m_fpsController->PhysicsUpdate(dt);
+	m_player->PhysicsUpdate(dt);
 }
 
 void Game::Update(float dt)
 {
 	//m_camera->Update(dt);
 
-	m_player->OnUpdate(dt);
-
-	m_fpsController->Update(dt);
+	m_player->Update(dt);
 
 	for (Entity* entity : m_entities)
 	{
@@ -301,10 +291,9 @@ void Game::Render()
 
 void Game::Destroy()
 {
-	SAFE_DELETE(m_player);
-	SAFE_DELETE(m_camera);
+	SAFE_DELETE(m_debugCamera);
 
-	SAFE_DELETE(m_fpsController);
+	SAFE_DELETE(m_player);
 	SAFE_DELETE(m_level);
 }
 

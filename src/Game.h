@@ -19,7 +19,7 @@ class GuiRenderer;
 
 #include "PhysicsWorld.h"
 
-#include "FirstPersonController.h"
+#include "Player.h"
 
 class Game
 {
@@ -50,11 +50,9 @@ private:
 	void Render(); // scene related
 	void Destroy(); // scene related
 
+	Camera* m_debugCamera;
+
 	Player* m_player;
-
-	Camera* m_camera;
-
-	FirstPersonController* m_fpsController;
 	
 	Level* m_level;
 

@@ -4,7 +4,7 @@
 
 #include "DebugRenderer.h"
 #include "TextureManager.h"
-#include "FirstPersonController.h" // stupid, again
+#include "Player.h"
 
 #include "Common.h"
 
@@ -14,7 +14,7 @@
 
 #include "PhysicsWorld.h"
 
-Enemy::Enemy(const glm::vec3& position, FirstPersonController* player)
+Enemy::Enemy(const glm::vec3& position, Player* player)
 	: m_player(player)
 {
 	m_mesh = Mesh::CreateQuad(glm::vec2(1.0f, 2.8f));
