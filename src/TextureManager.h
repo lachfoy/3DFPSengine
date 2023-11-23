@@ -14,6 +14,7 @@ public:
 	~TextureManager() {}
 
 	void UnloadResources();
+
 	bool LoadTexture(const std::string& name, const std::string& path);
 
 	Texture* GetTexture(const std::string& name);

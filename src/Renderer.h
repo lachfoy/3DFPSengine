@@ -9,9 +9,9 @@
 class Camera;
 class Texture;
 class Mesh;
-class IRenderable;
+class iRenderable;
 
-typedef std::list<IRenderable*> tRenderList;
+typedef std::list<iRenderable*> tRenderList;
 
 class Renderer
 {
@@ -22,7 +22,7 @@ public:
 	void Init();
 	void SetProjection(const glm::mat4& projection);
 
-	void AddToRenderList(IRenderable* renderable);
+	void AddToRenderList(iRenderable* renderable);
 	void Render(Camera* camera);
 
 	void RenderQuad(glm::vec3 pos, glm::vec3 size, const Texture* texture, glm::vec3 color = glm::vec3(1.0f)); // not used

@@ -11,7 +11,7 @@ class Player;
 
 class btKinematicCharacterController;
 
-class Enemy : public IRenderable
+class Enemy : public iRenderable
 {
 public:
 	Enemy(const glm::vec3& position, Player* player);

@@ -14,7 +14,7 @@
 
 #include "IRenderable.h"
 
-class CatCube : public IRenderable, public btMotionState
+class CatCube : public iRenderable, public btMotionState
 {
 public:
 	CatCube(const glm::vec3& position);
@@ -30,7 +30,7 @@ private:
 
 };
 
-class Level : public IRenderable
+class Level : public iRenderable
 {
 public:
 	Level();

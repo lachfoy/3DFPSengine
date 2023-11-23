@@ -12,12 +12,12 @@
 class Mesh;
 class Texture;
 
-class IRenderable : public Entity
+class iRenderable : public Entity
 {
 friend class Renderer;
 public:
-	IRenderable() = default;
-	~IRenderable() {}
+	iRenderable() = default;
+	~iRenderable() {}
 
 protected:
 	//glm::mat4 m_transform;

@@ -25,7 +25,7 @@ void Renderer::SetProjection(const glm::mat4& projection)
 	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "u_projection"), 1, false, glm::value_ptr(projection));
 }
 
-void Renderer::AddToRenderList(IRenderable *renderable)	
+void Renderer::AddToRenderList(iRenderable *renderable)	
 {	
 	m_renderList.push_back(renderable);	
 }
