@@ -3,7 +3,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Common.h"
 
-#include "TextureManager.h"
+#include "ResourceManager.h"
 #include "Mesh.h"
 #include "DebugRenderer.h"
 
@@ -11,7 +11,7 @@ CatCube::CatCube(const glm::vec3& position)
 {
 	m_mesh = Mesh::CreateMeshFromFile("data/models/cube.obj");
 
-	m_texture = gTextureManager.GetTexture("cat");
+	m_texture = ResourceManager::Instance().GetTexture("cat");
 
 	m_transform = glm::translate(glm::mat4(1.0f), position);
 }
@@ -32,7 +32,7 @@ Level::Level()
 {
 	m_mesh = Mesh::CreateMeshFromFile("data/models/level.obj");
 
-	m_texture = gTextureManager.GetTexture("missing");
+	m_texture = ResourceManager::Instance().GetTexture("missing");
 
 	m_transform = glm::mat4(1.0f);
 }

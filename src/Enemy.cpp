@@ -3,7 +3,7 @@
 #include "Input.h"
 
 #include "DebugRenderer.h"
-#include "TextureManager.h"
+#include "ResourceManager.h"
 #include "Player.h"
 
 #include "Common.h"
@@ -19,7 +19,7 @@ Enemy::Enemy(const glm::vec3& position, Player* player)
 {
 	m_mesh = Mesh::CreateQuad(glm::vec2(1.0f, 2.8f));
 
-	m_texture = gTextureManager.GetTexture("cat");
+	m_texture = ResourceManager::Instance().GetTexture("cat");
 
 	m_transform = glm::translate(glm::mat4(1.0f), position);
 

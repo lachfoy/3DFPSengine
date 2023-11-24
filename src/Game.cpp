@@ -12,7 +12,7 @@
 #include "Panel.h"
 #include "Button.h"
 #include "GuiRenderer.h"
-#include "TextureManager.h"
+#include "ResourceManager.h"
 
 #include "TextRenderer.h"
 
@@ -215,8 +215,8 @@ void Game::SetupGL()
 
 void Game::Create()
 {
-	gTextureManager.LoadTexture("cat", "data/images/round_cat.png");
-	gTextureManager.LoadTexture("missing", "data/images/missing.png");
+	ResourceManager::Instance().LoadTexture("cat", "data/images/round_cat.png");
+	ResourceManager::Instance().LoadTexture("missing", "data/images/missing.png");
 
 	//m_character = gPhysicsWorld.CreateCharacter();
 	m_player = new Player(gPhysicsWorld.CreateCharacter(glm::vec3(0.0f, 5.0f, 0.0f)));
@@ -306,7 +306,7 @@ void Game::Cleanup()
 	
 	SAFE_DELETE(m_input);
 
-	gTextureManager.UnloadResources();
+	ResourceManager::Instance().UnloadResources();
 
 	SDL_GL_DeleteContext(m_context);
 	SDL_DestroyWindow(m_window);

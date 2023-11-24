@@ -1,6 +1,12 @@
 #include "Common.h"
 #include "ResourceManager.h"
 
+#include "Texture.h"
+#include "Mesh.h"
+//#include "Sound.h"
+
+class Sound {};
+
 class ImageLoader
 {
 public:
@@ -27,7 +33,10 @@ void ResourceManager::LoadTexture(const std::string& id, const std::string& path
 		ASSERT_MSG(false, "Texture with id \"%s\" already exists", id.c_str());
 	}
 
-	m_textureMap[id] = ImageLoader::LoadTextureFromFile(path);
+	//m_textureMap[id] = ImageLoader::LoadTextureFromFile(path);
+	Texture* texture = new Texture();
+	texture->LoadFromFile(path);
+	m_textureMap[id] = texture;
 }
 
 Texture* ResourceManager::GetTexture(const std::string& id)
@@ -46,7 +55,7 @@ void ResourceManager::LoadMesh(const std::string& id, const std::string& path)
 		ASSERT_MSG(false, "Mesh with id \"%s\" already exists", id.c_str());
 	}
 
-	m_meshMap[id] = OBJLoader::LoadMeshFromOBJ(path);
+	//m_meshMap[id] = OBJLoader::LoadMeshFromOBJ(path);
 }
 
 Mesh* ResourceManager::GetMesh(const std::string& id)
@@ -78,43 +87,37 @@ Sound* ResourceManager::GetSound(const std::string& id)
 
 void ResourceManager::UnloadResources()
 {
+	printf("Unloading resources...\n");
+	printf("--------------------------------------------------------\n");
 	UnloadTextures();
 	UnloadMeshes();
 	UnloadSounds();
+	printf("--------------------------------------------------------\n\n");
 }
 
 void ResourceManager::UnloadTextures()
 {
-	printf("Unloading textures...\n");
-	printf("--------------------------------------------------------\n");
 	for (auto it : m_textureMap)
 	{
 		SAFE_DELETE(it.second);
 		printf("Unloaded texture: %s\n", it.first.c_str());
 	}
-	printf("--------------------------------------------------------\n\n");
 }
 
 void ResourceManager::UnloadMeshes()
 {
-	printf("Unloading meshes...\n");
-	printf("--------------------------------------------------------\n");
 	for (auto it : m_meshMap)
 	{
 		SAFE_DELETE(it.second);
 		printf("Unloaded mesh: %s\n", it.first.c_str());
 	}
-	printf("--------------------------------------------------------\n\n");
 }
 
 void ResourceManager::UnloadSounds()
 {
-	printf("Unloading sounds...\n");
-	printf("--------------------------------------------------------\n");
 	for (auto it : m_soundMap)
 	{
 		SAFE_DELETE(it.second);
 		printf("Unloaded sound: %s\n", it.first.c_str());
 	}
-	printf("--------------------------------------------------------\n\n");
 }

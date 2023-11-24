@@ -10,8 +10,11 @@ class Sound;
 class ResourceManager
 {
 public:
-	ResourceManager() {};
-	~ResourceManager() = default;
+	static ResourceManager& Instance()
+	{
+		static ResourceManager instance;
+		return instance;
+	}
 
 	void LoadTexture(const std::string& id, const std::string& path);
 	Texture* GetTexture(const std::string& id);
@@ -22,9 +25,14 @@ public:
 	void LoadSound(const std::string& id, const std::string& path);
 	Sound* GetSound(const std::string& id);
 
-	void UnloadResources();
+	void UnloadResources(); // Explicit unloading of resources (rather than in a destructor?) not sure if this is necessary but for now leave it like this
 
 private:
+	ResourceManager() {}
+
+	ResourceManager(const ResourceManager&) = delete;
+	ResourceManager& operator=(const ResourceManager&) = delete;
+
 	void UnloadTextures();
 	void UnloadMeshes();
 	void UnloadSounds();

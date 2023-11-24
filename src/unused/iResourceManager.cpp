@@ -3,6 +3,14 @@
 
 #include <typeinfo>
 
+iResource* iResourceManager::GetResource(const std::string& id)
+{
+	auto it = m_resourceMap.find(id);
+	ASSERT_MSG(it != m_resourceMap.end(), "Resource with id \"%s\" doesn't exist", id.c_str());
+
+	return it == m_resourceMap.end() ? nullptr : it->second;
+}
+
 void iResourceManager::UnloadResources()
 {
 	printf("%s Unloading resources\n", typeid(this).name());
