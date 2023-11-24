@@ -44,7 +44,7 @@ private:
 
 private:
 	void HandleInput();
-	void PhysicsUpdate(float dt);
+	void FixedUpdate(float stepSize);
 	void Update(float dt);
 	void Create(); // scene related
 	void Render(); // scene related

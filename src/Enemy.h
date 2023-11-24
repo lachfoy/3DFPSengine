@@ -44,6 +44,6 @@ private:
 
 	btKinematicCharacterController* m_characterController;
 
-	Player* m_player; // this is stupid. Rename the class to player, not FirstPersonController
+	Player* m_player;
 
 };

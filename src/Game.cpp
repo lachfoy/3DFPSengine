@@ -167,7 +167,7 @@ void Game::Run()
 		float fps = 1.0f / averageFrameTime;
 
 		// update
-		PhysicsUpdate(1.0f / 50.0f);
+		FixedUpdate(1.0f / 50.0f);
 		gPhysicsWorld.StepSimulation(1.0f/ 50.0f, 16);
 		Update(dt);
 
@@ -261,9 +261,9 @@ void Game::HandleInput()
 	}
 }
 
-void Game::PhysicsUpdate(float dt)
+void Game::FixedUpdate(float stepSize)
 {
-	m_player->PhysicsUpdate(dt);
+	m_player->FixedUpdate(stepSize);
 }
 
 void Game::Update(float dt)

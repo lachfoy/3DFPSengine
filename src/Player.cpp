@@ -58,14 +58,14 @@ void Player::HandleInput(Input* input)
 	}
 }
 
-void Player::PhysicsUpdate(float dt)
+void Player::FixedUpdate(float stepSize)
 {
 	if (glm::length(m_walkDirection) > 0.0f)
 	{
 		m_walkDirection = glm::normalize(m_walkDirection);
 	}
 
-	glm::vec3 walkDirection = m_walkDirection * m_walkSpeed * dt;
+	glm::vec3 walkDirection = m_walkDirection * m_walkSpeed * stepSize;
 	btVector3 btWalkDirection(walkDirection.x, walkDirection.y, walkDirection.z);
 	m_characterController->setWalkDirection(btWalkDirection);
 
