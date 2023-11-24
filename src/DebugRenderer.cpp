@@ -41,7 +41,7 @@ void DebugRenderer::AddLine(const glm::vec3& from, const glm::vec3& to, const gl
 	line.to = to;
 	line.color = color;
 	line.duration = duration;
-	m_lines.push_back(line);
+	//m_lines.push_back(line);
 }
 
 void DebugRenderer::AddSphere(const glm::vec3& center, float radius, const glm::vec3& color, float duration)

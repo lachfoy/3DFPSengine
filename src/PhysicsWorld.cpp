@@ -30,7 +30,7 @@ void CatCube::setWorldTransform(const btTransform& worldTrans)
 
 Level::Level()
 {
-	m_mesh = Mesh::LoadMeshFromOBJ("data/models/level.obj");
+	m_mesh = Mesh::LoadMeshFromOBJ("data/models/rapture1.obj");
 
 	m_texture = ResourceManager::Instance().GetTexture("missing");
 
@@ -52,25 +52,25 @@ PhysicsWorld::PhysicsWorld()
 	m_debugDrawer = new BulletDebugDraw();
 	m_dynamicsWorld->setDebugDrawer(m_debugDrawer);
 
-	/// create a ground plane
-	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 0);
-	m_collisionShapes.push_back(groundShape);
+	///// create a ground plane
+	//btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 0);
+	//m_collisionShapes.push_back(groundShape);
 
-	// Create a default motion state (position and rotation)
-	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
-	m_motionStates.push_back(groundMotionState);
+	//// Create a default motion state (position and rotation)
+	//btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
+	//m_motionStates.push_back(groundMotionState);
 
-	// Create the rigid body construction info (mass = 0 => static body)
-	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
+	//// Create the rigid body construction info (mass = 0 => static body)
+	//btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
 
-	// Create the rigid body
-	btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
+	//// Create the rigid body
+	//btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
 
-	// Add the ground plane rigid body to the dynamics world
-	int groundCollisionGroup = btBroadphaseProxy::StaticFilter;
-	int groundCollisionMask = btBroadphaseProxy::AllFilter;
-	m_dynamicsWorld->addRigidBody(groundRigidBody, groundCollisionGroup, groundCollisionMask);
-	m_collisionObjects.push_back(groundRigidBody);
+	//// Add the ground plane rigid body to the dynamics world
+	//int groundCollisionGroup = btBroadphaseProxy::StaticFilter;
+	//int groundCollisionMask = btBroadphaseProxy::AllFilter;
+	//m_dynamicsWorld->addRigidBody(groundRigidBody, groundCollisionGroup, groundCollisionMask);
+	//m_collisionObjects.push_back(groundRigidBody);
 }
 
 PhysicsWorld::~PhysicsWorld()

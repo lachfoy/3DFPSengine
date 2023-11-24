@@ -16,15 +16,13 @@
 
 #include "TextRenderer.h"
 
-#include "World.h"
-
 #include "ScreenshotManager.h"
 
 #include <deque>
 #include "Enemy.h"
 
 
-#define DEBUG_DRAW 1
+#define DEBUG_DRAW 0
 #define TARGET_FPS 60 // broken dont use this
 #define CAP_FRAMERATE 0 // broken dont use this
 
@@ -133,7 +131,6 @@ void Game::Run()
 
 		// TODO This sort of thing could be handled in a window class with events SDL_WINDOWEVENT_FOCUS_GAINED and SDL_WINDOWEVENT_FOCUS_LOST instead
 		// so input shouldnt actually handle the event loop. a window class probably should instead
-		// BUT.... its fine for now
 		Uint32 windowFlags = SDL_GetWindowFlags(m_window);
 		if (windowFlags & SDL_WINDOW_INPUT_FOCUS)
 		{
@@ -167,8 +164,8 @@ void Game::Run()
 		float fps = 1.0f / averageFrameTime;
 
 		// update
-		FixedUpdate(1.0f / 50.0f);
-		gPhysicsWorld.StepSimulation(1.0f/ 50.0f, 16);
+		FixedUpdate(1.0f / 50);
+		gPhysicsWorld.StepSimulation(1.0f / 50, 16);
 		Update(dt);
 
 		std::string titleStr = "fps: " + std::to_string(fps);
@@ -219,15 +216,15 @@ void Game::Create()
 	ResourceManager::Instance().LoadTexture("missing", "data/images/missing.png");
 
 	//m_character = gPhysicsWorld.CreateCharacter();
-	m_player = new Player(gPhysicsWorld.CreateCharacter(glm::vec3(0.0f, 5.0f, 0.0f)));
+	m_player = new Player(gPhysicsWorld.CreateCharacter(glm::vec3(-22.5f, 6.75f, 5.5f)));
 	m_renderer->SetProjection(m_player->GetCamera()->GetProjection(m_viewportWidth, m_viewportHeight));
 	gDebugRenderer.SetProjection(m_player->GetCamera()->GetProjection(m_viewportWidth, m_viewportHeight));
 
 	m_level = new Level();
-	//m_renderer->AddToRenderList(m_level);
+	m_renderer->AddToRenderList(m_level);
 
-	gPhysicsWorld.CreateStaticLevelGeometry("data/models/level.obj");
-	m_navGrid.Generate(&gPhysicsWorld);
+	gPhysicsWorld.CreateStaticLevelGeometry("data/models/rapture1.obj");
+	//m_navGrid.Generate(&gPhysicsWorld);
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
 	m_debugCamera = new Camera();

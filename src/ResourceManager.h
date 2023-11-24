@@ -27,6 +27,26 @@ public:
 
 	void UnloadResources(); // Explicit unloading of resources (rather than in a destructor?) not sure if this is necessary but for now leave it like this
 
+	// At the moment, we would expect every single resources to be loaded into memory at the start of the game, and then unloaded when the game quits
+	// If we wanted to have resources load per scene, and unload at the end of that scene, we could ref count the resources
+	// I.e. when a scene loads we increment the ref count for the resources we need, and then clean up any resources with a ref count of 0.
+	// When a scene unloads, we just decrement all of the refs for the resources we were using in that scene 
+	// This would require a bit of a redesign of the resource manager though.
+
+	// Also to consider would be "local" vs "global" resources
+	// local resources are loaded and unloaded per scene, but global resources would be loaded in memory for the entire game.
+
+	// Could use shared_ptr, but this would mean that "local" resources can not be owned by the resource manager (because otherwise they would just remain in scope for the entire game)
+	
+	//class ResourceManager
+	//{
+	//public:
+	//	std::shared_ptr<Texture> GetTexture(int id);
+	//
+	//private:
+	//	std::unordered_map<int, std::weak_ptr<Texture>> m_textures;
+	//}
+
 private:
 	ResourceManager() {}
 

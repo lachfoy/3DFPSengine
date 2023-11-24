@@ -183,7 +183,6 @@
     <ClCompile Include="src\TextRenderer.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\GuiRenderer.cpp" />
-    <ClCompile Include="src\World.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\BulletDebugDraw.h" />
@@ -213,7 +212,6 @@
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\GuiRenderer.h" />
     <ClInclude Include="src\UIVertex.h" />
-    <ClInclude Include="src\World.h" />
   </ItemGroup>
   <ItemGroup>
     <Text Include="todo.txt" />

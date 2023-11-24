@@ -8,7 +8,6 @@
 
 #include "Common.h"
 
-#include "World.h"
 #include "Mesh.h"
 #include <glm/gtc/matrix_transform.hpp>
 

@@ -3,9 +3,8 @@
 #define _USE_MATH_DEFINES
 #include <cmath>
 
-#ifndef M_PI
+#undef M_PI
 #define M_PI 3.14159265358979323846 // pi
-#endif
 #define PI (float)M_PI
 
 #define DEGTORAD(x) ((x) * PI / 180.0f)

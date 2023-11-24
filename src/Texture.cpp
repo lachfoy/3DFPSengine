@@ -25,7 +25,7 @@ bool Texture::LoadFromFile(const std::string& path, bool useMipMaps)
 	unsigned char *data = stbi_load(path.c_str(), &width, &height, &numChannels, 0);
 	if (data == nullptr)
 	{
-		printf("Error loading texture %s: %s\n", path, stbi_failure_reason());
+		printf("Error loading texture %s: %s\n", path.c_str(), stbi_failure_reason());
 		ASSERT(false);
 	}
 
@@ -55,8 +55,8 @@ bool Texture::LoadFromFile(const std::string& path, bool useMipMaps)
 	// set params
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
 	if (useMipMaps)
 	{

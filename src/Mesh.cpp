@@ -30,7 +30,6 @@ Mesh* Mesh::CreateQuad(const glm::vec2& size)
 
 	Mesh* mesh = new Mesh();
 	mesh->m_numTriangles = 2;
-	printf("# of triangles = %d\n", mesh->m_numTriangles);
 
 	// create the actual mesh
 	mesh->m_vertexArrayId = 0;
@@ -200,7 +199,6 @@ Mesh* Mesh::LoadMeshFromOBJ(const std::string& filepath)
 
 	Mesh* mesh = new Mesh();
 	mesh->m_numTriangles = buffer.size() / (3 + 3 + 2) / 3; // 3:vtx, 3:normal, 2:texcoord
-	printf("# of triangles = %d\n", mesh->m_numTriangles);
 
 	// create the actual mesh
 	mesh->m_vertexArrayId = 0;

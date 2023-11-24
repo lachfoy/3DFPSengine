@@ -15,7 +15,7 @@ class Panel;
 class Button;
 class GuiRenderer;
 
-#include "NavGrid.h"
+//#include "NavGrid.h"
 
 #include "PhysicsWorld.h"
 
@@ -56,7 +56,7 @@ private:
 	
 	Level* m_level;
 
-	NavGrid m_navGrid;
+	//NavGrid m_navGrid; // Let's ignore complex pathfinding for now
 
 	std::vector<Entity*> m_entities;
 
