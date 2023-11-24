@@ -9,7 +9,7 @@
 
 CatCube::CatCube(const glm::vec3& position)
 {
-	m_mesh = Mesh::CreateMeshFromFile("data/models/cube.obj");
+	m_mesh = Mesh::LoadMeshFromOBJ("data/models/cube.obj");
 
 	m_texture = ResourceManager::Instance().GetTexture("cat");
 
@@ -30,7 +30,7 @@ void CatCube::setWorldTransform(const btTransform& worldTrans)
 
 Level::Level()
 {
-	m_mesh = Mesh::CreateMeshFromFile("data/models/level.obj");
+	m_mesh = Mesh::LoadMeshFromOBJ("data/models/level.obj");
 
 	m_texture = ResourceManager::Instance().GetTexture("missing");
 
@@ -205,7 +205,7 @@ btKinematicCharacterController* PhysicsWorld::CreateCharacter(const glm::vec3& p
 
 void PhysicsWorld::CreateStaticLevelGeometry(const std::string& pathToObj)
 {
-	btTriangleMesh* triangleMesh = Mesh::CreateCollisionMeshFromFile(pathToObj);
+	btTriangleMesh* triangleMesh = Mesh::LoadCollisionMeshFromOBJ(pathToObj);
 	m_mesh = triangleMesh; // store reference so it can be deleted
 
 	bool useQuantizedAABBCompression = true;
