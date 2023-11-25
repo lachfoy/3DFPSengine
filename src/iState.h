@@ -2,15 +2,14 @@
 
 class Input;
 
-class iGameState
+class iState
 {
 public:
-	iGameState() {}
-	~iGameState() = default;
+	iState() {}
+	~iState() = default;
 
 	virtual void Create() = 0;
 	
-	virtual void HandleInput(Input* input) {}
 	virtual void FixedUpdate() {}
 	virtual void Update(float dt) {}
 	virtual void Render() {}

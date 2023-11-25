@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-class Input;
 class Camera
 {
 friend class Renderer;
@@ -19,7 +18,6 @@ public:
 		return glm::perspective(glm::radians(m_fov), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), m_nearClip, m_farClip);
 	}
 
-	virtual void HandleInput(Input* input) {}
 	virtual void Update(float dt) {}
 
 	// very temp getters, delete these
@@ -50,14 +48,12 @@ protected:
 class FirstPersonCamera : public Camera
 {
 public:
-	virtual void HandleInput(Input* input);
 	virtual void Update(float dt);
 };
 
 class FlyingCamera: public Camera
 {
 public:
-	virtual void HandleInput(Input* input);
 	virtual void Update(float dt);
 
 private:

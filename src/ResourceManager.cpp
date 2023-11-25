@@ -3,9 +3,7 @@
 
 #include "Texture.h"
 #include "Mesh.h"
-//#include "Sound.h"
-
-class Sound {};
+#include "Sound.h"
 
 class ImageLoader
 {
@@ -74,7 +72,8 @@ void ResourceManager::LoadSound(const std::string& id, const std::string& path)
 		ASSERT_MSG(false, "Sound with id \"%s\" already exists", id.c_str());
 	}
 
-	m_soundMap[id] = SoundLoader::LoadSoundFromFile(path);
+	//m_soundMap[id] = SoundLoader::LoadSoundFromFile(path);
+	m_soundMap[id] = Sound::LoadFromFile(path);
 }
 
 Sound* ResourceManager::GetSound(const std::string& id)

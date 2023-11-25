@@ -23,6 +23,7 @@ Enemy::Enemy(const glm::vec3& position, Player* player)
 	m_transform = glm::translate(glm::mat4(1.0f), position);
 
 	m_characterController = gPhysicsWorld.CreateCharacter(position);
+	m_characterController->getGhostObject()->setUserPointer((void*)this);
 }
 
 void Enemy::Damage(int amount)

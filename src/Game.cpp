@@ -20,7 +20,7 @@
 
 #include <deque>
 #include "Enemy.h"
-
+#include "Sound.h"
 
 #define DEBUG_DRAW 0
 #define TARGET_FPS 60 // broken dont use this
@@ -102,7 +102,18 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 	gTextRenderer.Init();
 	gTextRenderer.SetProjection(m_viewportWidth, m_viewportHeight);
 
-	m_input = new Input();
+	// Init AL stuff
+	// TODO move this
+	m_device = alcOpenDevice(NULL); // open default device
+	if (!m_device) {
+		// Error handling
+	}
+
+	m_alcontext = alcCreateContext(m_device, NULL);
+	if (!m_alcontext) {
+		// Error handling
+	}
+	alcMakeContextCurrent(m_alcontext);
 
 	SDL_ShowCursor(SDL_DISABLE);
 
@@ -127,10 +138,8 @@ void Game::Run()
 	bool running = true;
 	while (running)
 	{
-		running = m_input->HandleEvents();
-		if (m_input->IsKeyPressed(SDL_SCANCODE_ESCAPE)) running = false;
-		HandleInput();
-		m_input->Update();
+		running = Input::Instance().HandleEvents();
+		if (Input::Instance().IsKeyPressed(SDL_SCANCODE_ESCAPE)) running = false;
 
 		// TODO This sort of thing could be handled in a window class with events SDL_WINDOWEVENT_FOCUS_GAINED and SDL_WINDOWEVENT_FOCUS_LOST instead
 		// so input shouldnt actually handle the event loop. a window class probably should instead
@@ -183,6 +192,7 @@ void Game::Run()
 
 		// Update logic
 		Update(averageFrameTime);
+		Input::Instance().Update();
 
 		// Render
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -227,6 +237,9 @@ void Game::Create()
 {
 	ResourceManager::Instance().LoadTexture("cat", "data/images/round_cat.png");
 	ResourceManager::Instance().LoadTexture("missing", "data/images/missing.png");
+	ResourceManager::Instance().LoadSound("pew", "data/sounds/pew.wav");
+
+	ResourceManager::Instance().GetSound("pew")->SetVolume(0.25f);
 
 	//m_character = gPhysicsWorld.CreateCharacter();
 	m_player = new Player(gPhysicsWorld.CreateCharacter(glm::vec3(0.f, 5.0f, 0.0f)));
@@ -247,30 +260,6 @@ void Game::Create()
 	m_entities.push_back(enemy);
 }
 
-void Game::HandleInput()
-{
-	//m_player->HandleInput(m_input);
-
-	//m_camera->HandleInput(m_input);
-	m_player->HandleInput(m_input);
-
-	if (m_input->IsKeyPressed(SDL_SCANCODE_Z))
-	{
-		CatCube* catCube = gPhysicsWorld.AddCatCube(glm::vec3(0, 5.0f, 0));
-		m_renderer->AddToRenderList(catCube);
-	}
-
-	if (m_input->IsKeyPressed(SDL_SCANCODE_0))
-	{
-		ScreenshotManager::TakeScreenshot(m_windowWidth, m_windowHeight);
-	}
-
-	if (m_input->IsKeyPressed(SDL_SCANCODE_N))
-	{
-		//m_navGrid.DebugDrawPath(m_navGrid.RandomPath());
-	}
-}
-
 void Game::FixedUpdate()
 {
 	m_player->FixedUpdate();
@@ -278,6 +267,22 @@ void Game::FixedUpdate()
 
 void Game::Update(float dt)
 {
+	if (Input::Instance().IsKeyPressed(SDL_SCANCODE_Z))
+	{
+		CatCube* catCube = gPhysicsWorld.AddCatCube(glm::vec3(0, 5.0f, 0));
+		m_renderer->AddToRenderList(catCube);
+	}
+
+	if (Input::Instance().IsKeyPressed(SDL_SCANCODE_0))
+	{
+		ScreenshotManager::TakeScreenshot(m_windowWidth, m_windowHeight);
+	}
+
+	if (Input::Instance().IsKeyPressed(SDL_SCANCODE_N))
+	{
+		//m_navGrid.DebugDrawPath(m_navGrid.RandomPath());
+	}
+
 	//m_camera->Update(dt);
 
 	m_player->Update(dt);
@@ -314,9 +319,12 @@ void Game::Cleanup()
 	m_guiRenderer->Dispose();
 	SAFE_DELETE(m_guiRenderer);
 	
-	SAFE_DELETE(m_input);
-
 	ResourceManager::Instance().UnloadResources();
+
+	// clean up AL stuff
+	alcMakeContextCurrent(NULL);
+	alcDestroyContext(m_alcontext);
+	alcCloseDevice(m_device);
 
 	SDL_GL_DeleteContext(m_context);
 	SDL_DestroyWindow(m_window);

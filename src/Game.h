@@ -6,7 +6,6 @@
 
 class Renderer;
 
-class Input;
 class Player;
 class Camera;
 class Entity;
@@ -20,6 +19,10 @@ class GuiRenderer;
 #include "PhysicsWorld.h"
 
 #include "Player.h"
+
+// TODO move this
+#include <AL/al.h>
+#include <AL/alc.h>
 
 class Game
 {
@@ -39,11 +42,14 @@ private:
 	int m_viewportWidth;
 	int m_viewportHeight;
 	Renderer* m_renderer;
-	Input* m_input;
 	GuiRenderer* m_guiRenderer;
 
+	// AL stuff
+	// TODO move this
+	ALCdevice* m_device;
+	ALCcontext* m_alcontext;
+
 private:
-	void HandleInput();
 	void FixedUpdate();
 	void Update(float dt);
 	void Create(); // scene related
@@ -59,6 +65,5 @@ private:
 	//NavGrid m_navGrid; // Let's ignore complex pathfinding for now
 
 	std::vector<Entity*> m_entities;
-
 
 };

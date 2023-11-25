@@ -28,19 +28,16 @@ void Camera::UpdateCameraVectors()
 	m_up = glm::normalize(glm::cross(m_right, m_front));
 }
 
-void FirstPersonCamera::HandleInput(Input* input)
+void FirstPersonCamera::Update(float dt)
 {
 	// Mouse movement
-	glm::vec2 mouseRelPos = input->GetMouseRelPos();
+	glm::vec2 mouseRelPos = Input::Instance().GetMouseRelPos();
 	float xOffset = mouseRelPos.x * m_mouseSensitivity;
 	float yOffset = -mouseRelPos.y * m_mouseSensitivity;
 
 	m_yaw += xOffset;
 	m_pitch += yOffset;
-}
 
-void FirstPersonCamera::Update(float dt)
-{
 	if (m_pitch > 89.0f)
 	{
 		m_pitch = 89.0f;
@@ -54,38 +51,35 @@ void FirstPersonCamera::Update(float dt)
 	UpdateCameraVectors();
 }
 
-void FlyingCamera::HandleInput(Input* input)
+void FlyingCamera::Update(float dt)
 {
 	m_moveDir = glm::vec3(0.0f);
 
-	if (input->IsKeyHeld(SDL_SCANCODE_W))
+	if (Input::Instance().IsKeyHeld(SDL_SCANCODE_W))
 	{
 		m_moveDir += m_front;
 	}
-	if (input->IsKeyHeld(SDL_SCANCODE_A))
+	if (Input::Instance().IsKeyHeld(SDL_SCANCODE_A))
 	{
 		m_moveDir -= m_right;
 	}
-	if (input->IsKeyHeld(SDL_SCANCODE_S))
+	if (Input::Instance().IsKeyHeld(SDL_SCANCODE_S))
 	{
 		m_moveDir -= m_front;
 	}
-	if (input->IsKeyHeld(SDL_SCANCODE_D))
+	if (Input::Instance().IsKeyHeld(SDL_SCANCODE_D))
 	{
 		m_moveDir += m_right;
 	}
 
 	// Mouse movement
-	glm::vec2 mouseRelPos = input->GetMouseRelPos();
+	glm::vec2 mouseRelPos = Input::Instance().GetMouseRelPos();
 	float xOffset = mouseRelPos.x * m_mouseSensitivity;
 	float yOffset = -mouseRelPos.y * m_mouseSensitivity;
 
 	m_yaw += xOffset;
 	m_pitch += yOffset;
-}
 
-void FlyingCamera::Update(float dt)
-{
 	m_position += m_moveDir * m_speed * dt;
 
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped

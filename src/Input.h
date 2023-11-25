@@ -8,8 +8,11 @@
 class Input
 {
 public:
-	Input();
-	~Input();
+	static Input& Instance()
+	{
+		static Input instance;
+		return instance;
+	}
 
 	bool HandleEvents();
 	void Update();
@@ -23,6 +26,12 @@ public:
 	bool IsMouseButtonHeld(Uint8 button) const;
 
 private:
+	Input();
+	~Input();
+
+	Input(const Input&) = delete;
+	Input& operator=(const Input&) = delete;
+
 	SDL_Event m_event;
 	int m_numKeys;
 	bool *m_keyboardState;

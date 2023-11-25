@@ -1,10 +1,8 @@
 #pragma once
 
-#include "iGameState.h"
+#include "iState.h"
 
-class Input;
-
-class GameplayState : public iGameState
+class GameplayState : public iState
 {
 public:
 	GameplayState() {}
@@ -12,7 +10,6 @@ public:
 
 	void Create() override;
 	
-	void HandleInput(Input* input) {}
 	void FixedUpdate() {}
 	void Update(float dt) {}
 	void Render() {}
