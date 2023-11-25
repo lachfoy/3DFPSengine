@@ -120,6 +120,9 @@ void Game::Run()
 
 	const float targetFrameTime = 1.0f / TARGET_FPS;
 
+	const float physicsTimeStep = 1.0f / 60; // 60 Hz
+	float accumulator = 0.0f;
+
 	// main loop
 	bool running = true;
 	while (running)
@@ -134,6 +137,7 @@ void Game::Run()
 		Uint32 windowFlags = SDL_GetWindowFlags(m_window);
 		if (windowFlags & SDL_WINDOW_INPUT_FOCUS)
 		{
+			// Warp the mouse to the center of the screen while the window has focus
 			SDL_WarpMouseInWindow(m_window, m_windowWidth / 2, m_windowHeight / 2);
 		}
 
@@ -163,15 +167,24 @@ void Game::Run()
 		float averageFrameTime = frameTimeAccumulator / frameTimes.size();
 		float fps = 1.0f / averageFrameTime;
 
-		// update
-		FixedUpdate(1.0f / 50);
-		gPhysicsWorld.StepSimulation(1.0f / 50, 16);
-		Update(dt);
-
 		std::string titleStr = "fps: " + std::to_string(fps);
 		SDL_SetWindowTitle(m_window, titleStr.c_str());
 
-		// render
+		// Accumulate time for physics update
+		accumulator += dt;
+
+		// Update physics at fixed intervals
+		while (accumulator >= physicsTimeStep)
+		{
+			FixedUpdate(physicsTimeStep);
+			gPhysicsWorld.StepSimulation(physicsTimeStep, 16);
+			accumulator -= physicsTimeStep;
+		}
+
+		// Update logic
+		Update(averageFrameTime);
+
+		// Render
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		Render();
 		gPhysicsWorld.DebugDraw();
@@ -180,7 +193,7 @@ void Game::Run()
 		if (DEBUG_DRAW)
 		{
 			gDebugRenderer.Render(m_player->GetCamera());
-			gDebugRenderer.PostRenderUpdate(dt);
+			gDebugRenderer.PostRenderUpdate(averageFrameTime);
 		}
 
 		glDisable(GL_DEPTH_TEST);

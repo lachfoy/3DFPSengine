@@ -48,6 +48,7 @@ void Player::HandleInput(Input* input)
 
 	if (input->IsKeyPressed(SDL_SCANCODE_SPACE) && m_characterController->onGround())
 	{
+		m_jumpInput = true;
 		m_characterController->jump(btVector3(0.0f, m_jumpAmount, 0.0f));
 	}
 
@@ -62,11 +63,14 @@ void Player::FixedUpdate(float stepSize)
 {
 	if (glm::length(m_walkDirection) > 0.0f)
 	{
-		m_walkDirection = glm::normalize(m_walkDirection);
+		m_walkDirection = glm::normalize(m_walkDirection) * m_walkSpeed;
+	}
+	else
+	{
+		m_walkDirection = glm::vec3(0.0f);
 	}
 
-	glm::vec3 walkDirection = m_walkDirection * m_walkSpeed * stepSize;
-	btVector3 btWalkDirection(walkDirection.x, walkDirection.y, walkDirection.z);
+	btVector3 btWalkDirection(m_walkDirection.x, m_walkDirection.y, m_walkDirection.z);
 	m_characterController->setWalkDirection(btWalkDirection);
 
 	//std::string debugString;
@@ -80,6 +84,7 @@ void Player::Update(float dt)
 
 	// make the camera actually follow the character controller
 	btTransform btWorldTransform = m_characterController->getGhostObject()->getWorldTransform();
+
 	btVector3 origin = btWorldTransform.getOrigin();
 
 	m_camera->SetPosition(glm::vec3(origin.x(), origin.y() + m_cameraYOffsetFromOrigin, origin.z()));
