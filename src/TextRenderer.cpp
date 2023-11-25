@@ -70,9 +70,10 @@ void TextRenderer::AddStringToBatch(const std::string& string, float x, float y,
 
 		// Calculate the texture coordinates
 		float tx = charInfo.x / textureW;
-		float ty = charInfo.y / textureH;
+		float ty = 1.0f - (charInfo.y / textureH);
 		float tw = charInfo.width / textureW;
 		float th = charInfo.height / textureH;
+		ty -= th;
 
 		// Calculate positions
 		float posx = renderX + charInfo.xoffset;
@@ -85,10 +86,10 @@ void TextRenderer::AddStringToBatch(const std::string& string, float x, float y,
 		// Define the vertex offset for indexing
 		const unsigned int vertexOffset = m_textVertices.size();
 
-		m_textVertices.push_back(UIVertex::Make(posx, posy, tx, ty)); // Lower left vertex
-		m_textVertices.push_back(UIVertex::Make(posx + w, posy, tx + tw, ty)); // Lower right vertex
-		m_textVertices.push_back(UIVertex::Make(posx, posy + h, tx, ty + th)); // Upper left vertex
-		m_textVertices.push_back(UIVertex::Make(posx + w, posy + h, tx + tw, ty + th)); // Upper right vertex
+		m_textVertices.push_back(UIVertex::Make(posx, posy, tx, ty + th)); // Lower left vertex
+		m_textVertices.push_back(UIVertex::Make(posx + w, posy, tx + tw, ty + th)); // Lower right vertex
+		m_textVertices.push_back(UIVertex::Make(posx, posy + h, tx, ty)); // Upper left vertex
+		m_textVertices.push_back(UIVertex::Make(posx + w, posy + h, tx + tw, ty)); // Upper right vertex
 
 		m_textIndices.push_back(vertexOffset);
 		m_textIndices.push_back(vertexOffset + 2);
