@@ -16,7 +16,7 @@ public:
 	~Player() = default;
 
 	void HandleInput(Input* input);
-	void FixedUpdate(float stepSize);
+	void FixedUpdate();
 	void Update(float dt);
 
 	Camera* GetCamera() const { return m_camera; }

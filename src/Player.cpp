@@ -59,7 +59,7 @@ void Player::HandleInput(Input* input)
 	}
 }
 
-void Player::FixedUpdate(float stepSize)
+void Player::FixedUpdate()
 {
 	if (glm::length(m_walkDirection) > 0.0f)
 	{

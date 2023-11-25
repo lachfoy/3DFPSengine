@@ -13,8 +13,8 @@ public:
 	}
 
 	void HandleInput(Input* input);
-	void Update(float dt);
 	void FixedUpdate();
+	void Update(float dt);
 	void Render();
 
 private:

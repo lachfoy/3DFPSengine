@@ -176,7 +176,7 @@ void Game::Run()
 		// Update physics at fixed intervals
 		while (accumulator >= physicsTimeStep)
 		{
-			FixedUpdate(physicsTimeStep);
+			FixedUpdate();
 			gPhysicsWorld.StepSimulation(physicsTimeStep, 16);
 			accumulator -= physicsTimeStep;
 		}
@@ -271,9 +271,9 @@ void Game::HandleInput()
 	}
 }
 
-void Game::FixedUpdate(float stepSize)
+void Game::FixedUpdate()
 {
-	m_player->FixedUpdate(stepSize);
+	m_player->FixedUpdate();
 }
 
 void Game::Update(float dt)
