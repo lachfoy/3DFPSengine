@@ -11,7 +11,7 @@ constexpr int kScreenHeight = 600;
 int main(int argc, char* argv[])
 {
 	Game* game = new Game();
-	if (game->Init(kScreenWidth, kScreenHeight, true))
+	if (game->Init(kScreenWidth, kScreenHeight, false))
 		game->Run();
 
 	delete game;

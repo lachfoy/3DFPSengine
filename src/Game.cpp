@@ -229,14 +229,14 @@ void Game::Create()
 	ResourceManager::Instance().LoadTexture("missing", "data/images/missing.png");
 
 	//m_character = gPhysicsWorld.CreateCharacter();
-	m_player = new Player(gPhysicsWorld.CreateCharacter(glm::vec3(-22.5f, 6.75f, 5.5f)));
+	m_player = new Player(gPhysicsWorld.CreateCharacter(glm::vec3(0.f, 5.0f, 0.0f)));
 	m_renderer->SetProjection(m_player->GetCamera()->GetProjection(m_viewportWidth, m_viewportHeight));
 	gDebugRenderer.SetProjection(m_player->GetCamera()->GetProjection(m_viewportWidth, m_viewportHeight));
 
 	m_level = new Level();
 	m_renderer->AddToRenderList(m_level);
 
-	gPhysicsWorld.CreateStaticLevelGeometry("data/models/rapture1.obj");
+	gPhysicsWorld.CreateStaticLevelGeometry("data/models/test.obj");
 	//m_navGrid.Generate(&gPhysicsWorld);
 
 	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);

@@ -30,7 +30,7 @@ void CatCube::setWorldTransform(const btTransform& worldTrans)
 
 Level::Level()
 {
-	m_mesh = Mesh::LoadMeshFromOBJ("data/models/rapture1.obj");
+	m_mesh = Mesh::LoadMeshFromOBJ("data/models/test.obj");
 
 	m_texture = ResourceManager::Instance().GetTexture("missing");
 
