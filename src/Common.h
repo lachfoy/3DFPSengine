@@ -13,6 +13,9 @@
 #include <cassert>
 #define ASSERT(_Expression) assert(_Expression)
 
+//#include <stdio.h>
+//#define btAssert(x) { if(!(x)){printf("Assert " __FILE__ ":%u (%s)\n", __LINE__, #x);__debugbreak();	}}
+
 #include <cstdio>
 #include <cstdlib>
 #define ASSERT_MSG(expression, message, ...) \

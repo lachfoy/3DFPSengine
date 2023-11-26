@@ -156,7 +156,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>SDL2main.lib;SDL2.lib;BulletDynamics_Debug.lib;BulletCollision_Debug.lib;LinearMath_Debug.lib;OpenAL32.lib;sndfile.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>SDL2main.lib;SDL2.lib;BulletDynamics.lib;BulletCollision.lib;LinearMath.lib;OpenAL32.lib;sndfile.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
@@ -168,7 +168,7 @@
     <ClCompile Include="src\DebugRenderer.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\Entity.cpp" />
-    <ClCompile Include="src\IRenderable.cpp" />
+    <ClCompile Include="src\iRenderable.cpp" />
     <ClCompile Include="src\StateManager.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Font.cpp" />

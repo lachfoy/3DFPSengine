@@ -1,4 +1,4 @@
-#include "IRenderable.h"
+#include "iRenderable.h"
 
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
