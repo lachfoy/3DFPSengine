@@ -42,29 +42,42 @@ void Enemy::Think()
 	
 }
 
-void Enemy::OnUpdate(float dt)
+void Enemy::FixedUpdate()
+{
+	if (glm::length(m_walkDirection) > 0.0f)
+	{
+		m_walkDirection = glm::normalize(m_walkDirection) * m_walkSpeed;
+	}
+	else
+	{
+		m_walkDirection = glm::vec3(0.0f);
+	}
+
+	btVector3 btWalkDirection(m_walkDirection.x, m_walkDirection.y, m_walkDirection.z);
+	m_characterController->setWalkDirection(btWalkDirection);
+}
+
+void Enemy::Update(float dt)
 {
 	btTransform btWorldTransform = m_characterController->getGhostObject()->getWorldTransform();
 	btVector3 origin = btWorldTransform.getOrigin();
 
-	m_worldPosition = glm::vec3(origin.x(), origin.y(), origin.z());
+	m_position = glm::vec3(origin.x(), origin.y(), origin.z());
 
 	glm::vec3 playerPos = m_player->GetPosition();
 
-	glm::vec3 dirToPlayer = glm::normalize(playerPos - m_worldPosition);
+	glm::vec3 dirToPlayer = glm::normalize(playerPos - m_position);
 
-	//dirToPlayer.y = 0.0f;
-	//glm::vec3 walkDirection = dirToPlayer * 5.0f * dt;
-	//btVector3 btWalkDirection(walkDirection.x, walkDirection.y, walkDirection.z);
-	//m_characterController->setWalkDirection(btWalkDirection);
+	dirToPlayer.y = 0.0f;
+	m_walkDirection = dirToPlayer;
 
-	//float radiansToPlayer =  atan2(dirToPlayer.x, dirToPlayer.z);
-	//m_rotation.y = radiansToPlayer; // Welp. Rotations are not correct. Only works when rotating around the origin
+	float radiansToPlayer = atan2(dirToPlayer.x, dirToPlayer.z);
+	m_rotation.y = radiansToPlayer;
 
 	UpdateTransform();
 }
 
-void Enemy::OnDestroy()
+void Enemy::Destroy()
 {
 	
 }

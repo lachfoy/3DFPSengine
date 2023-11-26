@@ -168,6 +168,7 @@
     <ClCompile Include="src\DebugRenderer.cpp" />
     <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\Entity.cpp" />
+    <ClCompile Include="src\IRenderable.cpp" />
     <ClCompile Include="src\StateManager.cpp" />
     <ClCompile Include="src\Player.cpp" />
     <ClCompile Include="src\Font.cpp" />

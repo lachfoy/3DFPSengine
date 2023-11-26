@@ -263,6 +263,11 @@ void Game::Create()
 void Game::FixedUpdate()
 {
 	m_player->FixedUpdate();
+
+	for (Entity* entity : m_entities)
+	{
+		entity->FixedUpdate();
+	}
 }
 
 void Game::Update(float dt)
@@ -289,7 +294,7 @@ void Game::Update(float dt)
 
 	for (Entity* entity : m_entities)
 	{
-		entity->OnUpdate(dt);
+		entity->Update(dt);
 	}
 }
 

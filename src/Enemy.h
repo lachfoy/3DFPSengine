@@ -21,9 +21,12 @@ public:
 	int GetDamage() const { return rand() % (m_maxDamage - m_minDamage + 1) + m_minDamage; }
 
 	void Think();
-	void OnUpdate(float dt) override;
 
-	void OnDestroy() override;
+
+	void FixedUpdate() override;
+	void Update(float dt) override;
+
+	void Destroy() override;
 
 private:
 	glm::vec3 m_moveDir{ 0.0f };
@@ -45,5 +48,8 @@ private:
 	btKinematicCharacterController* m_characterController;
 
 	Player* m_player;
+
+	glm::vec3 m_walkDirection;
+	float m_walkSpeed = 0.01f;
 
 };

@@ -7,20 +7,15 @@ class Entity
 {
 public:
 	Entity();
-	Entity(const glm::vec3& worldPosition, const glm::vec3& scale = glm::vec3(1.0f, 1.0f, 1.0f), const glm::vec3& rotation = glm::vec3(0.0f, 0.0f, 0.0f));
+	Entity(const glm::vec3& position);
 	~Entity() {}
 
-	virtual void OnCreate() {};
-	virtual void OnUpdate(float dt) {};
-	virtual void OnDestroy() {};
+	virtual void Create() {};
+	virtual void FixedUpdate() {};
+	virtual void Update(float dt) {};
+	virtual void Destroy() {};
 
 protected:
-	virtual void UpdateTransform();
-
-	glm::vec3 m_worldPosition;
-	glm::vec3 m_scale;
-	glm::vec3 m_rotation;
-
-	glm::mat4 m_transform;
+	glm::vec3 m_position;
 
 };
