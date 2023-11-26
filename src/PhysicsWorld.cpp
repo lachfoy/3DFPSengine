@@ -224,35 +224,9 @@ void PhysicsWorld::CreateStaticLevelGeometry(const std::string& pathToObj)
 	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, motionState, shape, localInertia);
 	btRigidBody* body = new btRigidBody(rbInfo);
 
-	m_dynamicsWorld->addRigidBody(body);
+	m_dynamicsWorld->addRigidBody(body, btBroadphaseProxy::StaticFilter, btBroadphaseProxy::AllFilter);
 	m_collisionObjects.push_back(body);
 	m_levelCollisionObject = body; // Save a reference to the body
-}
-
-bool PhysicsWorld::RayCast(const glm::vec3& from, const glm::vec3& direction)
-{
-	// Convert glm::vec3 to btVector3
-	btVector3 btFrom(from.x, from.y, from.z);
-
-	btVector3 btTo = btFrom + btVector3(direction.x, direction.y, direction.z) * 1000000.0f;
-
-	// Perform raycast
-	btCollisionWorld::ClosestRayResultCallback rayCallback(btFrom, btTo);
-	m_dynamicsWorld->rayTest(btFrom, btTo, rayCallback);
-
-	if (rayCallback.hasHit())
-	{
-		btVector3 btHit = rayCallback.m_hitPointWorld;
-		glm::vec3 hit = glm::vec3(btHit.x(), btHit.y(), btHit.z());
-
-		gDebugRenderer.AddLine(from, hit, glm::vec3(0.0f, 1.0f, 1.0f), 2.0f);
-		gDebugRenderer.AddBox(hit, glm::vec3(0.1f), glm::vec3(0.0f, 1.0f, 1.0f), 2.0f);
-
-		// Ray hit something
-		return true;
-	}
-
-	return false;
 }
 
 bool PhysicsWorld::ExpensiveAABBTestVsLevelGeometry(const glm::vec3& position, const glm::vec3& halfExtents)

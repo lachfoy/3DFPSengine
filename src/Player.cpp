@@ -14,6 +14,8 @@
 #include "PhysicsWorld.h"
 #include "ResourceManager.h"
 #include "Sound.h"
+#include "DebugRenderer.h"
+#include "Enemy.h"
 
 Player::Player(btKinematicCharacterController* characterController)
 	: m_characterController(characterController)
@@ -72,10 +74,49 @@ void Player::Update(float dt)
 
 	if (Input::Instance().IsMouseButtonPressed(SDL_BUTTON_LEFT))
 	{
+		ResourceManager::Instance().GetSound("pew")->Play(); // pew
+		
 		// Raycast from center of camera
-		gPhysicsWorld.RayCast(m_camera->GetPosition(), m_camera->GetFront());
 
-		ResourceManager::Instance().GetSound("pew")->Play();
+		glm::vec3 from = m_camera->GetPosition();
+		glm::vec3 dir = m_camera->GetFront();
+
+		// Convert glm::vec3 to btVector3
+		btVector3 btFrom(from.x, from.y, from.z);
+		btVector3 btTo = btFrom + btVector3(dir.x, dir.y, dir.z) * 50.0f;
+
+		// Perform raycast
+		btCollisionWorld::ClosestRayResultCallback rayCallback(btFrom, btTo);
+		gPhysicsWorld.GetDynamicsWorld()->rayTest(btFrom, btTo, rayCallback);
+		
+		if (rayCallback.hasHit())
+		{
+			btVector3 btHit = rayCallback.m_hitPointWorld;
+			glm::vec3 hit = glm::vec3(btHit.x(), btHit.y(), btHit.z());
+
+			gDebugRenderer.AddLine(from, hit, glm::vec3(0.0f, 1.0f, 1.0f), 2.0f);
+			gDebugRenderer.AddBox(hit, glm::vec3(0.1f), glm::vec3(0.0f, 1.0f, 1.0f), 2.0f);
+
+			// Ray hit something
+			if (rayCallback.m_collisionObject)
+			{
+				Enemy* enemy = static_cast<Enemy*>(rayCallback.m_collisionObject->getUserPointer());
+				if (enemy)
+				{
+					printf("Hit enemy\n");
+				}
+
+				// Check if the collision was static geometry
+				const btBroadphaseProxy* proxy = rayCallback.m_collisionObject->getBroadphaseHandle();
+				if (proxy)
+				{
+					if (proxy->m_collisionFilterGroup == btBroadphaseProxy::StaticFilter)
+					{
+						printf("Hit static geometry\n");
+					}
+				}
+			}
+		}
 	}
 
 	m_camera->Update(dt);

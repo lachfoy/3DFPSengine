@@ -60,6 +60,9 @@ public:
 	PhysicsWorld();
 	~PhysicsWorld();
 
+
+	btDiscreteDynamicsWorld* GetDynamicsWorld() const { return m_dynamicsWorld; }
+
 	void StepSimulation(float timeStep, int maxSubSteps = 10);
 
 	CatCube* AddCatCube(const glm::vec3& position);
@@ -67,8 +70,6 @@ public:
 	btKinematicCharacterController* CreateCharacter(const glm::vec3& position);
 
 	void CreateStaticLevelGeometry(const std::string& pathToObj);
-
-	bool RayCast(const glm::vec3& from, const glm::vec3& direction);
 
 	bool ExpensiveAABBTestVsLevelGeometry(const glm::vec3& position, const glm::vec3& halfExtents);
 
