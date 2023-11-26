@@ -8,12 +8,26 @@
 #include <vector>
 #include <map>
 
+struct DebugVertex
+{
+	glm::vec3 position;
+	glm::vec3 color;
+};
+
 struct DebugLine {
-	glm::vec3 from;
 	glm::vec3 to;
+	glm::vec3 from;
 	glm::vec3 color;
 	float duration;
 };
+
+//struct LineGroup
+//{
+//	std::vector<DebugLine> lines;
+//	float duration;
+//};
+//
+//std::map<int, LineGroup> lineGroups;
 
 class Camera;
 

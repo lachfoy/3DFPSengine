@@ -22,13 +22,13 @@
 #include "Enemy.h"
 #include "Sound.h"
 
-#define DEBUG_DRAW 0
+#define DEBUG_DRAW 1
 #define TARGET_FPS 60 // broken dont use this
 #define CAP_FRAMERATE 0 // broken dont use this
 
 bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 {
-	srand(time(NULL));
+	srand((unsigned int)time(NULL)); // dont do this here. but whatever for now
 	m_windowWidth = windowedWidth;
 	m_windowHeight = windowedHeight;
 	m_viewportWidth = m_windowWidth / 2; // for now
@@ -203,7 +203,7 @@ void Game::Run()
 		if (DEBUG_DRAW)
 		{
 			gDebugRenderer.Render(m_player->GetCamera());
-			gDebugRenderer.PostRenderUpdate(averageFrameTime);
+			gDebugRenderer.PostRenderUpdate(dt);
 		}
 
 		glDisable(GL_DEPTH_TEST);

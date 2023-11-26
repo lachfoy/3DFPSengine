@@ -36,12 +36,7 @@ void DebugRenderer::Dispose()
 
 void DebugRenderer::AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float duration)
 {
-	DebugLine line;
-	line.from = from;
-	line.to = to;
-	line.color = color;
-	line.duration = duration;
-	//m_lines.push_back(line);
+	m_lines.push_back({ to, from, color, duration });
 }
 
 void DebugRenderer::AddSphere(const glm::vec3& center, float radius, const glm::vec3& color, float duration)
@@ -53,8 +48,8 @@ void DebugRenderer::AddSphere(const glm::vec3& center, float radius, const glm::
 
 	for (int i = 0; i < latitudeLines; i++)
 	{
-		float lat1 = PI * (-0.5 + float(i) / latitudeLines);
-		float lat2 = PI * (-0.5 + float(i + 1) / latitudeLines);
+		float lat1 = PI * (-0.5f + float(i) / latitudeLines);
+		float lat2 = PI * (-0.5f + float(i + 1) / latitudeLines);
 
 		for (int j = 0; j < longitudeLines; j++)
 		{
@@ -111,32 +106,21 @@ void DebugRenderer::Render(Camera* camera)
 	glUseProgram(m_debugShaderProgram);
 	glBindVertexArray(m_lineVao);
 
-	glBindBuffer(GL_ARRAY_BUFFER, m_lineVbo);
-
 	glUniformMatrix4fv(glGetUniformLocation(m_debugShaderProgram, "u_view"), 1, false, glm::value_ptr(camera->GetView()));
 
-	std::vector<glm::vec3> lineData;
-	for (const auto& debugLine : m_lines)
+	glBindBuffer(GL_ARRAY_BUFFER, m_lineVbo);
+
+	std::vector<DebugVertex> vertices;
+	for (const auto& line : m_lines)
 	{
-		lineData.push_back(debugLine.from);
-		lineData.push_back(debugLine.to);
+		vertices.push_back({ line.from, line.color });
+		vertices.push_back({ line.to, line.color });
 	}
-	glBufferSubData(GL_ARRAY_BUFFER, 0, lineData.size() * sizeof(glm::vec3), lineData.data());
-
-	for (size_t i = 0; i < m_lines.size(); ++i) {
-		// Set the color uniform for the current line
-		glUniform3fv(m_colorUniformLocation, 1, glm::value_ptr(m_lines[i].color));
-
-		// Render the line
-		// todo.... batch these
-		glDrawArrays(GL_LINES, i * 2, 2);
-	}
-
-	//glDrawArrays(GL_LINES, 0, m_lines.size() * 2);
 	
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	glBufferSubData(GL_ARRAY_BUFFER, 0, vertices.size() * sizeof(DebugVertex), vertices.data());
+	glDrawArrays(GL_LINES, 0, (GLsizei)vertices.size());
 
+	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	glBindVertexArray(0);
 }
 
@@ -164,18 +148,22 @@ void DebugRenderer::CreateShaderProgram()
 	GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
 	{
 		const GLchar* vertexSource = R"(
-		#version 330 core
+			#version 330 core
 
-		layout (location = 0) in vec3 a_position;
+			layout (location = 0) in vec3 a_position;
+			layout (location = 1) in vec3 a_color;
 
-		uniform mat4 u_projection;
-		uniform mat4 u_view;
+			uniform mat4 u_projection;
+			uniform mat4 u_view;
 
-		void main()
-		{
-			gl_Position = u_projection * u_view * vec4(a_position, 1.0);
-		}
-	)";
+			out vec3 v_color;
+
+			void main()
+			{
+				v_color = a_color;
+				gl_Position = u_projection * u_view * vec4(a_position, 1.0);
+			}
+		)";
 
 		glShaderSource(vertexShader, 1, &vertexSource, 0);
 		glCompileShader(vertexShader);
@@ -183,7 +171,8 @@ void DebugRenderer::CreateShaderProgram()
 		int success;
 		char infoLog[512];
 		glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-		if (!success) {
+		if (!success)
+		{
 			glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
 			printf("Failed to compile vertex shader:\n%s\n", infoLog);
 		}
@@ -193,16 +182,16 @@ void DebugRenderer::CreateShaderProgram()
 	GLuint fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
 	{
 		const GLchar* fragmentSource = R"(
-		#version 330 core
-		out vec4 out_color;
+			#version 330 core
 
-		uniform vec3 u_color;
+			in vec3 v_color;
+			out vec4 out_color;
 
-		void main()
-		{
-			out_color = vec4(u_color, 1);
-		}
-	)";
+			void main()
+			{
+				out_color = vec4(v_color, 1);
+			}
+		)";
 
 		glShaderSource(fragmentShader, 1, &fragmentSource, 0);
 		glCompileShader(fragmentShader);
@@ -210,7 +199,8 @@ void DebugRenderer::CreateShaderProgram()
 		int success;
 		char infoLog[512];
 		glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-		if (!success) {
+		if (!success)
+		{
 			glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
 			printf("Failed to compile fragment shader:\n%s\n", infoLog);
 		}
@@ -223,15 +213,14 @@ void DebugRenderer::CreateShaderProgram()
 	glLinkProgram(m_debugShaderProgram);
 
 	int success;
-	char info_log[512];
+	char infoLog[512];
 	glGetProgramiv(m_debugShaderProgram, GL_LINK_STATUS, &success);
-	if (!success) {
-		glGetProgramInfoLog(m_debugShaderProgram, 512, NULL, info_log);
-		printf("Failed to link shader:\n%s\n", info_log);
+	if (!success)
+	{
+		glGetProgramInfoLog(m_debugShaderProgram, 512, NULL, infoLog);
+		printf("Failed to link shader:\n%s\n", infoLog);
 	}
 
-	m_colorUniformLocation = glGetUniformLocation(m_debugShaderProgram, "u_color");
-	
 	// No longer need these
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
@@ -239,7 +228,6 @@ void DebugRenderer::CreateShaderProgram()
 
 void DebugRenderer::CreateRenderData()
 {
-	// FOR DEBUG LINES
 	// VAO
 	glGenVertexArrays(1, &m_lineVao);
 	glBindVertexArray(m_lineVao);
@@ -247,11 +235,14 @@ void DebugRenderer::CreateRenderData()
 	// VBO
 	glGenBuffers(1, &m_lineVbo);
 	glBindBuffer(GL_ARRAY_BUFFER, m_lineVbo);
-	glBufferData(GL_ARRAY_BUFFER, kMaxLines * sizeof(glm::vec3) * 2, NULL, GL_DYNAMIC_DRAW);
+	glBufferData(GL_ARRAY_BUFFER, kMaxLines * sizeof(DebugVertex) * 2, nullptr, GL_DYNAMIC_DRAW);
 
-	// Enable the vertex attribute arrays for position and texcoords
+	// Enable the vertex attribute arrays for position and color
 	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(glm::vec3), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(DebugVertex), (void*)0);
+
+	glEnableVertexAttribArray(1);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(DebugVertex), (void*)offsetof(DebugVertex, color));
 
 	// Unbind
 	glBindVertexArray(0);
