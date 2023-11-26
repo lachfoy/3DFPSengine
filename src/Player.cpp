@@ -79,11 +79,10 @@ void Player::Update(float dt)
 		// Raycast from center of camera
 
 		glm::vec3 from = m_camera->GetPosition();
-		glm::vec3 dir = m_camera->GetFront();
 
 		// Convert glm::vec3 to btVector3
 		btVector3 btFrom(from.x, from.y, from.z);
-		btVector3 btTo = btFrom + btVector3(dir.x, dir.y, dir.z) * 50.0f;
+		btVector3 btTo = btFrom + btVector3(front.x, front.y, front.z) * 50.0f;
 
 		// Perform raycast
 		btCollisionWorld::ClosestRayResultCallback rayCallback(btFrom, btTo);
@@ -129,6 +128,6 @@ void Player::Update(float dt)
 	m_camera->SetPosition(glm::vec3(origin.x(), origin.y() + m_cameraYOffsetFromOrigin, origin.z()));
 
 	std::string debugString;
-	debugString += "origin:" + std::to_string(origin.x()) + ", " + std::to_string(origin.y()) + ", " + std::to_string(origin.z()) + "\n"; // position is camera position
+	debugString += "origin:" + std::to_string(origin.x()) + ", " + std::to_string(origin.y()) + ", " + std::to_string(origin.z()) + "\n";
 	gTextRenderer.AddStringToBatch(debugString, 0, 0, glm::vec3(1.0f));
 }
