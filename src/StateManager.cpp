@@ -1,6 +1,19 @@
+#include "Common.h"
 #include "StateManager.h"
 
-#include "iState.h"
+void StateManager::GoToState(std::unique_ptr<iState> nextState)
+{
+	ASSERT(nextState);
+
+	if (m_currentState)
+	{
+		m_currentState->Destroy();
+	}
+
+	nextState->Create();
+
+	m_currentState = std::move(nextState);
+}
 
 void StateManager::FixedUpdate()
 {

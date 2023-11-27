@@ -1,7 +1,7 @@
 #pragma once
 
-class iState;
-class Input;
+#include "iState.h"
+#include <memory>
 
 class StateManager
 {
@@ -12,16 +12,19 @@ public:
 		return instance;
 	}
 
+	void GoToState(std::unique_ptr<iState> nextState);
+	
 	void FixedUpdate();
 	void Update(float dt);
 	void Render();
 
 private:
 	StateManager() = default;
+	~StateManager() = default;
 
 	StateManager(const StateManager&) = delete;
 	StateManager& operator=(const StateManager&) = delete;
 
-	iState* m_currentState;
+	std::unique_ptr<iState> m_currentState;
 
 };

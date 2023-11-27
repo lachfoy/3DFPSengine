@@ -10,9 +10,9 @@ public:
 
 	void Create() override;
 	
-	void FixedUpdate() {}
-	void Update(float dt) {}
-	void Render() {}
+	void FixedUpdate() override {}
+	void Update(float dt) override {}
+	void Render() override {}
 	
 	void Destroy() override;
 

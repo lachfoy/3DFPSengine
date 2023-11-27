@@ -23,7 +23,7 @@
 #include "Sound.h"
 
 #include "AudioEngine.h"
-
+#include "StateManager.h"
 
 #define DEBUG_DRAW 1
 #define TARGET_FPS 60 // broken dont use this
@@ -250,6 +250,9 @@ void Game::Create()
 	Enemy* enemy = new Enemy(glm::vec3(0.0f, 10.0f, 0.0f), m_player);
 	m_renderer->AddToRenderList(enemy);
 	m_entities.push_back(enemy);
+
+
+	//StateManager::Instance().GoToState(new GameplayState());
 }
 
 void Game::FixedUpdate()
@@ -260,6 +263,8 @@ void Game::FixedUpdate()
 	{
 		entity->FixedUpdate();
 	}
+
+	StateManager::Instance().FixedUpdate();
 }
 
 void Game::Update(float dt)
@@ -288,6 +293,8 @@ void Game::Update(float dt)
 	{
 		entity->Update(dt);
 	}
+
+	StateManager::Instance().Update(dt);
 }
 
 void Game::Render()
@@ -298,7 +305,9 @@ void Game::Render()
 	//m_navGrid.DebugDrawPath(
 	//	m_navGrid.FindPath(m_navGrid.GetRandomStartNode(), m_navGrid.NodeClosestTo(m_fpsController->GetPosition()))
 	//);
-	
+
+	StateManager::Instance().Render();
+
 }
 
 void Game::Destroy()
