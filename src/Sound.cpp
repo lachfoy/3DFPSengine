@@ -4,8 +4,20 @@
 
 Sound::Sound()
 {
+	alGetError();
 	alGenBuffers(1, &m_buffer);
+	ALenum err = alGetError();
+	if (err != AL_NO_ERROR)
+	{
+		printf("AL error \n");
+	}
+
 	alGenSources(1, &m_source);
+	err = alGetError();
+	if (err != AL_NO_ERROR)
+	{
+		printf("AL error \n");
+	}
 }
 
 Sound::~Sound()
@@ -66,7 +78,7 @@ void Sound::Play() const
 	alSourcePlay(m_source);
 }
 
-void Sound::SetVolume(float volume)
+void Sound::SetGain(float volume)
 {
 	alSourcef(m_source, AL_GAIN, volume);
 }

@@ -20,10 +20,6 @@ class GuiRenderer;
 
 #include "Player.h"
 
-// TODO move this
-#include <AL/al.h>
-#include <AL/alc.h>
-
 class Game
 {
 public:
@@ -43,11 +39,6 @@ private:
 	int m_viewportHeight;
 	Renderer* m_renderer;
 	GuiRenderer* m_guiRenderer;
-
-	// AL stuff
-	// TODO move this
-	ALCdevice* m_device;
-	ALCcontext* m_alcontext;
 
 private:
 	void FixedUpdate();

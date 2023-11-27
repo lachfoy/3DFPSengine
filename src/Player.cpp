@@ -16,6 +16,7 @@
 #include "Sound.h"
 #include "DebugRenderer.h"
 #include "Enemy.h"
+#include "AudioEngine.h"
 
 Player::Player(btKinematicCharacterController* characterController)
 	: m_characterController(characterController)
@@ -125,7 +126,11 @@ void Player::Update(float dt)
 
 	btVector3 origin = btWorldTransform.getOrigin();
 
-	m_camera->SetPosition(glm::vec3(origin.x(), origin.y() + m_cameraYOffsetFromOrigin, origin.z()));
+	glm::vec3 cameraPosition = glm::vec3(origin.x(), origin.y() + m_cameraYOffsetFromOrigin, origin.z());
+	m_camera->SetPosition(cameraPosition);
+
+	g_audioEngine.SetListenerPosition(cameraPosition);
+	g_audioEngine.SetListenerOrientation(front);
 
 	std::string debugString;
 	debugString += "origin:" + std::to_string(origin.x()) + ", " + std::to_string(origin.y()) + ", " + std::to_string(origin.z()) + "\n";

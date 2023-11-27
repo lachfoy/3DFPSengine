@@ -14,7 +14,7 @@ public:
 
 	void Play() const;
 
-	void SetVolume(float volume);
+	void SetGain(float volume);
 
 private:
 	ALuint m_buffer;

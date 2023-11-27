@@ -22,6 +22,9 @@
 #include "Enemy.h"
 #include "Sound.h"
 
+#include "AudioEngine.h"
+
+
 #define DEBUG_DRAW 1
 #define TARGET_FPS 60 // broken dont use this
 #define CAP_FRAMERATE 0 // broken dont use this
@@ -102,18 +105,7 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 	gTextRenderer.Init();
 	gTextRenderer.SetProjection(m_viewportWidth, m_viewportHeight);
 
-	// Init AL stuff
-	// TODO move this
-	m_device = alcOpenDevice(NULL); // open default device
-	if (!m_device) {
-		// Error handling
-	}
-
-	m_alcontext = alcCreateContext(m_device, NULL);
-	if (!m_alcontext) {
-		// Error handling
-	}
-	alcMakeContextCurrent(m_alcontext);
+	g_audioEngine.Init();
 
 	SDL_ShowCursor(SDL_DISABLE);
 
@@ -239,7 +231,7 @@ void Game::Create()
 	ResourceManager::Instance().LoadTexture("missing", "data/images/missing.png");
 	ResourceManager::Instance().LoadSound("pew", "data/sounds/pew.wav");
 
-	ResourceManager::Instance().GetSound("pew")->SetVolume(0.25f);
+	ResourceManager::Instance().GetSound("pew")->SetGain(1.0f);
 
 	//m_character = gPhysicsWorld.CreateCharacter();
 	m_player = new Player(gPhysicsWorld.CreateCharacter(glm::vec3(0.f, 5.0f, 0.0f)));
@@ -327,9 +319,7 @@ void Game::Cleanup()
 	ResourceManager::Instance().UnloadResources();
 
 	// clean up AL stuff
-	alcMakeContextCurrent(NULL);
-	alcDestroyContext(m_alcontext);
-	alcCloseDevice(m_device);
+	g_audioEngine.Destroy();
 
 	SDL_GL_DeleteContext(m_context);
 	SDL_DestroyWindow(m_window);
