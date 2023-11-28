@@ -197,6 +197,7 @@
     <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\GameplayState.h" />
+    <ClInclude Include="src\iResource.h" />
     <ClInclude Include="src\iState.h" />
     <ClInclude Include="src\Player.h" />
     <ClInclude Include="src\Font.h" />

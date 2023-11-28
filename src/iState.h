@@ -1,7 +1,5 @@
 #pragma once
 
-class Input;
-
 class iState
 {
 public:

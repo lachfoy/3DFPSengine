@@ -33,7 +33,7 @@ void ResourceManager::LoadTexture(const std::string& id, const std::string& path
 
 	//m_textureMap[id] = ImageLoader::LoadTextureFromFile(path);
 	Texture* texture = new Texture();
-	texture->LoadFromFile(path);
+	texture->Load(path);
 	m_textureMap[id] = texture;
 }
 
@@ -84,15 +84,15 @@ Sound* ResourceManager::GetSound(const std::string& id)
 	return it == m_soundMap.end() ? nullptr : it->second;
 }
 
-void ResourceManager::UnloadResources()
-{
-	printf("Unloading resources...\n");
-	printf("--------------------------------------------------------\n");
-	UnloadTextures();
-	UnloadMeshes();
-	UnloadSounds();
-	printf("--------------------------------------------------------\n\n");
-}
+//void ResourceManager::UnloadResources()
+//{
+//	printf("Unloading resources...\n");
+//	printf("--------------------------------------------------------\n");
+//	UnloadTextures();
+//	UnloadMeshes();
+//	UnloadSounds();
+//	printf("--------------------------------------------------------\n\n");
+//}
 
 void ResourceManager::UnloadTextures()
 {
@@ -119,4 +119,17 @@ void ResourceManager::UnloadSounds()
 		SAFE_DELETE(it.second);
 		printf("Unloaded sound: %s\n", it.first.c_str());
 	}
+}
+
+
+void ResourceManager::UnloadResources()
+{
+	printf("Unloading resources...\n");
+	printf("--------------------------------------------------------\n");
+	for (auto it : m_resources)
+	{
+		SAFE_DELETE(it.second);
+		printf("Deleted resource: %s\n", it.first.c_str());
+	}
+	printf("--------------------------------------------------------\n\n");
 }

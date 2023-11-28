@@ -7,6 +7,10 @@ class Texture;
 class Mesh;
 class Sound;
 
+#include "iResource.h"
+#include <memory>
+
+
 class ResourceManager
 {
 public:
@@ -25,7 +29,6 @@ public:
 	void LoadSound(const std::string& id, const std::string& path);
 	Sound* GetSound(const std::string& id);
 
-	void UnloadResources(); // Explicit unloading of resources (rather than in a destructor?) not sure if this is necessary but for now leave it like this
 
 	// At the moment, we would expect every single resources to be loaded into memory at the start of the game, and then unloaded when the game quits
 	// If we wanted to have resources load per scene, and unload at the end of that scene, we could ref count the resources
@@ -47,6 +50,48 @@ public:
 	//	std::unordered_map<int, std::weak_ptr<Texture>> m_textures;
 	//}
 
+	template <typename T>
+	void LoadResource(const std::string& path, const std::string& id)
+	{
+		static_assert(std::is_base_of<iResource, T>::value, "T must be an iResource");
+
+		auto it = m_resources.find(id);
+		if (it != m_resources.end())
+		{
+			// resource already exists
+			// error
+			printf("Resource already exists\n");
+			return;
+		}
+
+		// Call factory method that depends on the resource 
+		T* resource = T::Create();
+		if (!resource->Load(path))
+		{
+			// error loading the resource
+			printf("Error loading resource\n");
+			return;
+		}
+
+		m_resources[id] = resource;
+	}
+
+	template <typename T>
+	T* GetResource(const std::string& id)
+	{
+		auto it = m_resources.find(id);
+		if (it != m_resources.end())
+		{
+			return it->second;
+		}
+		else
+		{
+			return nullptr; // ERROR
+		}
+	}
+
+	void UnloadResources(); // Explicit unloading of resources (rather than in a destructor?) not sure if this is necessary but for now leave it like this
+
 private:
 	ResourceManager() {}
 
@@ -60,5 +105,7 @@ private:
 	std::unordered_map<std::string, Texture*> m_textureMap;
 	std::unordered_map<std::string, Mesh*> m_meshMap;
 	std::unordered_map<std::string, Sound*> m_soundMap;
+
+	std::unordered_map<std::string, iResource*> m_resources;
 
 };
