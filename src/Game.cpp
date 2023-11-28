@@ -227,8 +227,8 @@ void Game::SetupGL()
 
 void Game::Create()
 {
-	ResourceManager::Instance().LoadTexture("cat", "data/images/round_cat.png");
-	ResourceManager::Instance().LoadTexture("missing", "data/images/missing.png");
+	ResourceManager::Instance().LoadResource<Texture>("data/images/round_cat.png", "cat");
+	ResourceManager::Instance().LoadResource<Texture>("data/images/missing.png", "missing");
 	ResourceManager::Instance().LoadSound("pew", "data/sounds/pew.wav");
 
 	ResourceManager::Instance().GetSound("pew")->SetGain(1.0f);

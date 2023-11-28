@@ -20,9 +20,6 @@ public:
 		return instance;
 	}
 
-	void LoadTexture(const std::string& id, const std::string& path);
-	Texture* GetTexture(const std::string& id);
-
 	void LoadMesh(const std::string& id, const std::string& path);
 	Mesh* GetMesh(const std::string& id);
 
@@ -65,8 +62,8 @@ public:
 		}
 
 		// Call factory method that depends on the resource 
-		T* resource = T::Create();
-		if (!resource->Load(path))
+		T* resource = T::Create(path);
+		if (!resource)
 		{
 			// error loading the resource
 			printf("Error loading resource\n");
@@ -82,7 +79,7 @@ public:
 		auto it = m_resources.find(id);
 		if (it != m_resources.end())
 		{
-			return it->second;
+			return (T*)it->second;
 		}
 		else
 		{
@@ -106,6 +103,6 @@ private:
 	std::unordered_map<std::string, Mesh*> m_meshMap;
 	std::unordered_map<std::string, Sound*> m_soundMap;
 
-	std::unordered_map<std::string, iResource*> m_resources;
+	std::unordered_map<std::string, void*> m_resources;
 
 };

@@ -73,7 +73,7 @@ void Font::Load(const std::string& path)
 
 	// Assuming page names are null-terminated strings, not handling multiple pages
 	std::string texturePath(pagesBlock.data());
-	m_texture = new Texture(("data/fonts/" + texturePath).c_str()); // hardcoding directory. change this
+	m_texture = Texture::Create(("data/fonts/" + texturePath).c_str()); // hardcoding directory. change this
 
 	// Chars Block
 	myfile.read(&blockType, 1);

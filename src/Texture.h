@@ -7,27 +7,21 @@
 class Texture : public iResource
 {
 public:
-	Texture() = default;
+	Texture() {}
 	~Texture();
+
+	static Texture* Create(const std::string& path);
+	static Texture* CreateUtilTexture();
 
 	int GetWidth() const { return m_width; }
 	int GetHeight() const { return m_height; }
 
-	static Texture* Create();
-
-	bool Load(const std::string& path);
-
-	bool Load(const std::string& path, bool useMipMaps = false);
-
 	void Bind() const;
-
-	static Texture* CreateUtilTexture();
-
 	void GenerateMipMaps();
 
 private:
-	GLuint m_id;
-	int m_width;
-	int m_height;
+	GLuint m_id = 0;
+	int m_width = 0;
+	int m_height = 0;
 
 };

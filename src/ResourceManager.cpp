@@ -5,12 +5,6 @@
 #include "Mesh.h"
 #include "Sound.h"
 
-class ImageLoader
-{
-public:
-	static Texture* LoadTextureFromFile(const std::string& path) { return nullptr; } // Allocates new texture object
-};
-
 class OBJLoader
 {
 public:
@@ -22,28 +16,6 @@ class SoundLoader
 public:
 	static Sound* LoadSoundFromFile(const std::string& path) { return nullptr; } // Allocates new texture object
 };
-
-void ResourceManager::LoadTexture(const std::string& id, const std::string& path)
-{
-	auto it = m_textureMap.find(id);
-	if (it != m_textureMap.end())
-	{
-		ASSERT_MSG(false, "Texture with id \"%s\" already exists", id.c_str());
-	}
-
-	//m_textureMap[id] = ImageLoader::LoadTextureFromFile(path);
-	Texture* texture = new Texture();
-	texture->Load(path);
-	m_textureMap[id] = texture;
-}
-
-Texture* ResourceManager::GetTexture(const std::string& id)
-{
-	auto it = m_textureMap.find(id);
-	ASSERT_MSG(it != m_textureMap.end(), "Texture with id \"%s\" doesn't exist", id.c_str());
-
-	return it == m_textureMap.end() ? nullptr : it->second;
-}
 
 void ResourceManager::LoadMesh(const std::string& id, const std::string& path)
 {

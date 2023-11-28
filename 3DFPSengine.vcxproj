@@ -183,6 +183,7 @@
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
     <ClCompile Include="src\Sound.cpp" />
+    <ClCompile Include="src\STBImage.cpp" />
     <ClCompile Include="src\TextRenderer.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src\GuiRenderer.cpp" />
@@ -214,6 +215,7 @@
     <ClInclude Include="src\StateManager.h" />
     <ClInclude Include="src\ScreenshotManager.h" />
     <ClInclude Include="src\Sound.h" />
+    <ClInclude Include="src\STBImage.h" />
     <ClInclude Include="src\TextRenderer.h" />
     <ClInclude Include="src\Texture.h" />
     <ClInclude Include="src\GuiRenderer.h" />
