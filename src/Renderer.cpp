@@ -1,6 +1,5 @@
 #include "Renderer.h"
 
-#include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Common.h"
@@ -11,45 +10,60 @@
 
 Renderer::~Renderer()
 {
-	glDeleteProgram(m_shaderProgram);
+	if (m_shaderProgram != 0)
+	{
+		glDeleteProgram(m_shaderProgram);
+	}
 }
 
 void Renderer::Init()
 {
 	CreateShaderProgram();
-}
 
-void Renderer::SetProjection(const glm::mat4& projection)
-{
 	glUseProgram(m_shaderProgram);
-	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "u_projection"), 1, false, glm::value_ptr(projection));
+	m_projectionUniformLocation = glGetUniformLocation(m_shaderProgram, "u_projection");
+	m_viewUniformLocation = glGetUniformLocation(m_shaderProgram, "u_view");
+	m_cameraLocalPosUniformLocation = glGetUniformLocation(m_shaderProgram, "u_cameraLocalPos");
+	m_modelUniformLocation = glGetUniformLocation(m_shaderProgram, "u_model");
+	m_colorUniformLocation = glGetUniformLocation(m_shaderProgram, "u_color");
+
+	// Set up sampler ...just one for now
+	GLint textureUniformLocation = glGetUniformLocation(m_shaderProgram, "u_sampler");
+	assert(textureUniformLocation >= 0 && "Sampler does not exist");
+	glUniform1i(textureUniformLocation, 0);
+	glUseProgram(0);
 }
 
 void Renderer::AddToRenderList(iRenderable *renderable)	
 {	
-	m_renderList.push_back(renderable);	
+	m_renderList.push_back(renderable);
 }
 
 void Renderer::Render(Camera* camera)
 {
-	glUseProgram(m_shaderProgram);
+	if (!camera)
+	{
+		return; // Can't render anything without a camera
+	}
 
+	glUseProgram(m_shaderProgram);
+	
 	// todo cache uniform locations
-	glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "u_view"), 1, false, glm::value_ptr(camera->GetView()));
-	glUniform3fv(glGetUniformLocation(m_shaderProgram, "u_cameraLocalPos"), 1, glm::value_ptr(camera->m_position));
+	glUniformMatrix4fv(m_projectionUniformLocation, 1, false, glm::value_ptr(camera->m_projection));
+	glUniformMatrix4fv(m_viewUniformLocation, 1, false, glm::value_ptr(camera->GetView()));
+	glUniform3fv(m_cameraLocalPosUniformLocation, 1, glm::value_ptr(camera->m_position));
 
 	for (const auto& renderable : m_renderList)
 	{
 		// set transformation
-		glUniformMatrix4fv(glGetUniformLocation(m_shaderProgram, "u_model"), 1, false, glm::value_ptr(renderable->m_transform));
+		glUniformMatrix4fv(m_modelUniformLocation, 1, false, glm::value_ptr(renderable->m_transform));
 
 		// bind texture 1
 		glActiveTexture(GL_TEXTURE0);
 		renderable->m_texture->Bind();
 
 		// set color
-		glUniform4fv(glGetUniformLocation(m_shaderProgram, "u_color"), 1, glm::value_ptr(glm::vec4(1.0f)));
-
+		glUniform4fv(m_colorUniformLocation, 1, glm::value_ptr(glm::vec4(1.0f)));
 
 		// draw
 		renderable->m_mesh->Draw();
@@ -162,10 +176,4 @@ void Renderer::CreateShaderProgram()
 	// No longer need these
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
-
-	// Set up sampler ...just one for now
-	glUseProgram(m_shaderProgram);
-	GLint textureUniformLocation = glGetUniformLocation(m_shaderProgram, "u_sampler");
-	assert(textureUniformLocation >= 0 && "Sampler does not exist");
-	glUniform1i(textureUniformLocation, 0);
 }

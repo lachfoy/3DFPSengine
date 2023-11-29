@@ -35,10 +35,9 @@ class DebugRenderer
 {
 public:
 	DebugRenderer() = default;
-	~DebugRenderer() {}
+	~DebugRenderer();
 
 	void Init();
-	void SetProjection(const glm::mat4& projection);
 	void Dispose();
 
 	void AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float duration = -1.0f);

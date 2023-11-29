@@ -14,29 +14,33 @@ DebugRenderer gDebugRenderer;
 
 static const unsigned int kMaxLines = 10000;
 
+DebugRenderer::~DebugRenderer()
+{
+	glDeleteBuffers(1, &m_lineVbo);
+	glDeleteVertexArrays(1, &m_lineVao);
+
+	if (m_debugShaderProgram != 0)
+	{
+		glDeleteProgram(m_debugShaderProgram);
+	}
+}
+
 void DebugRenderer::Init()
 {
 	CreateShaderProgram();
 	CreateRenderData();
 }
 
-void DebugRenderer::SetProjection(const glm::mat4& projection)
-{
-	glUseProgram(m_debugShaderProgram);
-	glUniformMatrix4fv(glGetUniformLocation(m_debugShaderProgram, "u_projection"), 1, false, glm::value_ptr(projection));
-}
-
-void DebugRenderer::Dispose()
-{
-	glDeleteBuffers(1, &m_lineVbo);
-	glDeleteVertexArrays(1, &m_lineVao);
-
-	glDeleteProgram(m_debugShaderProgram);
-}
-
 void DebugRenderer::AddLine(const glm::vec3& from, const glm::vec3& to, const glm::vec3& color, float duration)
 {
-	m_lines.push_back({ to, from, color, duration });
+	if (m_lines.size() != kMaxLines)
+	{
+		m_lines.push_back({ to, from, color, duration });
+	}
+	else
+	{
+		printf("Warning: Debug renderer max lines has been reached\n");
+	}
 }
 
 void DebugRenderer::AddSphere(const glm::vec3& center, float radius, const glm::vec3& color, float duration)
@@ -106,6 +110,7 @@ void DebugRenderer::Render(Camera* camera)
 	glUseProgram(m_debugShaderProgram);
 	glBindVertexArray(m_lineVao);
 
+	glUniformMatrix4fv(glGetUniformLocation(m_debugShaderProgram, "u_projection"), 1, false, glm::value_ptr(camera->m_projection));
 	glUniformMatrix4fv(glGetUniformLocation(m_debugShaderProgram, "u_view"), 1, false, glm::value_ptr(camera->GetView()));
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_lineVbo);
@@ -138,7 +143,6 @@ void DebugRenderer::PostRenderUpdate(float dt)
 		{
 			++it;
 		}
-
 	}
 }
 

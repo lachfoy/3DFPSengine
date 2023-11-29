@@ -3,12 +3,9 @@
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 
-#include <vector>
 #include <list>
 
 class Camera;
-class Texture;
-class Mesh;
 class iRenderable;
 
 typedef std::list<iRenderable*> tRenderList;
@@ -20,7 +17,6 @@ public:
 	~Renderer();
 
 	void Init();
-	void SetProjection(const glm::mat4& projection);
 
 	void AddToRenderList(iRenderable* renderable);
 	void Render(Camera* camera);
@@ -29,7 +25,11 @@ private:
 	void CreateShaderProgram();
 
 	GLuint m_shaderProgram;
-	GLuint m_quadVAO;
 	tRenderList m_renderList;
+	GLint m_projectionUniformLocation;
+	GLint m_viewUniformLocation;
+	GLint m_cameraLocalPosUniformLocation;
+	GLint m_modelUniformLocation;
+	GLint m_colorUniformLocation;
 
 };

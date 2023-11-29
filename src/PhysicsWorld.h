@@ -60,6 +60,8 @@ public:
 	PhysicsWorld();
 	~PhysicsWorld();
 
+	PhysicsWorld(const PhysicsWorld&) = delete;
+	PhysicsWorld& operator=(const PhysicsWorld&) = delete;
 
 	btDiscreteDynamicsWorld* GetDynamicsWorld() const { return m_dynamicsWorld; }
 

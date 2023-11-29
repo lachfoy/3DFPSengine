@@ -14,8 +14,6 @@ class Panel;
 class Button;
 class GuiRenderer;
 
-//#include "NavGrid.h"
-
 #include "PhysicsWorld.h"
 
 #include "Player.h"
@@ -47,14 +45,8 @@ private:
 	void Render(); // scene related
 	void Destroy(); // scene related
 
-	Camera* m_debugCamera;
-
-	Player* m_player;
-	
+	Player* m_player;	
 	Level* m_level;
-
-	//NavGrid m_navGrid; // Let's ignore complex pathfinding for now
-
 	std::vector<Entity*> m_entities;
 
 };

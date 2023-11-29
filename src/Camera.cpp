@@ -7,13 +7,15 @@
 
 #include "TextRenderer.h"
 
-Camera::Camera(const glm::vec3& up) : m_worldUp(up)
-{
-}
-
 Camera::Camera(const glm::vec3& position, const glm::vec3& up)
 	: m_position(position), m_worldUp(up)
 {
+	UpdateCameraVectors();
+}
+
+void Camera::UpdateProjection(float aspect)
+{
+	m_projection = glm::perspective(glm::radians(m_fov), aspect, m_nearClip, m_farClip);
 }
 
 void Camera::UpdateCameraVectors()

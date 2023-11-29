@@ -6,17 +6,15 @@
 class Camera
 {
 friend class Renderer;
+friend class DebugRenderer;
 public:
-	Camera(const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f)); // Not a great constructor
-	Camera(const glm::vec3& position, const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f));
+	Camera(const glm::vec3& position = glm::vec3(0.0f, 0.0f, 0.0f), const glm::vec3& up = glm::vec3(0.0f, 1.0f, 0.0f));
 	~Camera() {}
 
-	glm::mat4 GetView() const { return glm::lookAt(m_position, m_position + m_front, m_worldUp); }
+	const glm::mat4 GetView() const { return glm::lookAt(m_position, m_position + m_front, m_worldUp); }
 
-	glm::mat4 GetProjection(int screenWidth, int screenHeight) const
-	{
-		return glm::perspective(glm::radians(m_fov), static_cast<float>(screenWidth) / static_cast<float>(screenHeight), m_nearClip, m_farClip);
-	}
+	void UpdateProjection(float aspect);
+	const glm::mat4 GetProjection() const { return m_projection; }
 
 	virtual void Update(float dt) {}
 
@@ -42,6 +40,8 @@ protected:
 
 	float m_nearClip = 0.1f;
 	float m_farClip = 100.0f;
+
+	glm::mat4 m_projection;
 
 };
 

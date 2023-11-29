@@ -4,13 +4,10 @@
 #include "Renderer.h"
 #include "DebugRenderer.h"
 #include "Input.h"
-#include <iostream>
 #include "Player.h"
 #include "Texture.h"
 #include "Camera.h"
 
-#include "Panel.h"
-#include "Button.h"
 #include "GuiRenderer.h"
 #include "ResourceManager.h"
 
@@ -39,7 +36,7 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0)
 	{
-		std::cerr << "An error occurred while initializing SDL2:" << SDL_GetError() << ".\n";
+		printf("An error occurred while initializing SDL2: %s\n", SDL_GetError());
 		return false;
 	}
 
@@ -61,7 +58,7 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 	m_window = SDL_CreateWindow("", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, m_windowWidth, m_windowHeight, windowFlags);
 	if (!m_window)
 	{
-		std::cerr << "An error occurred while creating an SDL2 window:" << SDL_GetError() << ".\n";
+		printf("An error occurred while creating an SDL2 window: %s\n", SDL_GetError());
 		SDL_Quit();
 		return false;
 	}
@@ -92,7 +89,7 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 	SetupGL();
 	//SDL_GL_SetSwapInterval(0);
 
-	// Init systems
+	// Init global state
 	m_renderer = new Renderer();
 	m_renderer->Init();
 
@@ -220,8 +217,6 @@ void Game::SetupGL()
 
 	glEnable(GL_CULL_FACE);
 
-	glViewport(0, 0, m_windowWidth, m_windowHeight);
-
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
@@ -233,24 +228,17 @@ void Game::Create()
 
 	ResourceManager::Instance().GetSound("pew")->SetGain(1.0f);
 
-	//m_character = gPhysicsWorld.CreateCharacter();
 	m_player = new Player(gPhysicsWorld.CreateCharacter(glm::vec3(0.f, 5.0f, 0.0f)));
-	m_renderer->SetProjection(m_player->GetCamera()->GetProjection(m_viewportWidth, m_viewportHeight));
-	gDebugRenderer.SetProjection(m_player->GetCamera()->GetProjection(m_viewportWidth, m_viewportHeight));
+	m_player->GetCamera()->UpdateProjection(static_cast<float>(m_viewportWidth) / static_cast<float>(m_viewportHeight));
 
 	m_level = new Level();
 	m_renderer->AddToRenderList(m_level);
 
 	gPhysicsWorld.CreateStaticLevelGeometry("data/models/test.obj");
-	//m_navGrid.Generate(&gPhysicsWorld);
-
-	//m_player = new Player(glm::vec2(rand() % m_viewportWidth, rand() % m_viewportHeight), &m_projectiles);
-	m_debugCamera = new Camera();
 
 	Enemy* enemy = new Enemy(glm::vec3(0.0f, 10.0f, 0.0f), m_player);
 	m_renderer->AddToRenderList(enemy);
 	m_entities.push_back(enemy);
-
 
 	//StateManager::Instance().GoToState(new GameplayState());
 }
@@ -271,7 +259,7 @@ void Game::Update(float dt)
 {
 	if (Input::Instance().IsKeyPressed(SDL_SCANCODE_Z))
 	{
-		CatCube* catCube = gPhysicsWorld.AddCatCube(glm::vec3(0, 5.0f, 0));
+		CatCube* catCube = gPhysicsWorld.AddCatCube(glm::vec3(0, 5.0f, 0)); // these never get deleted but thats ok ig
 		m_renderer->AddToRenderList(catCube);
 	}
 
@@ -279,13 +267,6 @@ void Game::Update(float dt)
 	{
 		ScreenshotManager::TakeScreenshot(m_windowWidth, m_windowHeight);
 	}
-
-	if (Input::Instance().IsKeyPressed(SDL_SCANCODE_N))
-	{
-		//m_navGrid.DebugDrawPath(m_navGrid.RandomPath());
-	}
-
-	//m_camera->Update(dt);
 
 	m_player->Update(dt);
 
@@ -299,20 +280,15 @@ void Game::Update(float dt)
 
 void Game::Render()
 {
-	//gTextRenderer.AddStringToBatch("Hello World!!", 0.0f, 0.0f, glm::vec3(1.0f));
-	//m_navGrid.DebugDraw();
-
-	//m_navGrid.DebugDrawPath(
-	//	m_navGrid.FindPath(m_navGrid.GetRandomStartNode(), m_navGrid.NodeClosestTo(m_fpsController->GetPosition()))
-	//);
-
 	StateManager::Instance().Render();
-
 }
 
 void Game::Destroy()
 {
-	SAFE_DELETE(m_debugCamera);
+	for (Entity* entity : m_entities)
+	{
+		SAFE_DELETE(entity);
+	}
 
 	SAFE_DELETE(m_player);
 	SAFE_DELETE(m_level);
@@ -320,15 +296,16 @@ void Game::Destroy()
 
 void Game::Cleanup()
 {
-	SAFE_DELETE(m_renderer);
+	ResourceManager::Instance().UnloadResources();
+
+	g_audioEngine.Destroy();
+
+	gTextRenderer.Dispose();
 
 	m_guiRenderer->Dispose();
 	SAFE_DELETE(m_guiRenderer);
-	
-	ResourceManager::Instance().UnloadResources();
 
-	// clean up AL stuff
-	g_audioEngine.Destroy();
+	SAFE_DELETE(m_renderer);
 
 	SDL_GL_DeleteContext(m_context);
 	SDL_DestroyWindow(m_window);
