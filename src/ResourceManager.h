@@ -7,10 +7,6 @@ class Texture;
 class Mesh;
 class Sound;
 
-#include "iResource.h"
-#include <memory>
-
-
 class ResourceManager
 {
 public:
@@ -47,11 +43,9 @@ public:
 	//	std::unordered_map<int, std::weak_ptr<Texture>> m_textures;
 	//}
 
-	template <typename T>
+	template<typename T>
 	void LoadResource(const std::string& path, const std::string& id)
 	{
-		static_assert(std::is_base_of<iResource, T>::value, "T must be an iResource");
-
 		auto it = m_resources.find(id);
 		if (it != m_resources.end())
 		{
@@ -73,7 +67,7 @@ public:
 		m_resources[id] = resource;
 	}
 
-	template <typename T>
+	template<typename T>
 	T* GetResource(const std::string& id)
 	{
 		auto it = m_resources.find(id);
@@ -106,3 +100,5 @@ private:
 	std::unordered_map<std::string, void*> m_resources;
 
 };
+
+

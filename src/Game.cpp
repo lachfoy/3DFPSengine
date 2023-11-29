@@ -183,7 +183,7 @@ void Game::Run()
 		}
 
 		// Update logic
-		Update(averageFrameTime);
+		Update(dt);
 		Input::Instance().Update();
 
 		// Render

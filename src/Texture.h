@@ -4,7 +4,7 @@
 #include <glad/glad.h>
 #include <string>
 
-class Texture : public iResource
+class Texture
 {
 public:
 	Texture() {}
