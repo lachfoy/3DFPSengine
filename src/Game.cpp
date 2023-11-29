@@ -23,8 +23,8 @@
 #include "StateManager.h"
 
 #define DEBUG_DRAW 1
-#define TARGET_FPS 60 // broken dont use this
-#define CAP_FRAMERATE 0 // broken dont use this
+#define TARGET_FPS 60
+#define CAP_FRAMERATE 1
 
 bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 {
@@ -142,13 +142,16 @@ void Game::Run()
 		// calculate delta time
 		Uint32 currentTime = SDL_GetTicks();
 		float dt = (currentTime - lastTime) / 1000.0f;
-		lastTime = currentTime;
 
 		if (CAP_FRAMERATE && dt < targetFrameTime) // cap FPS
 		{
 			SDL_Delay(static_cast<Uint32>((targetFrameTime - dt) * 1000.0f)); // I dont think this works very well
 			currentTime = SDL_GetTicks();
 			dt = (currentTime - lastTime) / 1000.0f;
+			lastTime = currentTime;
+		}
+		else
+		{
 			lastTime = currentTime;
 		}
 
@@ -229,7 +232,7 @@ void Game::Create()
 	ResourceManager::Instance().GetSound("pew")->SetGain(1.0f);
 
 	m_player = new Player(gPhysicsWorld.CreateCharacter(glm::vec3(0.f, 5.0f, 0.0f)));
-	m_player->GetCamera()->UpdateProjection(static_cast<float>(m_viewportWidth) / static_cast<float>(m_viewportHeight));
+	m_player->GetCamera()->UpdateProjection(static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight));
 
 	m_level = new Level();
 	m_renderer->AddToRenderList(m_level);
@@ -266,6 +269,28 @@ void Game::Update(float dt)
 	if (Input::Instance().IsKeyPressed(SDL_SCANCODE_0))
 	{
 		ScreenshotManager::TakeScreenshot(m_windowWidth, m_windowHeight);
+	}
+
+	if (Input::Instance().IsKeyPressed(SDL_SCANCODE_F))
+	{
+		// This just switches to fullscreen. But can't switch back (lol)
+		// We need to save the windowed configuration to switch back to it.
+		SDL_DisplayMode displayMode;
+		SDL_GetDesktopDisplayMode(0, &displayMode); // can return int error
+		
+		m_windowWidth = displayMode.w;
+		m_windowHeight = displayMode.h;
+
+		m_viewportWidth = m_windowWidth / 2;
+		m_viewportHeight = m_windowHeight / 2;
+
+		SDL_SetWindowSize(m_window, m_windowWidth, m_windowHeight);
+		SDL_SetWindowBordered(m_window, SDL_FALSE);
+
+		glViewport(0, 0, m_windowWidth, m_windowHeight);
+
+		m_player->GetCamera()->UpdateProjection(static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight));
+		gTextRenderer.SetProjection(m_viewportWidth, m_viewportHeight);
 	}
 
 	m_player->Update(dt);

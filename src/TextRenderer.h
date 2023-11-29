@@ -18,7 +18,7 @@ public:
 	~TextRenderer() {}
 
 	void Init();
-	void SetProjection(unsigned int screenWidth, unsigned int screenHeight);
+	void SetProjection(int screenWidth, int screenHeight);
 	void Dispose();
 
 	void AddStringToBatch(const std::string& string, float x, float y, const glm::vec3& color, float alpha = 1.0f);

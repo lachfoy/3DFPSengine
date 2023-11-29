@@ -21,7 +21,7 @@ void TextRenderer::Init()
 	m_font->Load("data/fonts/smallfonts_10px.fnt");
 }
 
-void TextRenderer::SetProjection(unsigned int screenWidth, unsigned int screenHeight)
+void TextRenderer::SetProjection(int screenWidth, int screenHeight)
 {
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(screenWidth), static_cast<float>(screenHeight), 0.0f, -1.0f, 1.0f);
 	
