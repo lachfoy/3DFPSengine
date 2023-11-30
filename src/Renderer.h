@@ -4,13 +4,14 @@
 #include <glad/glad.h>
 
 #include <list>
+#include "NonCopyable.h"
 
 class Camera;
 class Renderable;
 
 typedef std::list<Renderable*> tRenderList;
 
-class Renderer
+class Renderer : public NonCopyable
 {
 public:
 	Renderer() = default;

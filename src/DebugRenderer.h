@@ -8,6 +8,8 @@
 #include <vector>
 #include <map>
 
+#include "NonCopyable.h"
+
 struct DebugVertex
 {
 	glm::vec3 position;
@@ -31,7 +33,7 @@ struct DebugLine {
 
 class Camera;
 
-class DebugRenderer
+class DebugRenderer : public NonCopyable
 {
 public:
 	DebugRenderer() = default;

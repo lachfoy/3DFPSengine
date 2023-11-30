@@ -4,10 +4,11 @@
 #include <AL/alc.h>
 
 #include <glm/glm.hpp>
+#include "NonCopyable.h"
 
 #define NUM_BUFFERS 16
 
-class AudioEngine
+class AudioEngine : public NonCopyable
 {
 public:
 	AudioEngine() {}
@@ -31,4 +32,4 @@ private:
 
 };
 
-extern AudioEngine g_audioEngine;
+extern AudioEngine gAudioEngine;

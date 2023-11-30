@@ -2,7 +2,6 @@
 
 #include <btBulletDynamicsCommon.h>
 
-
 #include "BulletDebugDraw.h"
 
 #include <glm/glm.hpp>
@@ -13,6 +12,7 @@
 #include <vector>
 
 #include "Renderable.h"
+#include "NonCopyable.h"
 
 class CatCube : public Renderable, public btMotionState
 {
@@ -54,7 +54,7 @@ struct MyContactCallback : public btCollisionWorld::ContactResultCallback
 	}
 };
 
-class PhysicsWorld
+class PhysicsWorld : public NonCopyable
 {
 public:
 	PhysicsWorld();

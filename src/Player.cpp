@@ -129,8 +129,8 @@ void Player::Update(float dt)
 	glm::vec3 cameraPosition = glm::vec3(origin.x(), origin.y() + m_cameraYOffsetFromOrigin, origin.z());
 	m_camera->SetPosition(cameraPosition);
 
-	g_audioEngine.SetListenerPosition(cameraPosition);
-	g_audioEngine.SetListenerOrientation(front);
+	gAudioEngine.SetListenerPosition(cameraPosition);
+	gAudioEngine.SetListenerOrientation(front);
 
 	std::string debugString;
 	debugString += "origin:" + std::to_string(origin.x()) + ", " + std::to_string(origin.y()) + ", " + std::to_string(origin.z()) + "\n";

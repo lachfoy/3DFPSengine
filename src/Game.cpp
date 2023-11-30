@@ -102,7 +102,7 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 	gTextRenderer.Init();
 	gTextRenderer.SetProjection(m_viewportWidth, m_viewportHeight);
 
-	g_audioEngine.Init();
+	gAudioEngine.Init();
 
 	SDL_ShowCursor(SDL_DISABLE);
 
@@ -323,7 +323,7 @@ void Game::Cleanup()
 {
 	ResourceManager::Instance().UnloadResources();
 
-	g_audioEngine.Destroy();
+	gAudioEngine.Destroy();
 
 	gTextRenderer.Dispose();
 

@@ -2,7 +2,7 @@
 
 #include <glm/gtc/type_ptr.hpp>
 
-AudioEngine g_audioEngine;
+AudioEngine gAudioEngine;
 
 void AudioEngine::Init()
 {

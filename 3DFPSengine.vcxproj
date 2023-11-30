@@ -179,6 +179,7 @@
     <ClCompile Include="src\PhysicsWorld.cpp" />
     <ClCompile Include="src\Renderer.cpp" />
     <ClCompile Include="src\ResourceManager.cpp" />
+    <ClCompile Include="src\ScreenshotManager.cpp" />
     <ClCompile Include="src\Sound.cpp" />
     <ClCompile Include="src\STBImage.cpp" />
     <ClCompile Include="src\TextRenderer.cpp" />

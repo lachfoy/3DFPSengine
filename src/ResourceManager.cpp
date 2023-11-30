@@ -5,18 +5,6 @@
 #include "Mesh.h"
 #include "Sound.h"
 
-class OBJLoader
-{
-public:
-	static Mesh* LoadMeshFromOBJ(const std::string& path) { return nullptr; } // Allocates new texture object
-};
-
-class SoundLoader
-{
-public:
-	static Sound* LoadSoundFromFile(const std::string& path) { return nullptr; } // Allocates new texture object
-};
-
 void ResourceManager::LoadMesh(const std::string& id, const std::string& path)
 {
 	auto it = m_meshMap.find(id);
@@ -92,7 +80,6 @@ void ResourceManager::UnloadSounds()
 		printf("Unloaded sound: %s\n", it.first.c_str());
 	}
 }
-
 
 void ResourceManager::UnloadResources()
 {
