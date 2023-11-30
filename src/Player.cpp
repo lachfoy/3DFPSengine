@@ -51,29 +51,29 @@ void Player::Update(float dt)
 	glm::vec3 front = m_camera.GetFront();
 	glm::vec3 right = m_camera.GetRight();
 
-	if (Input::Instance().IsKeyHeld(SDL_SCANCODE_W) || Input::Instance().IsKeyHeld(SDL_SCANCODE_UP))
+	if (gInput.IsKeyHeld(SDL_SCANCODE_W) || gInput.IsKeyHeld(SDL_SCANCODE_UP))
 	{
 		m_walkDirection += glm::vec3(front.x, 0.0f, front.z);
 	}
-	if (Input::Instance().IsKeyHeld(SDL_SCANCODE_S) || Input::Instance().IsKeyHeld(SDL_SCANCODE_DOWN))
+	if (gInput.IsKeyHeld(SDL_SCANCODE_S) || gInput.IsKeyHeld(SDL_SCANCODE_DOWN))
 	{
 		m_walkDirection -= glm::vec3(front.x, 0.0f, front.z);
 	}
-	if (Input::Instance().IsKeyHeld(SDL_SCANCODE_A) || Input::Instance().IsKeyHeld(SDL_SCANCODE_LEFT))
+	if (gInput.IsKeyHeld(SDL_SCANCODE_A) || gInput.IsKeyHeld(SDL_SCANCODE_LEFT))
 	{
 		m_walkDirection -= glm::vec3(right.x, 0.0f, right.z);
 	}
-	if (Input::Instance().IsKeyHeld(SDL_SCANCODE_D) || Input::Instance().IsKeyHeld(SDL_SCANCODE_RIGHT))
+	if (gInput.IsKeyHeld(SDL_SCANCODE_D) || gInput.IsKeyHeld(SDL_SCANCODE_RIGHT))
 	{
 		m_walkDirection += glm::vec3(right.x, 0.0f, right.z);
 	}
 
-	if (Input::Instance().IsKeyPressed(SDL_SCANCODE_SPACE) && m_characterController->onGround())
+	if (gInput.IsKeyPressed(SDL_SCANCODE_SPACE) && m_characterController->onGround())
 	{
 		m_characterController->jump(btVector3(0.0f, m_jumpAmount, 0.0f));
 	}
 
-	if (Input::Instance().IsMouseButtonPressed(SDL_BUTTON_LEFT))
+	if (gInput.IsMouseButtonPressed(SDL_BUTTON_LEFT))
 	{
 		ResourceManager::Instance().GetSound("pew")->Play(); // pew
 		

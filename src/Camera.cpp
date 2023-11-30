@@ -33,7 +33,7 @@ void Camera::UpdateCameraVectors()
 void FirstPersonCamera::Update(float dt)
 {
 	// Mouse movement
-	glm::vec2 mouseRelPos = Input::Instance().GetMouseRelPos();
+	glm::vec2 mouseRelPos = gInput.GetMouseRelPos();
 	float xOffset = mouseRelPos.x * m_mouseSensitivity;
 	float yOffset = -mouseRelPos.y * m_mouseSensitivity;
 
@@ -57,25 +57,25 @@ void FlyingCamera::Update(float dt)
 {
 	m_moveDir = glm::vec3(0.0f);
 
-	if (Input::Instance().IsKeyHeld(SDL_SCANCODE_W))
+	if (gInput.IsKeyHeld(SDL_SCANCODE_W))
 	{
 		m_moveDir += m_front;
 	}
-	if (Input::Instance().IsKeyHeld(SDL_SCANCODE_A))
+	if (gInput.IsKeyHeld(SDL_SCANCODE_A))
 	{
 		m_moveDir -= m_right;
 	}
-	if (Input::Instance().IsKeyHeld(SDL_SCANCODE_S))
+	if (gInput.IsKeyHeld(SDL_SCANCODE_S))
 	{
 		m_moveDir -= m_front;
 	}
-	if (Input::Instance().IsKeyHeld(SDL_SCANCODE_D))
+	if (gInput.IsKeyHeld(SDL_SCANCODE_D))
 	{
 		m_moveDir += m_right;
 	}
 
 	// Mouse movement
-	glm::vec2 mouseRelPos = Input::Instance().GetMouseRelPos();
+	glm::vec2 mouseRelPos = gInput.GetMouseRelPos();
 	float xOffset = mouseRelPos.x * m_mouseSensitivity;
 	float yOffset = -mouseRelPos.y * m_mouseSensitivity;
 

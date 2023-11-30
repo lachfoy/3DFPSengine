@@ -46,19 +46,19 @@ void GameplayScene::FixedUpdate()
 
 void GameplayScene::Update(float dt)
 {
-	if (Input::Instance().IsKeyPressed(SDL_SCANCODE_Z))
+	if (gInput.IsKeyPressed(SDL_SCANCODE_Z))
 	{
 		CatCube* catCube = gPhysicsWorld.AddCatCube(glm::vec3(0, 5.0f, 0)); // these never get deleted but thats ok ig
 		gRenderer.AddToRenderList(catCube);
 	}
 
 	// TODO!! HANDLE FROM WINDOW CLASS
-	//if (Input::Instance().IsKeyPressed(SDL_SCANCODE_0))
+	//if (gInput.IsKeyPressed(SDL_SCANCODE_0))
 	//{
 	//	ScreenshotManager::TakeScreenshot(m_windowWidth, m_windowHeight);
 	//}
 
-	//if (Input::Instance().IsKeyPressed(SDL_SCANCODE_F))
+	//if (gInput.IsKeyPressed(SDL_SCANCODE_F))
 	//{
 	//	// This just switches to fullscreen. But can't switch back (lol)
 	//	// We need to save the windowed configuration to switch back to it.

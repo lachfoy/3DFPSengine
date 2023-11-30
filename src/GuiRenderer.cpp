@@ -17,7 +17,7 @@ void GuiRenderer::Init()
 	m_utilTexture = Texture::CreateUtilTexture();
 }
 
-void GuiRenderer::SetProjection(unsigned int screenWidth, unsigned int screenHeight)
+void GuiRenderer::SetProjection(int screenWidth, int screenHeight)
 {
 	glm::mat4 projection = glm::ortho(0.0f, static_cast<float>(screenWidth), static_cast<float>(screenHeight), 0.0f, -1.0f, 1.0f);
 	

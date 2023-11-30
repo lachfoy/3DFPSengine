@@ -26,7 +26,7 @@ public:
 	~GuiRenderer() {}
 
 	void Init();
-	void SetProjection(unsigned int screenWidth, unsigned int screenHeight);
+	void SetProjection(int screenWidth, int screenHeight);
 	void Dispose();
 
 	void AddQuadToBatch(float x, float y, float w, float h, glm::vec3 color, float alpha = 1.0f);

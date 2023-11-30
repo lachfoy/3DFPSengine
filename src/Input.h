@@ -1,20 +1,18 @@
 #pragma once
 
+#include "NonCopyable.h"
 #include <SDL.h>
 #include <glm/glm.hpp>
 
 #define NUM_MOUSE_BUTTONS 5
 
-class Input
+class Input : public NonCopyable
 {
+friend class Window;
 public:
-	static Input& Instance()
-	{
-		static Input instance;
-		return instance;
-	}
+	Input();
+	~Input();
 
-	bool HandleEvents();
 	void Update();
 
 	bool IsKeyPressed(Uint8 key) const;
@@ -26,13 +24,6 @@ public:
 	bool IsMouseButtonHeld(Uint8 button) const;
 
 private:
-	Input();
-	~Input();
-
-	Input(const Input&) = delete;
-	Input& operator=(const Input&) = delete;
-
-	SDL_Event m_event;
 	int m_numKeys;
 	bool *m_keyboardState;
 	bool *m_lastKeyboardState;
@@ -51,3 +42,5 @@ private:
 	bool m_lastMouseState[NUM_MOUSE_BUTTONS];
 
 };
+
+extern Input gInput;
