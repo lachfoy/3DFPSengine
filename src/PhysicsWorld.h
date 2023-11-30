@@ -12,9 +12,9 @@
 
 #include <vector>
 
-#include "IRenderable.h"
+#include "Renderable.h"
 
-class CatCube : public iRenderable, public btMotionState
+class CatCube : public Renderable, public btMotionState
 {
 public:
 	CatCube(const glm::vec3& position);
@@ -30,7 +30,7 @@ private:
 
 };
 
-class Level : public iRenderable
+class Level : public Renderable
 {
 public:
 	Level();

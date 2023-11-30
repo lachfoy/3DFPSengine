@@ -1,6 +1,6 @@
 #pragma once
 
-#include "IRenderable.h"
+#include "Renderable.h"
 
 #include <glad/glad.h>
 #include <glm/glm.hpp>
@@ -11,7 +11,7 @@ class Player;
 
 class btKinematicCharacterController;
 
-class Enemy : public iRenderable
+class Enemy : public Renderable
 {
 public:
 	Enemy(const glm::vec3& position, Player* player);

@@ -6,9 +6,9 @@
 #include <list>
 
 class Camera;
-class iRenderable;
+class Renderable;
 
-typedef std::list<iRenderable*> tRenderList;
+typedef std::list<Renderable*> tRenderList;
 
 class Renderer
 {
@@ -18,7 +18,7 @@ public:
 
 	void Init();
 
-	void AddToRenderList(iRenderable* renderable);
+	void AddToRenderList(Renderable* renderable);
 	void Render(Camera* camera);
 
 private:

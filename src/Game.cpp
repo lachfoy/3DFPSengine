@@ -20,7 +20,7 @@
 #include "Sound.h"
 
 #include "AudioEngine.h"
-#include "StateManager.h"
+#include "SceneManager.h"
 
 #define DEBUG_DRAW 1
 #define TARGET_FPS 60
@@ -255,7 +255,7 @@ void Game::FixedUpdate()
 		entity->FixedUpdate();
 	}
 
-	StateManager::Instance().FixedUpdate();
+	SceneManager::Instance().FixedUpdate();
 }
 
 void Game::Update(float dt)
@@ -300,12 +300,12 @@ void Game::Update(float dt)
 		entity->Update(dt);
 	}
 
-	StateManager::Instance().Update(dt);
+	SceneManager::Instance().Update(dt);
 }
 
 void Game::Render()
 {
-	StateManager::Instance().Render();
+	SceneManager::Instance().Render();
 }
 
 void Game::Destroy()

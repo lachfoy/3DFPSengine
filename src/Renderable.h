@@ -12,12 +12,12 @@
 class Mesh;
 class Texture;
 
-class iRenderable : public Entity
+class Renderable : public Entity
 {
 friend class Renderer;
 public:
-	iRenderable();
-	~iRenderable() {}
+	Renderable();
+	~Renderable() {}
 
 	//const glm::vec3& scale = glm::vec3(1.0f, 1.0f, 1.0f), const glm::vec3& rotation = glm::vec3(0.0f, 0.0f, 0.0f)
 

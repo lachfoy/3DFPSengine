@@ -1,10 +1,10 @@
 #pragma once
 
-class iState
+class Scene
 {
 public:
-	iState() {}
-	~iState() = default;
+	Scene() {}
+	~Scene() = default;
 
 	virtual void Create() = 0;
 	
@@ -13,8 +13,5 @@ public:
 	virtual void Render() {}
 	
 	virtual void Destroy() = 0;
-
-protected:
-
 
 };

@@ -6,7 +6,7 @@
 #include "Texture.h"
 #include "Camera.h"
 #include "Mesh.h"
-#include "IRenderable.h"
+#include "Renderable.h"
 
 Renderer::~Renderer()
 {
@@ -34,7 +34,7 @@ void Renderer::Init()
 	glUseProgram(0);
 }
 
-void Renderer::AddToRenderList(iRenderable *renderable)	
+void Renderer::AddToRenderList(Renderable *renderable)	
 {	
 	m_renderList.push_back(renderable);
 }
