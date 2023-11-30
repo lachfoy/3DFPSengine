@@ -34,3 +34,5 @@ private:
 	GLint m_colorUniformLocation;
 
 };
+
+extern Renderer gRenderer;

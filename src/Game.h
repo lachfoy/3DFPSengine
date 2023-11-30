@@ -4,19 +4,7 @@
 #include <glad/glad.h>
 #include <SDL_opengl.h>
 
-class Renderer;
-
-class Player;
-class Camera;
-class Entity;
-
-class Panel;
-class Button;
 class GuiRenderer;
-
-#include "PhysicsWorld.h"
-
-#include "Player.h"
 
 class Game
 {
@@ -35,18 +23,7 @@ private:
 	int m_windowHeight;
 	int m_viewportWidth;
 	int m_viewportHeight;
-	Renderer* m_renderer;
+
 	GuiRenderer* m_guiRenderer;
-
-private:
-	void FixedUpdate();
-	void Update(float dt);
-	void Create(); // scene related
-	void Render(); // scene related
-	void Destroy(); // scene related
-
-	Player* m_player;	
-	Level* m_level;
-	std::vector<Entity*> m_entities;
 
 };

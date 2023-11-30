@@ -1,6 +1,8 @@
 #include "Common.h"
 #include "SceneManager.h"
 
+SceneManager gSceneManager;
+
 void SceneManager::GoToScene(std::unique_ptr<Scene> newScene)
 {
 	ASSERT(newScene);

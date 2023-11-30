@@ -1,26 +1,19 @@
+#include "Common.h"
 #include "Game.h"
 
-#include "Common.h"
 #include "Renderer.h"
 #include "DebugRenderer.h"
 #include "Input.h"
-#include "Player.h"
-#include "Texture.h"
 #include "Camera.h"
-
 #include "GuiRenderer.h"
 #include "ResourceManager.h"
-
 #include "TextRenderer.h"
-
-#include "ScreenshotManager.h"
-
-#include <deque>
-#include "Enemy.h"
-#include "Sound.h"
-
 #include "AudioEngine.h"
 #include "SceneManager.h"
+#include "PhysicsWorld.h"
+#include "GameplayScene.h"
+
+#include <deque>
 
 #define DEBUG_DRAW 1
 #define TARGET_FPS 60
@@ -90,8 +83,8 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 	//SDL_GL_SetSwapInterval(0);
 
 	// Init global state
-	m_renderer = new Renderer();
-	m_renderer->Init();
+	
+	gRenderer.Init();
 
 	gDebugRenderer.Init();
 	
@@ -104,6 +97,8 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 
 	gAudioEngine.Init();
 
+	gSceneManager.GoToScene(std::make_unique<GameplayScene>());
+
 	SDL_ShowCursor(SDL_DISABLE);
 
 	return true;
@@ -111,8 +106,6 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 
 void Game::Run()
 {
-	Create();
-
 	Uint32 lastTime = SDL_GetTicks();
 	std::deque<float> frameTimes;
 	const size_t maxFrameSamples = 10;
@@ -177,24 +170,24 @@ void Game::Run()
 		// Update physics at fixed intervals
 		while (accumulator >= physicsTimeStep)
 		{
-			FixedUpdate();
+			gSceneManager.FixedUpdate();
 			gPhysicsWorld.StepSimulation(physicsTimeStep, 16);
 			accumulator -= physicsTimeStep;
 		}
 
 		// Update logic
-		Update(dt);
+		gSceneManager.Update(dt);
 		Input::Instance().Update();
 
 		// Render
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-		Render();
+		gSceneManager.Render();
 		gPhysicsWorld.DebugDraw();
-		m_renderer->Render(m_player->GetCamera());
+		gRenderer.Render(gSceneManager.GetCurrentScene()->GetCamera());
 
 		if (DEBUG_DRAW)
 		{
-			gDebugRenderer.Render(m_player->GetCamera());
+			gDebugRenderer.Render(gSceneManager.GetCurrentScene()->GetCamera());
 			gDebugRenderer.PostRenderUpdate(dt);
 		}
 
@@ -207,7 +200,6 @@ void Game::Run()
 		SDL_GL_SwapWindow(m_window);
 	}
 
-	Destroy();
 	Cleanup();
 }
 
@@ -223,102 +215,6 @@ void Game::SetupGL()
 	//glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 }
 
-void Game::Create()
-{
-	ResourceManager::Instance().LoadResource<Texture>("data/images/round_cat.png", "cat");
-	ResourceManager::Instance().LoadResource<Texture>("data/images/missing.png", "missing");
-	ResourceManager::Instance().LoadSound("pew", "data/sounds/pew.wav");
-
-	ResourceManager::Instance().GetSound("pew")->SetGain(1.0f);
-
-	m_player = new Player(gPhysicsWorld.CreateCharacter(glm::vec3(0.f, 5.0f, 0.0f)));
-	m_player->GetCamera()->UpdateProjection(static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight));
-
-	m_level = new Level();
-	m_renderer->AddToRenderList(m_level);
-
-	gPhysicsWorld.CreateStaticLevelGeometry("data/models/test.obj");
-
-	Enemy* enemy = new Enemy(glm::vec3(0.0f, 10.0f, 0.0f), m_player);
-	m_renderer->AddToRenderList(enemy);
-	m_entities.push_back(enemy);
-
-	//StateManager::Instance().GoToState(new GameplayState());
-}
-
-void Game::FixedUpdate()
-{
-	m_player->FixedUpdate();
-
-	for (Entity* entity : m_entities)
-	{
-		entity->FixedUpdate();
-	}
-
-	SceneManager::Instance().FixedUpdate();
-}
-
-void Game::Update(float dt)
-{
-	if (Input::Instance().IsKeyPressed(SDL_SCANCODE_Z))
-	{
-		CatCube* catCube = gPhysicsWorld.AddCatCube(glm::vec3(0, 5.0f, 0)); // these never get deleted but thats ok ig
-		m_renderer->AddToRenderList(catCube);
-	}
-
-	if (Input::Instance().IsKeyPressed(SDL_SCANCODE_0))
-	{
-		ScreenshotManager::TakeScreenshot(m_windowWidth, m_windowHeight);
-	}
-
-	if (Input::Instance().IsKeyPressed(SDL_SCANCODE_F))
-	{
-		// This just switches to fullscreen. But can't switch back (lol)
-		// We need to save the windowed configuration to switch back to it.
-		SDL_DisplayMode displayMode;
-		SDL_GetDesktopDisplayMode(0, &displayMode); // can return int error
-		
-		m_windowWidth = displayMode.w;
-		m_windowHeight = displayMode.h;
-
-		m_viewportWidth = m_windowWidth / 2;
-		m_viewportHeight = m_windowHeight / 2;
-
-		SDL_SetWindowSize(m_window, m_windowWidth, m_windowHeight);
-		SDL_SetWindowBordered(m_window, SDL_FALSE);
-
-		glViewport(0, 0, m_windowWidth, m_windowHeight);
-
-		m_player->GetCamera()->UpdateProjection(static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight));
-		gTextRenderer.SetProjection(m_viewportWidth, m_viewportHeight);
-	}
-
-	m_player->Update(dt);
-
-	for (Entity* entity : m_entities)
-	{
-		entity->Update(dt);
-	}
-
-	SceneManager::Instance().Update(dt);
-}
-
-void Game::Render()
-{
-	SceneManager::Instance().Render();
-}
-
-void Game::Destroy()
-{
-	for (Entity* entity : m_entities)
-	{
-		SAFE_DELETE(entity);
-	}
-
-	SAFE_DELETE(m_player);
-	SAFE_DELETE(m_level);
-}
-
 void Game::Cleanup()
 {
 	ResourceManager::Instance().UnloadResources();
@@ -330,7 +226,6 @@ void Game::Cleanup()
 	m_guiRenderer->Dispose();
 	SAFE_DELETE(m_guiRenderer);
 
-	SAFE_DELETE(m_renderer);
 
 	SDL_GL_DeleteContext(m_context);
 	SDL_DestroyWindow(m_window);

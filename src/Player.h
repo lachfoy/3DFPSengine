@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Entity.h"
 #include <glm/glm.hpp>
 #include <btBulletDynamicsCommon.h>
 
@@ -8,16 +9,14 @@
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 class Camera;
 
-class Player
+class Player : public Entity
 {
 public:
-	Player(btKinematicCharacterController* characterController);
+	Player(const glm::vec3& position, Camera& camera);
 	~Player() = default;
 
-	void FixedUpdate();
-	void Update(float dt);
-
-	Camera* GetCamera() const { return m_camera; }
+	void FixedUpdate() override;
+	void Update(float dt) override;
 
 	glm::vec3 GetPosition() const
 	{
@@ -28,7 +27,7 @@ public:
 private:
 	btKinematicCharacterController* m_characterController;
 
-	Camera* m_camera;
+	Camera& m_camera; // NON OWNING
 
 	glm::vec3 m_walkDirection;
 	float m_walkSpeed = 0.16f;

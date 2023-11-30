@@ -18,11 +18,11 @@
 #include "Enemy.h"
 #include "AudioEngine.h"
 
-Player::Player(btKinematicCharacterController* characterController)
-	: m_characterController(characterController)
+Player::Player(const glm::vec3& position, Camera& camera)
+	: Entity(position), m_camera(camera)
 {
+	m_characterController = gPhysicsWorld.CreateCharacter(position);
 	m_characterController->getGhostObject()->setUserPointer((void*)this);
-	m_camera = new FirstPersonCamera();
 }
 
 void Player::FixedUpdate()
@@ -48,8 +48,8 @@ void Player::Update(float dt)
 {
 	m_walkDirection = glm::vec3(0.0f);
 
-	glm::vec3 front = m_camera->GetFront();
-	glm::vec3 right = m_camera->GetRight();
+	glm::vec3 front = m_camera.GetFront();
+	glm::vec3 right = m_camera.GetRight();
 
 	if (Input::Instance().IsKeyHeld(SDL_SCANCODE_W) || Input::Instance().IsKeyHeld(SDL_SCANCODE_UP))
 	{
@@ -79,7 +79,7 @@ void Player::Update(float dt)
 		
 		// Raycast from center of camera
 
-		glm::vec3 from = m_camera->GetPosition();
+		glm::vec3 from = m_camera.GetPosition();
 
 		// Convert glm::vec3 to btVector3
 		btVector3 btFrom(from.x, from.y, from.z);
@@ -119,7 +119,7 @@ void Player::Update(float dt)
 		}
 	}
 
-	m_camera->Update(dt);
+	m_camera.Update(dt);
 
 	// make the camera actually follow the character controller
 	btTransform btWorldTransform = m_characterController->getGhostObject()->getWorldTransform();
@@ -127,7 +127,7 @@ void Player::Update(float dt)
 	btVector3 origin = btWorldTransform.getOrigin();
 
 	glm::vec3 cameraPosition = glm::vec3(origin.x(), origin.y() + m_cameraYOffsetFromOrigin, origin.z());
-	m_camera->SetPosition(cameraPosition);
+	m_camera.SetPosition(cameraPosition);
 
 	gAudioEngine.SetListenerPosition(cameraPosition);
 	gAudioEngine.SetListenerOrientation(front);

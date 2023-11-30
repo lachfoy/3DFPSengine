@@ -1,30 +1,25 @@
 #pragma once
 
+#include "NonCopyable.h"
 #include "Scene.h"
 #include <memory>
 
-class SceneManager
+class SceneManager : public NonCopyable
 {
 public:
-	static SceneManager& Instance()
-	{
-		static SceneManager instance;
-		return instance;
-	}
+	SceneManager() = default;
+	~SceneManager() = default;
 
 	void GoToScene(std::unique_ptr<Scene> newScene);
-	
+	const std::unique_ptr<Scene>& GetCurrentScene() const { return m_currentScene; }
+
 	void FixedUpdate();
 	void Update(float dt);
 	void Render();
 
 private:
-	SceneManager() = default;
-	~SceneManager() = default;
-
-	SceneManager(const SceneManager&) = delete;
-	SceneManager& operator=(const SceneManager&) = delete;
-
 	std::unique_ptr<Scene> m_currentScene;
 
 };
+
+extern SceneManager gSceneManager;

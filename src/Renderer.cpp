@@ -8,6 +8,8 @@
 #include "Mesh.h"
 #include "Renderable.h"
 
+Renderer gRenderer;
+
 Renderer::~Renderer()
 {
 	if (m_shaderProgram != 0)
