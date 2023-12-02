@@ -169,6 +169,7 @@
     <ClCompile Include="src\Enemy.cpp" />
     <ClCompile Include="src\Entity.cpp" />
     <ClCompile Include="src\GameplayScene.cpp" />
+    <ClCompile Include="src\Global.cpp" />
     <ClCompile Include="src\Renderable.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\SceneManager.cpp" />
@@ -198,6 +199,7 @@
     <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="src\Entity.h" />
     <ClInclude Include="src\GameplayScene.h" />
+    <ClInclude Include="src\Global.h" />
     <ClInclude Include="src\NonCopyable.h" />
     <ClInclude Include="src\Resource.h" />
     <ClInclude Include="src\Scene.h" />

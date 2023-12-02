@@ -10,11 +10,7 @@
 #define DEGTORAD(x) ((x) * PI / 180.0f)
 #define RADTODEG(x) ((x) * 180.0f / PI)
 
-#include <cassert>
-#define ASSERT(_Expression) assert(_Expression)
-
-//#include <stdio.h>
-//#define btAssert(x) { if(!(x)){printf("Assert " __FILE__ ":%u (%s)\n", __LINE__, #x);__debugbreak();	}}
+#define ASSERT(x) if (!(x)) __debugbreak();
 
 #include <cstdio>
 #include <cstdlib>
@@ -29,3 +25,25 @@
 	} while(0)
 
 #define SAFE_DELETE(p) { if(p) { delete (p); (p) = nullptr; } }
+
+#include <glad/glad.h>
+
+static void GLClearError()
+{
+	while (glGetError() != GL_NO_ERROR);
+}
+
+static bool GLLogCall(const char* func, const char* file, int line)
+{
+	while (GLenum error = glGetError())
+	{
+		fprintf(stderr, "OpenGL error: %d\nFunction: %s, File: %s, Line: %d\n", (int)error, func, file, line);
+		return false;
+	}
+	return true;
+}
+
+#define GLCALL(x) \
+	GLClearError(); \
+	x; \
+	ASSERT(GLLogCall(#x, __FILE__, __LINE__));

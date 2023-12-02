@@ -46,21 +46,21 @@ void Renderer::Render(Camera* camera)
 	glUseProgram(m_shaderProgram);
 	
 	// todo cache uniform locations
-	glUniformMatrix4fv(m_projectionUniformLocation, 1, false, glm::value_ptr(camera->GetProjection()));
-	glUniformMatrix4fv(m_viewUniformLocation, 1, false, glm::value_ptr(camera->GetView()));
-	glUniform3fv(m_cameraLocalPosUniformLocation, 1, glm::value_ptr(camera->m_position));
+	GLCALL(glUniformMatrix4fv(m_projectionUniformLocation, 1, false, glm::value_ptr(camera->GetProjection())));
+	GLCALL(glUniformMatrix4fv(m_viewUniformLocation, 1, false, glm::value_ptr(camera->GetView())));
+	GLCALL(glUniform3fv(m_cameraLocalPosUniformLocation, 1, glm::value_ptr(camera->m_position)));
 
 	for (const auto& renderable : m_renderList)
 	{
 		// set transformation
-		glUniformMatrix4fv(m_modelUniformLocation, 1, false, glm::value_ptr(renderable->m_transform));
+		GLCALL(glUniformMatrix4fv(m_modelUniformLocation, 1, false, glm::value_ptr(renderable->m_transform)));
 
 		// bind texture 1
 		glActiveTexture(GL_TEXTURE0);
 		renderable->m_texture->Bind();
 
 		// set color
-		glUniform4fv(m_colorUniformLocation, 1, glm::value_ptr(glm::vec4(1.0f)));
+		GLCALL(glUniform4fv(m_colorUniformLocation, 1, glm::value_ptr(glm::vec4(1.0f))));
 
 		// draw
 		renderable->m_mesh->Draw();
@@ -106,7 +106,7 @@ void Renderer::CreateShaderProgram()
 			}
 		)";
 
-		glShaderSource(vertexShader, 1, &vertexSource, 0);
+		GLCALL(glShaderSource(vertexShader, 1, &vertexSource, 0));
 		glCompileShader(vertexShader);
 
 		int success;
@@ -148,7 +148,7 @@ void Renderer::CreateShaderProgram()
 			}
 		)";
 
-		glShaderSource(fragmentShader, 1, &fragmentSource, 0);
+		GLCALL(glShaderSource(fragmentShader, 1, &fragmentSource, 0));
 		glCompileShader(fragmentShader);
 
 		int success;

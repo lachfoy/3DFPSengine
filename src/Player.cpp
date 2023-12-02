@@ -2,15 +2,13 @@
 
 #include "Input.h"
 
-
 #include <string>
 #include "TextRenderer.h"
 
 #include <glm/gtc/type_ptr.hpp>
 
-
+#include "Global.h"
 #include "Camera.h"
-
 #include "PhysicsWorld.h"
 #include "ResourceManager.h"
 #include "Sound.h"
@@ -51,29 +49,29 @@ void Player::Update(float dt)
 	glm::vec3 front = m_camera.GetFront();
 	glm::vec3 right = m_camera.GetRight();
 
-	if (gInput.IsKeyHeld(SDL_SCANCODE_W) || gInput.IsKeyHeld(SDL_SCANCODE_UP))
+	if (global.input->GetCurrentKeyState(SDL_SCANCODE_W) || global.input->GetCurrentKeyState(SDL_SCANCODE_UP))
 	{
 		m_walkDirection += glm::vec3(front.x, 0.0f, front.z);
 	}
-	if (gInput.IsKeyHeld(SDL_SCANCODE_S) || gInput.IsKeyHeld(SDL_SCANCODE_DOWN)) 
+	if (global.input->GetCurrentKeyState(SDL_SCANCODE_S) || global.input->GetCurrentKeyState(SDL_SCANCODE_DOWN)) 
 	{
 		m_walkDirection -= glm::vec3(front.x, 0.0f, front.z);
 	}
-	if (gInput.IsKeyHeld(SDL_SCANCODE_A) || gInput.IsKeyHeld(SDL_SCANCODE_LEFT))
+	if (global.input->GetCurrentKeyState(SDL_SCANCODE_A) || global.input->GetCurrentKeyState(SDL_SCANCODE_LEFT))
 	{
 		m_walkDirection -= glm::vec3(right.x, 0.0f, right.z);
 	}
-	if (gInput.IsKeyHeld(SDL_SCANCODE_D) || gInput.IsKeyHeld(SDL_SCANCODE_RIGHT))
+	if (global.input->GetCurrentKeyState(SDL_SCANCODE_D) || global.input->GetCurrentKeyState(SDL_SCANCODE_RIGHT))
 	{
 		m_walkDirection += glm::vec3(right.x, 0.0f, right.z);
 	}
 
-	if (gInput.IsKeyPressed(SDL_SCANCODE_SPACE) && m_characterController->onGround())
+	if (global.input->GetCurrentKeyState(SDL_SCANCODE_SPACE) && m_characterController->onGround())
 	{
 		m_characterController->jump(btVector3(0.0f, m_jumpAmount, 0.0f));
 	}
 
-	if (gInput.IsMouseButtonPressed(SDL_BUTTON_LEFT))
+	if (global.input->LMBClicked())
 	{
 		ResourceManager::Instance().GetSound("pew")->Play(); // pew
 		

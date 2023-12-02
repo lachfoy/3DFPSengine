@@ -4,43 +4,43 @@
 #include <SDL.h>
 #include <glm/glm.hpp>
 
-#define NUM_MOUSE_BUTTONS 5
-
 class Input : public NonCopyable
 {
 friend class Window;
 public:
-	Input();
+	Input(SDL_Window* window);
 	~Input();
 
 	void Update();
 
-	bool IsKeyPressed(Uint8 key) const;
-	bool IsKeyHeld(Uint8 key) const;
-	glm::vec2 GetMouseAbsPos() const;
+	Uint8 GetCurrentKeyState(Uint8 key);
+	bool KeyPressed(Uint8 key);
+	bool KeyReleased(Uint8 key);
+
+	glm::vec2 GetMouseAbsPos();
 	glm::vec2 GetMouseRelPos();
 
-	bool IsMouseButtonPressed(Uint8 button) const;
-	bool IsMouseButtonHeld(Uint8 button) const;
+	bool LMBDown() { return m_lmbDown; }
+	bool RMBDown() { return m_rmbDown; }
+
+	bool LMBClicked() { return m_lmbDown; }
+	bool RMBClicked() { return m_rmbClicked; }
 
 private:
 	int m_numKeys;
-	bool *m_keyboardState;
-	bool *m_lastKeyboardState;
+	Uint8 *m_keyboardState;
+	Uint8 *m_lastKeyboardState;
+	size_t m_keyboardStateSize;
 
 	// mouse
 	glm::vec2 m_mouseAbsPos;
 	glm::vec2 m_mouseRelPos;
 
-	// 5 mouse buttons
-	//SDL_BUTTON_LEFT
-	//SDL_BUTTON_MIDDLE
-	//SDL_BUTTON_RIGHT
-	//SDL_BUTTON_X1
-	//SDL_BUTTON_X2
-	bool m_mouseState[NUM_MOUSE_BUTTONS];
-	bool m_lastMouseState[NUM_MOUSE_BUTTONS];
+	bool m_lmbDown;
+	bool m_rmbDown;
+	bool m_lmbClicked;
+	bool m_rmbClicked;
+
+	SDL_Window* m_window;
 
 };
-
-extern Input gInput;

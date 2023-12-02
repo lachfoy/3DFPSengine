@@ -1,5 +1,6 @@
 #include "Camera.h"
 
+#include "Global.h"
 #include <cmath>
 #include "Input.h"
 
@@ -51,7 +52,7 @@ void Camera::UpdateCameraVectors()
 void FirstPersonCamera::Update(float dt)
 {
 	// Mouse movement
-	glm::vec2 mouseRelPos = gInput.GetMouseRelPos();
+	glm::vec2 mouseRelPos = global.input->GetMouseRelPos();
 	float xOffset = mouseRelPos.x * m_mouseSensitivity;
 	float yOffset = -mouseRelPos.y * m_mouseSensitivity;
 
@@ -75,25 +76,25 @@ void FlyingCamera::Update(float dt)
 {
 	m_moveDir = glm::vec3(0.0f);
 
-	if (gInput.IsKeyHeld(SDL_SCANCODE_W))
-	{
-		m_moveDir += m_front;
-	}
-	if (gInput.IsKeyHeld(SDL_SCANCODE_A))
-	{
-		m_moveDir -= m_right;
-	}
-	if (gInput.IsKeyHeld(SDL_SCANCODE_S))
-	{
-		m_moveDir -= m_front;
-	}
-	if (gInput.IsKeyHeld(SDL_SCANCODE_D))
-	{
-		m_moveDir += m_right;
-	}
+	//if (global.input->IsKeyHeld(SDL_SCANCODE_W))
+	//{
+	//	m_moveDir += m_front;
+	//}
+	//if (global.input->IsKeyHeld(SDL_SCANCODE_A))
+	//{
+	//	m_moveDir -= m_right;
+	//}
+	//if (global.input->IsKeyHeld(SDL_SCANCODE_S))
+	//{
+	//	m_moveDir -= m_front;
+	//}
+	//if (global.input->IsKeyHeld(SDL_SCANCODE_D))
+	//{
+	//	m_moveDir += m_right;
+	//}
 
 	// Mouse movement
-	glm::vec2 mouseRelPos = gInput.GetMouseRelPos();
+	glm::vec2 mouseRelPos = global.input->GetMouseRelPos();
 	float xOffset = mouseRelPos.x * m_mouseSensitivity;
 	float yOffset = -mouseRelPos.y * m_mouseSensitivity;
 

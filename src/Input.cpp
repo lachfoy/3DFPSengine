@@ -1,53 +1,96 @@
 #include "Input.h"
 
-Input gInput;
-
-Input::Input()
+Input::Input(SDL_Window* window) : m_window(window)
 {
-	// find the number of keys
+	// Find the number of keys
 	SDL_GetKeyboardState(&m_numKeys);
-	m_keyboardState = new bool[m_numKeys];
-	m_lastKeyboardState = new bool[m_numKeys];
+	m_keyboardState = new Uint8[m_numKeys];
+	m_lastKeyboardState = new Uint8[m_numKeys];
 
-	// intialize the states as false
-	for (int i = 0; i < m_numKeys; i++) {
-		m_keyboardState[i] = false;
-		m_lastKeyboardState[i] = false;
+	m_keyboardStateSize = m_numKeys * sizeof(Uint8);
+
+	// Intialize the states as 0
+	for (int i = 0; i < m_numKeys; i++)
+	{
+		m_keyboardState[i] = 0;
+		m_lastKeyboardState[i] = 0;
 	}
 }
 
 Input::~Input()
 {
-	// delete arrays
+	// Delete arrays
 	delete[] m_keyboardState;
 	delete[] m_lastKeyboardState;
 }
 
 void Input::Update()
 {
-	// update last state
-	for (int i = 0; i < m_numKeys; i++)
+	SDL_Event sdlEvent;
+
+	m_lmbClicked = false;
+	m_rmbClicked = false;
+
+	while (SDL_PollEvent(&sdlEvent))
 	{
-		m_lastKeyboardState[i] = m_keyboardState[i];
+		switch (sdlEvent.type)
+		{
+		case SDL_MOUSEMOTION:
+			m_mouseAbsPos = glm::vec2(static_cast<float>(sdlEvent.motion.x), static_cast<float>(sdlEvent.motion.y));
+			break;
+		case SDL_MOUSEBUTTONDOWN:
+			if (sdlEvent.button.button == SDL_BUTTON_LEFT)
+			{
+				if (!m_lmbDown)
+					m_lmbClicked = true;
+
+				m_lmbDown = true;
+			}
+			else if (sdlEvent.button.button == SDL_BUTTON_RIGHT)
+			{
+				if (!m_rmbDown)
+					m_rmbClicked = true;
+
+				m_rmbDown = true;
+			}
+			break;
+		case SDL_MOUSEBUTTONUP:
+			if (sdlEvent.button.button == SDL_BUTTON_LEFT)
+				m_lmbDown = false;
+			else if (sdlEvent.button.button == SDL_BUTTON_RIGHT)
+				m_rmbDown = false;
+			break;
+		}
 	}
 
-	for (int i = 0; i < NUM_MOUSE_BUTTONS; i++)
-	{
-		m_lastMouseState[i] = m_mouseState[i];
-	}
+	int relX, relY;
+	SDL_GetRelativeMouseState(&relX, &relY);
+	m_mouseRelPos = glm::vec2(static_cast<float>(relX), static_cast<float>(relY));
+
+	// Copy states to past state buffer
+	memcpy(m_lastKeyboardState, m_keyboardState, m_keyboardStateSize);
+
+	// Copy new states
+	const Uint8* keyboardState = SDL_GetKeyboardState(NULL);
+	memcpy(m_keyboardState, keyboardState, m_keyboardStateSize);
 }
 
-bool Input::IsKeyPressed(Uint8 key) const
-{
-	return m_keyboardState[key] && !m_lastKeyboardState[key];
-}
-
-bool Input::IsKeyHeld(Uint8 key) const
+Uint8 Input::GetCurrentKeyState(Uint8 key)
 {
 	return m_keyboardState[key];
 }
 
-glm::vec2 Input::GetMouseAbsPos() const
+bool Input::KeyPressed(Uint8 key)
+{
+	return !m_lastKeyboardState[key] && m_keyboardState[key];
+}
+
+bool Input::KeyReleased(Uint8 key)
+{
+	return m_lastKeyboardState[key] && !m_keyboardState[key];
+}
+
+glm::vec2 Input::GetMouseAbsPos()
 {
 	return m_mouseAbsPos;
 }
@@ -57,14 +100,4 @@ glm::vec2 Input::GetMouseRelPos()
 	glm::vec2 pos = m_mouseRelPos;
 	m_mouseRelPos = glm::vec2(0.0f);
 	return pos;
-}
-
-bool Input::IsMouseButtonPressed(Uint8 button) const
-{
-	return m_mouseState[button] && !m_lastMouseState[button];
-}
-
-bool Input::IsMouseButtonHeld(Uint8 button) const
-{
-	return m_mouseState[button];
 }

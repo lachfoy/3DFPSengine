@@ -1,6 +1,7 @@
 #include "Common.h"
 #include "Game.h"
 
+#include "Global.h"
 #include "Renderer.h"
 #include "DebugRenderer.h"
 #include "Input.h"
@@ -27,6 +28,8 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 	// Init global state
 	WindowConfig config;
 	gWindow.Init(config);
+
+	global.input = new Input(gWindow.GetWindow());
 
 	gRenderer.Init();
 	gDebugRenderer.Init();
@@ -61,7 +64,8 @@ void Game::Run()
 	while (!gWindow.QuitRequested())
 	{
 		gWindow.PollEvents(); // I actually dont like the window class. TODO Get rid of
-
+		global.input->Update(); // Update input state
+		gWindow.WarpMouseInWindow();
 		// calculate delta time
 		Uint32 currentTime = SDL_GetTicks();
 		float dt = (currentTime - lastTime) / 1000.0f;
@@ -107,18 +111,15 @@ void Game::Run()
 
 		// Update logic
 		gSceneManager.Update(dt);
-		if (gInput.IsKeyPressed(SDL_SCANCODE_ESCAPE))
+		if (global.input->KeyPressed(SDL_SCANCODE_ESCAPE))
 		{
 			gWindow.Quit();
 		}
 
-		if (gInput.IsKeyPressed(SDL_SCANCODE_F))
+		if (global.input->KeyPressed(SDL_SCANCODE_F))
 		{
 			gWindow.ToggleFullscreen();
 		}
-
-		// Update input state
-		gInput.Update();
 
 		// Render
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
@@ -149,4 +150,6 @@ void Game::Cleanup()
 
 	m_guiRenderer->Dispose();
 	SAFE_DELETE(m_guiRenderer);
+
+	delete global.input;
 }

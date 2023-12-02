@@ -1,6 +1,5 @@
-#include "Texture.h"
-
 #include "Common.h"
+#include "Texture.h"
 
 #include "STBImage.h"
 
@@ -52,7 +51,7 @@ Texture* Texture::Create(const std::string& path)
 	}
 	}
 
-	glTexImage2D(GL_TEXTURE_2D, 0, format, texture->m_width, texture->m_height, 0, format, GL_UNSIGNED_BYTE, data);
+	GLCALL(glTexImage2D(GL_TEXTURE_2D, 0, format, texture->m_width, texture->m_height, 0, format, GL_UNSIGNED_BYTE, data));
 	delete data;
 
 	// set params
@@ -79,7 +78,7 @@ Texture* Texture::CreateUtilTexture()
 	glGenTextures(1, &utilTexture->m_id);
 	glBindTexture(GL_TEXTURE_2D, utilTexture->m_id);
 
-	glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, utilTexture->m_width, utilTexture->m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+	GLCALL(glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, utilTexture->m_width, utilTexture->m_height, 0, GL_RGB, GL_UNSIGNED_BYTE, data));
 
 	// set params
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -95,7 +94,7 @@ Texture* Texture::CreateUtilTexture()
 
 void Texture::Bind() const
 {
-	glBindTexture(GL_TEXTURE_2D, m_id);
+	GLCALL(glBindTexture(GL_TEXTURE_2D, m_id));
 }
 
 void Texture::GenerateMipMaps()

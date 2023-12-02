@@ -75,43 +75,27 @@ void Window::PollEvents()
 		switch (event.type) {
 		case SDL_QUIT:
 			m_quitRequested = true;
-		case SDL_KEYDOWN:
-			gInput.m_keyboardState[event.key.keysym.scancode] = true;
-			break;
-		case SDL_KEYUP:
-			gInput.m_keyboardState[event.key.keysym.scancode] = false;
-			break;
-		case SDL_MOUSEMOTION:
-			gInput.m_mouseAbsPos = glm::vec2(static_cast<float>(event.motion.x), static_cast<float>(event.motion.y));
-			//m_mouseAbsPos = (m_mouseAbsPos / glm::vec2(800.0f, 600.0f)); //*vVirtualSize;
-			break;
-		case SDL_MOUSEBUTTONDOWN:
-			gInput.m_mouseState[event.button.button] = true;
-			break;
-		case SDL_MOUSEBUTTONUP:
-			gInput.m_mouseState[event.button.button] = false;
-			break;
 		case SDL_WINDOWEVENT:
 			switch (event.window.event)
 			{
 			case SDL_WINDOWEVENT_FOCUS_GAINED:
+				SDL_SetWindowGrab(m_window, SDL_TRUE);
 				m_hasFocus = true;
 				break;
 			case SDL_WINDOWEVENT_FOCUS_LOST:
+				SDL_SetWindowGrab(m_window, SDL_FALSE);
 				m_hasFocus = false;
 				break;
 			}
 		}
 	}
+}
 
+void Window::WarpMouseInWindow()
+{
 	// Warp the mouse position to the center of the window
 	if (m_hasFocus)
 	{
-		int relX, relY;
-		SDL_GetRelativeMouseState(&relX, &relY);
-		gInput.m_mouseRelPos = glm::vec2(static_cast<float>(relX), static_cast<float>(relY));
-		//m_mouseRelPos = (m_mouseRelPos / glm::vec2(800.0f, 600.0f));//*vVirtualSize;
-
 		SDL_WarpMouseInWindow(m_window, m_windowWidth / 2, m_windowHeight / 2);
 	}
 }
