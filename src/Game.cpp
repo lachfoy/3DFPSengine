@@ -124,11 +124,11 @@ void Game::Run()
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		gSceneManager.Render();
 		gPhysicsWorld.DebugDraw();
-		gRenderer.Render(gSceneManager.GetCurrentScene()->GetCamera());
+		//gRenderer.Render(gSceneManager.GetCurrentScene()->GetCamera());
 
 		if (DEBUG_DRAW)
 		{
-			gDebugRenderer.Render(gSceneManager.GetCurrentScene()->GetCamera());
+			//gDebugRenderer.Render(gSceneManager.GetCurrentScene()->GetCamera());
 			gDebugRenderer.PostRenderUpdate(dt);
 		}
 
