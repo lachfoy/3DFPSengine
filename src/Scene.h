@@ -12,7 +12,7 @@ public:
 	
 	virtual void FixedUpdate() {}
 	virtual void Update(float dt) {}
-	virtual void Render() {} // this actually handles talking to the renderer
+	void Render(); // this actually handles talking to the renderer
 	
 	virtual void Destroy() = 0;
 

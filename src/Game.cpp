@@ -33,10 +33,10 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 
 	m_guiRenderer = new GuiRenderer();
 	m_guiRenderer->Init();
-	m_guiRenderer->SetProjection(1280 /2, 720/2);
+	m_guiRenderer->SetProjection(1280 / 2, 720 / 2);
 
 	gTextRenderer.Init();
-	gTextRenderer.SetProjection(1280/2, 720/2);
+	gTextRenderer.SetProjection(1280 / 2, 720 / 2);
 
 	gAudioEngine.Init();
 
@@ -60,7 +60,7 @@ void Game::Run()
 	// main loop
 	while (!gWindow.QuitRequested())
 	{
-		gWindow.PollEvents();
+		gWindow.PollEvents(); // I actually dont like the window class. TODO Get rid of
 
 		// calculate delta time
 		Uint32 currentTime = SDL_GetTicks();
@@ -124,13 +124,8 @@ void Game::Run()
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
 		gSceneManager.Render();
 		gPhysicsWorld.DebugDraw();
-		//gRenderer.Render(gSceneManager.GetCurrentScene()->GetCamera());
 
-		if (DEBUG_DRAW)
-		{
-			//gDebugRenderer.Render(gSceneManager.GetCurrentScene()->GetCamera());
-			gDebugRenderer.PostRenderUpdate(dt);
-		}
+		gDebugRenderer.PostRenderUpdate(dt);
 
 		glDisable(GL_DEPTH_TEST);
 		m_guiRenderer->RenderQuads();

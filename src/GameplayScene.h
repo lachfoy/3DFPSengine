@@ -18,8 +18,7 @@ public:
 	
 	void FixedUpdate() override;
 	void Update(float dt) override;
-	void Render() override;
-	
+
 	void Destroy() override;
 
 protected:

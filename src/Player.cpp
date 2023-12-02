@@ -55,7 +55,7 @@ void Player::Update(float dt)
 	{
 		m_walkDirection += glm::vec3(front.x, 0.0f, front.z);
 	}
-	if (gInput.IsKeyHeld(SDL_SCANCODE_S) || gInput.IsKeyHeld(SDL_SCANCODE_DOWN))
+	if (gInput.IsKeyHeld(SDL_SCANCODE_S) || gInput.IsKeyHeld(SDL_SCANCODE_DOWN)) 
 	{
 		m_walkDirection -= glm::vec3(front.x, 0.0f, front.z);
 	}

@@ -13,9 +13,27 @@ Camera::Camera(const glm::vec3& position, const glm::vec3& up)
 	UpdateCameraVectors();
 }
 
-void Camera::UpdateProjection(float aspect)
+const glm::mat4 Camera::GetProjection()
 {
-	m_projection = glm::perspective(glm::radians(m_fov), aspect, m_nearClip, m_farClip);
+	if (m_projectionNeedsUpdating)
+	{
+		m_projection = glm::perspective(glm::radians(m_fov), m_aspect, m_nearClip, m_farClip);
+		m_projectionNeedsUpdating = false;
+	}
+
+	return m_projection;
+}
+
+void Camera::SetFov(float fov)
+{
+	m_fov = fov;
+	m_projectionNeedsUpdating = true;
+}
+
+void Camera::SetAspect(float aspect)
+{
+	m_aspect = aspect;
+	m_projectionNeedsUpdating = true;
 }
 
 void Camera::UpdateCameraVectors()
@@ -40,14 +58,14 @@ void FirstPersonCamera::Update(float dt)
 	m_yaw += xOffset;
 	m_pitch += yOffset;
 
-	if (m_pitch > 89.0f)
+	if (m_pitch > 70.0f)
 	{
-		m_pitch = 89.0f;
+		m_pitch = 70.0f;
 	}
 
-	if (m_pitch < -89.0f)
+	if (m_pitch < -70.0f)
 	{
-		m_pitch = -89.0f;
+		m_pitch = -70.0f;
 	}
 
 	UpdateCameraVectors();
@@ -85,14 +103,14 @@ void FlyingCamera::Update(float dt)
 	m_position += m_moveDir * m_speed * dt;
 
 	// Make sure that when pitch is out of bounds, screen doesn't get flipped
-	if (m_pitch > 89.0f)
+	if (m_pitch > 70.0f)
 	{
-		m_pitch = 89.0f;
+		m_pitch = 70.0f;
 	}
 
-	if (m_pitch < -89.0f)
+	if (m_pitch < -70.0f)
 	{
-		m_pitch = -89.0f;
+		m_pitch = -70.0f;
 	}
 
 	UpdateCameraVectors();

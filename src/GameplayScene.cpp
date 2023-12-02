@@ -22,7 +22,7 @@ void GameplayScene::Create()
 
 	m_activeCamera = new FirstPersonCamera();
 	m_player = new Player(glm::vec3(0.f, 5.0f, 0.0f), *m_activeCamera);
-	m_activeCamera->UpdateProjection(static_cast<float>(800) / static_cast<float>(600)); // need to get this from a window class...
+	m_activeCamera->SetAspect(static_cast<float>(1280) / static_cast<float>(720)); // need to get this from a window class...
 
 	// Todo - refactor level object to include its own collision, rather than creating seperately
 	m_level = new Level();
@@ -86,15 +86,6 @@ void GameplayScene::Update(float dt)
 	for (Entity* entity : m_entities)
 	{
 		entity->Update(dt);
-	}
-}
-
-void GameplayScene::Render()
-{
-	if (m_activeCamera)
-	{
-		gRenderer.Render(m_activeCamera);
-		gDebugRenderer.Render(m_activeCamera);
 	}
 }
 

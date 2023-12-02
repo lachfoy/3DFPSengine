@@ -110,7 +110,7 @@ void DebugRenderer::Render(Camera* camera)
 	glUseProgram(m_debugShaderProgram);
 	glBindVertexArray(m_lineVao);
 
-	glUniformMatrix4fv(glGetUniformLocation(m_debugShaderProgram, "u_projection"), 1, false, glm::value_ptr(camera->m_projection));
+	glUniformMatrix4fv(glGetUniformLocation(m_debugShaderProgram, "u_projection"), 1, false, glm::value_ptr(camera->GetProjection()));
 	glUniformMatrix4fv(glGetUniformLocation(m_debugShaderProgram, "u_view"), 1, false, glm::value_ptr(camera->GetView()));
 
 	glBindBuffer(GL_ARRAY_BUFFER, m_lineVbo);

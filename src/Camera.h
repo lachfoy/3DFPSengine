@@ -12,9 +12,10 @@ public:
 	~Camera() {}
 
 	const glm::mat4 GetView() const { return glm::lookAt(m_position, m_position + m_front, m_worldUp); }
+	const glm::mat4 GetProjection();
 
-	void UpdateProjection(float aspect);
-	const glm::mat4 GetProjection() const { return m_projection; }
+	void SetFov(float fov);
+	void SetAspect(float aspect);
 
 	virtual void Update(float dt) {}
 
@@ -42,6 +43,8 @@ protected:
 	float m_farClip = 100.0f;
 
 	glm::mat4 m_projection;
+	float m_aspect;
+	bool m_projectionNeedsUpdating = false;
 
 };
 

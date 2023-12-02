@@ -43,15 +43,10 @@ void Renderer::AddToRenderList(Renderable *renderable)
 
 void Renderer::Render(Camera* camera)
 {
-	if (!camera)
-	{
-		return; // Can't render anything without a camera
-	}
-
 	glUseProgram(m_shaderProgram);
 	
 	// todo cache uniform locations
-	glUniformMatrix4fv(m_projectionUniformLocation, 1, false, glm::value_ptr(camera->m_projection));
+	glUniformMatrix4fv(m_projectionUniformLocation, 1, false, glm::value_ptr(camera->GetProjection()));
 	glUniformMatrix4fv(m_viewUniformLocation, 1, false, glm::value_ptr(camera->GetView()));
 	glUniform3fv(m_cameraLocalPosUniformLocation, 1, glm::value_ptr(camera->m_position));
 
@@ -76,6 +71,10 @@ void Renderer::Render(Camera* camera)
 	}
 
 	glUseProgram(0);
+
+	// RenderDebug()
+
+
 }
 
 void Renderer::CreateShaderProgram()

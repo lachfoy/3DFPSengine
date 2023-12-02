@@ -9,7 +9,7 @@
 
 CatCube::CatCube(const glm::vec3& position)
 {
-	m_mesh = Mesh::LoadMeshFromOBJ("data/models/cube.obj");
+	m_mesh = Mesh::LoadMeshFromOBJ("data/models/cube.obj"); // THESE LEAK
 
 	m_texture = ResourceManager::Instance().GetResource<Texture>("cat");
 
@@ -30,7 +30,7 @@ void CatCube::setWorldTransform(const btTransform& worldTrans)
 
 Level::Level()
 {
-	m_mesh = Mesh::LoadMeshFromOBJ("data/models/test.obj");
+	m_mesh = Mesh::LoadMeshFromOBJ("data/models/test.obj"); // THESE LEAK
 
 	m_texture = ResourceManager::Instance().GetResource<Texture>("missing");
 
