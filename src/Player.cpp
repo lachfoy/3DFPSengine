@@ -130,7 +130,7 @@ void Player::Update(float dt)
 	gAudioEngine.SetListenerPosition(cameraPosition);
 	gAudioEngine.SetListenerOrientation(front);
 
-	std::string debugString;
-	debugString += "origin:" + std::to_string(origin.x()) + ", " + std::to_string(origin.y()) + ", " + std::to_string(origin.z()) + "\n";
-	gTextRenderer.AddStringToBatch(debugString, 0, 0, glm::vec3(1.0f));
+	//std::string debugString;
+	//debugString += "origin:" + std::to_string(origin.x()) + ", " + std::to_string(origin.y()) + ", " + std::to_string(origin.z()) + "\n";
+	//gTextRenderer.AddStringToBatch(debugString, 0, 0, glm::vec3(1.0f));
 }

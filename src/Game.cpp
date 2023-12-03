@@ -17,9 +17,6 @@
 
 #include <deque>
 
-#define TARGET_FPS 60
-#define CAP_FRAMERATE 1
-
 bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 {
 	srand((unsigned int)time(NULL)); // dont do this here. but whatever for now
@@ -49,12 +46,11 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 
 void Game::Run()
 {
-	Uint32 lastTime = SDL_GetTicks();
 	std::deque<float> frameTimes;
 	const size_t maxFrameSamples = 10;
 	float frameTimeAccumulator = 0.0f;
 
-	const float targetFrameTime = 1.0f / TARGET_FPS;
+	Uint64 lastCounter = SDL_GetPerformanceCounter();
 
 	const float physicsTimeStep = 1.0f / 60; // 60 Hz
 	float accumulator = 0.0f;
@@ -63,25 +59,15 @@ void Game::Run()
 	while (!global.input->QuitRequested())
 	{
 		global.input->Update(); // Update input state
-		gWindow.WarpMouseInWindow();// reuuhh
+		gWindow.WarpMouseInWindow(); // I think ... maybe we delete the window class. what do you guys think?
 
-		// calculate delta time
-		Uint32 currentTime = SDL_GetTicks();
-		float dt = (currentTime - lastTime) / 1000.0f;
+		// Calculate delta time
+		Uint64 currentCounter = SDL_GetPerformanceCounter();
+		float dt = float(currentCounter - lastCounter) / SDL_GetPerformanceFrequency();
+		dt = std::min(dt, 0.25f); // Clamp dt (apparently this is good practice)
+		lastCounter = currentCounter;
 
-		if (CAP_FRAMERATE && dt < targetFrameTime) // cap FPS
-		{
-			SDL_Delay(static_cast<Uint32>((targetFrameTime - dt) * 1000.0f)); // I dont think this works very well
-			currentTime = SDL_GetTicks();
-			dt = (currentTime - lastTime) / 1000.0f;
-			lastTime = currentTime;
-		}
-		else
-		{
-			lastTime = currentTime;
-		}
-
-		// maintain a fixed-size deque of frame times
+		// Average the frame times for fps display
 		frameTimeAccumulator += dt;
 		frameTimes.push_back(dt);
 		if (frameTimes.size() > maxFrameSamples)
@@ -90,7 +76,6 @@ void Game::Run()
 			frameTimes.pop_front();
 		}
 
-		// calculate average frame time and FPS over the sliding window
 		float averageFrameTime = frameTimeAccumulator / frameTimes.size();
 		float fps = 1.0f / averageFrameTime;
 
@@ -108,8 +93,14 @@ void Game::Run()
 			accumulator -= physicsTimeStep;
 		}
 
+		gTextRenderer.AddStringToBatch("frametime: " + std::to_string(dt), 0, 0, glm::vec3(1.0f));
+
 		// Update logic
 		gSceneManager.Update(dt);
+		if (global.input->KeyPressed(SDL_SCANCODE_ESCAPE)) // exit game
+		{
+			break;
+		}
 
 		// Render
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
