@@ -15,6 +15,7 @@ public:
 private:
 	void Cleanup();
 
+	SDL_Window* m_window;
 	GuiRenderer* m_guiRenderer;
 
 };

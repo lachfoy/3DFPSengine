@@ -1,4 +1,15 @@
-TODO
+TODO NEW, URGENT
+* Refactor everything to use the same global system
+	(I quite like this article about globals http://clarkkromenaker.com/post/cpp-manager-access/)
+	I think the best approach for this small project is to have a "global of globals" approach, probably.
+	Until, of course, we can be bothered to do some dependency injection.
+* Clean up scene code to make ownership a little clearer
+* Add a proper level class (Don't forget this is leaking the mesh...)
+* Add config (This includes xml loading)
+* Add sound playing
+* Refactor the debug renderer into the renderer class. It doesn't need to be a seperate thing
+
+TODO OLD
 * Add MeshManager, SoundManager classes. Could add a ResourceManager instead, or have ResourceManager keep an intstance of each other manager for organisation
 * Add sound to the game!!! (OpenALSoft, libsndfile)
 * Seperate OBJ loading into its own class so Collision Mesh loading can be seperated from renderable mesh loading

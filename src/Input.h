@@ -23,8 +23,10 @@ public:
 	bool LMBDown() { return m_lmbDown; }
 	bool RMBDown() { return m_rmbDown; }
 
-	bool LMBClicked() { return m_lmbDown; }
+	bool LMBClicked() { return m_lmbClicked; }
 	bool RMBClicked() { return m_rmbClicked; }
+
+	bool QuitRequested() { return m_quit; }
 
 private:
 	int m_numKeys;
@@ -42,5 +44,6 @@ private:
 	bool m_rmbClicked;
 
 	SDL_Window* m_window;
+	bool m_quit;
 
 };

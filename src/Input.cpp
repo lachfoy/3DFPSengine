@@ -31,14 +31,18 @@ void Input::Update()
 	m_lmbClicked = false;
 	m_rmbClicked = false;
 
-	while (SDL_PollEvent(&sdlEvent))
+	while (SDL_PollEvent(&sdlEvent) != 0)
 	{
 		switch (sdlEvent.type)
 		{
+		case SDL_QUIT:
+			m_quit = true;
+			break;
 		case SDL_MOUSEMOTION:
-			m_mouseAbsPos = glm::vec2(static_cast<float>(sdlEvent.motion.x), static_cast<float>(sdlEvent.motion.y));
+ 			m_mouseAbsPos = glm::vec2(static_cast<float>(sdlEvent.motion.x), static_cast<float>(sdlEvent.motion.y));
 			break;
 		case SDL_MOUSEBUTTONDOWN:
+			printf("");
 			if (sdlEvent.button.button == SDL_BUTTON_LEFT)
 			{
 				if (!m_lmbDown)

@@ -17,7 +17,6 @@
 
 #include <deque>
 
-#define DEBUG_DRAW 1
 #define TARGET_FPS 60
 #define CAP_FRAMERATE 1
 
@@ -61,11 +60,11 @@ void Game::Run()
 	float accumulator = 0.0f;
 
 	// main loop
-	while (!gWindow.QuitRequested())
+	while (!global.input->QuitRequested())
 	{
-		gWindow.PollEvents(); // I actually dont like the window class. TODO Get rid of
 		global.input->Update(); // Update input state
-		gWindow.WarpMouseInWindow();
+		gWindow.WarpMouseInWindow();// reuuhh
+
 		// calculate delta time
 		Uint32 currentTime = SDL_GetTicks();
 		float dt = (currentTime - lastTime) / 1000.0f;
@@ -111,15 +110,6 @@ void Game::Run()
 
 		// Update logic
 		gSceneManager.Update(dt);
-		if (global.input->KeyPressed(SDL_SCANCODE_ESCAPE))
-		{
-			gWindow.Quit();
-		}
-
-		if (global.input->KeyPressed(SDL_SCANCODE_F))
-		{
-			gWindow.ToggleFullscreen();
-		}
 
 		// Render
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);

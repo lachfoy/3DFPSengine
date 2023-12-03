@@ -64,40 +64,11 @@ void Window::Init(const WindowConfig& config)
 	SetupGL();
 }
 
-void Window::PollEvents()
-{
-	// We pass input events over to the input class here
-	// It might be better to have our own global event system that the input class can subscribe to instead?
-
-	SDL_Event event;
-	// handle input events
-	while (SDL_PollEvent(&event) != 0) {
-		switch (event.type) {
-		case SDL_QUIT:
-			m_quitRequested = true;
-		case SDL_WINDOWEVENT:
-			switch (event.window.event)
-			{
-			case SDL_WINDOWEVENT_FOCUS_GAINED:
-				SDL_SetWindowGrab(m_window, SDL_TRUE);
-				m_hasFocus = true;
-				break;
-			case SDL_WINDOWEVENT_FOCUS_LOST:
-				SDL_SetWindowGrab(m_window, SDL_FALSE);
-				m_hasFocus = false;
-				break;
-			}
-		}
-	}
-}
 
 void Window::WarpMouseInWindow()
 {
 	// Warp the mouse position to the center of the window
-	if (m_hasFocus)
-	{
-		SDL_WarpMouseInWindow(m_window, m_windowWidth / 2, m_windowHeight / 2);
-	}
+	SDL_WarpMouseInWindow(m_window, m_windowWidth / 2, m_windowHeight / 2);
 }
 
 void Window::SetTitle(const char* title)

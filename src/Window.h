@@ -18,8 +18,7 @@ class Window : public NonCopyable
 public:
 	void Init(const WindowConfig& config);
 
-	void PollEvents();
-	bool QuitRequested() const { return m_quitRequested; }
+
 	void WarpMouseInWindow();
 
 	SDL_Window* GetWindow() { return m_window; } // Very temp.... get rid of this whole class please
