@@ -14,6 +14,7 @@ public:
 	Mesh() = default;
 	~Mesh();
 
+	static Mesh* Create(const std::string& filepath);
 	static Mesh* CreateQuad(const glm::vec2& size);
 
 	void Draw() const;
@@ -22,8 +23,6 @@ public:
 	static Mesh* LoadMeshFromOBJ(const std::string& filepath);
 	static btTriangleMesh* LoadCollisionMeshFromOBJ(const std::string& filepath);
 
-	int NumTriangles() const { return m_numTriangles; }
-	
 private:
 	GLuint m_vertexArrayId;
 	GLuint m_vertexBufferId;

@@ -4,6 +4,7 @@
 #include "Global.h"
 #include "ResourceManager.h"
 #include "Texture.h"
+#include "Mesh.h"
 #include "Sound.h"
 #include "Player.h"
 #include "Camera.h"
@@ -18,7 +19,8 @@ void GameplayScene::Create()
 	ResourceManager::Instance().LoadResource<Texture>("data/images/round_cat.png", "cat");
 	ResourceManager::Instance().LoadResource<Texture>("data/images/missing.png", "missing");
 	ResourceManager::Instance().LoadSound("pew", "data/sounds/pew.wav");
-
+	ResourceManager::Instance().LoadResource<Mesh>("data/models/test.obj", "level");
+	ResourceManager::Instance().LoadResource<Mesh>("data/models/cube.obj", "cube");
 	ResourceManager::Instance().GetSound("pew")->SetGain(1.0f);
 
 	m_activeCamera = new FirstPersonCamera();
