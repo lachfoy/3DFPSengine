@@ -49,27 +49,27 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 
 
 
-	pugi::xml_document doc;
+	//pugi::xml_document doc;
 
-	pugi::xml_parse_result result = doc.load_file("data/xml/test.xml");
+	//pugi::xml_parse_result result = doc.load_file("data/xml/test.xml");
 
-	if (!result) {
-		std::cerr << "XML [" << "path_to_your_config_file.xml" << "] parsed with errors.\n";
-		std::cerr << "Error description: " << result.description() << "\n";
-		return 1;
-	}
+	//if (!result) {
+	//	std::cerr << "XML [" << "path_to_your_config_file.xml" << "] parsed with errors.\n";
+	//	std::cerr << "Error description: " << result.description() << "\n";
+	//	return 1;
+	//}
 
-	pugi::xml_node graphics = doc.child("GameConfig").child("GraphicsSettings");
+	//pugi::xml_node graphics = doc.child("GameConfig").child("GraphicsSettings");
 
-	int width = graphics.child("Window").child("Width").text().as_int();
-	int height = graphics.child("Window").child("Height").text().as_int();
-	bool isFullScreen = graphics.child("Window").child("FullScreen").text().as_bool();
-	int fov = graphics.child("Camera").child("FieldOfView").text().as_int();
+	//int width = graphics.child("Window").child("Width").text().as_int();
+	//int height = graphics.child("Window").child("Height").text().as_int();
+	//bool isFullScreen = graphics.child("Window").child("FullScreen").text().as_bool();
+	//int fov = graphics.child("Camera").child("FieldOfView").text().as_int();
 
-	std::cout << "window width: " << width << "\n";
-	std::cout << "window height: " << height << "\n";
-	std::cout << "fullscreen: " << (isFullScreen ? "true" : "false") << "\n";
-	std::cout << "fov: " << fov << "\n";
+	//std::cout << "window width: " << width << "\n";
+	//std::cout << "window height: " << height << "\n";
+	//std::cout << "fullscreen: " << (isFullScreen ? "true" : "false") << "\n";
+	//std::cout << "fov: " << fov << "\n";
 
 
 
@@ -92,18 +92,20 @@ void Game::Run()
 	const float physicsTimeStep = 1.0f / 60; // 60 Hz
 	float accumulator = 0.0f;
 
+	float gameTime = 0.0f;
+
 	// main loop
 	while (!global.input->QuitRequested())
 	{
 		global.input->Update(); // Update input state
-		gWindow.WarpMouseInWindow(); // I think ... maybe we delete the window class. what do you guys think?
+		//gWindow.WarpMouseInWindow(); // I think ... maybe we delete the window class. what do you guys think?
 
 		// Calculate delta time
 		Uint64 currentCounter = SDL_GetPerformanceCounter();
 		float dt = float(currentCounter - lastCounter) / SDL_GetPerformanceFrequency();
-		dt = std::min(dt, 0.25f); // Clamp dt (apparently this is good practice)
+		dt = std::min(dt, 0.25f);
 		lastCounter = currentCounter;
-
+		
 		// Average the frame times for fps display
 		frameTimeAccumulator += dt;
 		frameTimes.push_back(dt);
@@ -118,7 +120,7 @@ void Game::Run()
 
 		std::string titleStr = "fps: " + std::to_string(fps);
 		gWindow.SetTitle(titleStr.c_str());
-		
+
 		// Accumulate time for physics update
 		accumulator += dt;
 
@@ -127,17 +129,24 @@ void Game::Run()
 		{
 			gSceneManager.FixedUpdate();
 			gPhysicsWorld.StepSimulation(physicsTimeStep, 16);
+			gameTime += physicsTimeStep;
 			accumulator -= physicsTimeStep;
 		}
 
-		gTextRenderer.AddStringToBatch("frametime: " + std::to_string(dt), 0, 0, glm::vec3(1.0f));
-
 		// Update logic
 		gSceneManager.Update(dt);
+
 		if (global.input->KeyPressed(SDL_SCANCODE_ESCAPE)) // exit game
 		{
 			break;
 		}
+
+		// Alpha is a normalized range of how far to interpolate between physics states
+		const float alpha = accumulator / dt;
+
+		std::string debugString = "frametime: " + std::to_string(dt) + "\n";
+		debugString += "alpha: " + std::to_string(alpha) + "\n";
+		gTextRenderer.AddStringToBatch(debugString, 0, 0, glm::vec3(1.0f));
 
 		// Render
 		glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
