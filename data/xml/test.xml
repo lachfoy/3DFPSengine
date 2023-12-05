@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GameConfig>
+    <GraphicsSettings>
+        <window>
+            <Width>1280</Width>
+            <Height>720</Height>
+            <FullScreen>false</FullScreen>
+        </window>
+        <camera fov="90"/>
+    </GraphicsSettings>
+
+    <!-- Additional configuration settings can be added here -->
+    <!-- For example, audio settings, control settings, etc. -->
+</GameConfig>
+
+<entities>
+	<enemies>
+		<enemy type="Goblin" positionX="0" positionY="0" positionZ="0" />
+		<enemy type="Goblin" positionX="0" positionY="0" positionZ="0" />
+		<enemy type="Goblin" positionX="0" positionY="0" positionZ="0" />
+	</enemies>
+	
+	<items>
+		<item>
+	</items>
+</Entities>
+
+<enemies>
+	<enemy type="Goblin" positionX="0" positionY="0" positionZ="0" health="10"/>
+</enemies>

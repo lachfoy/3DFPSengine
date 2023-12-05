@@ -72,11 +72,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LibraryPath>$(ProjectDir)external\openal-soft\libs\Win64;$(ProjectDir)external\libsndfile\lib;$(ProjectDir)external\SDL2\lib\x64;$(ProjectDir)external\bullet3\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
-    <IncludePath>$(ProjectDir)external\libsndfile\include;$(ProjectDir)external\openal-soft\include;$(ProjectDir)external\bullet3\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)external\libsndfile\include;$(ProjectDir)external\openal-soft\include;$(ProjectDir)external\bullet3\include;$(ProjectDir)external\pugixml\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LibraryPath>$(ProjectDir)external\openal-soft\libs\Win64;$(ProjectDir)external\libsndfile\lib;$(ProjectDir)external\SDL2\lib\x64;$(ProjectDir)external\bullet3\lib;$(VC_LibraryPath_x64);$(WindowsSDK_LibraryPath_x64)</LibraryPath>
-    <IncludePath>$(ProjectDir)external\libsndfile\include;$(ProjectDir)external\openal-soft\include;$(ProjectDir)external\bullet3\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)external\libsndfile\include;$(ProjectDir)external\openal-soft\include;$(ProjectDir)external\bullet3\include;$(ProjectDir)external\pugixml\src;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg">
     <VcpkgEnableManifest>false</VcpkgEnableManifest>
@@ -162,6 +162,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="external\glad\src\glad.c" />
+    <ClCompile Include="external\pugixml\src\pugixml.cpp" />
     <ClCompile Include="src\AudioEngine.cpp" />
     <ClCompile Include="src\BulletDebugDraw.cpp" />
     <ClCompile Include="src\Camera.cpp" />
@@ -195,6 +196,7 @@
     <ClInclude Include="src\BulletDebugDraw.h" />
     <ClInclude Include="src\Camera.h" />
     <ClInclude Include="src\Common.h" />
+    <ClInclude Include="src\Config.h" />
     <ClInclude Include="src\DebugRenderer.h" />
     <ClInclude Include="src\Enemy.h" />
     <ClInclude Include="src\Entity.h" />

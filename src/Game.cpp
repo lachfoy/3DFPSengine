@@ -17,6 +17,11 @@
 
 #include <deque>
 
+
+#include <pugixml.hpp>// temp
+#include <iostream> // temp
+
+
 bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 {
 	srand((unsigned int)time(NULL)); // dont do this here. but whatever for now
@@ -38,6 +43,38 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 	gTextRenderer.SetProjection(1280 / 2, 720 / 2);
 
 	gAudioEngine.Init();
+
+
+
+
+
+
+	pugi::xml_document doc;
+
+	pugi::xml_parse_result result = doc.load_file("data/xml/test.xml");
+
+	if (!result) {
+		std::cerr << "XML [" << "path_to_your_config_file.xml" << "] parsed with errors.\n";
+		std::cerr << "Error description: " << result.description() << "\n";
+		return 1;
+	}
+
+	pugi::xml_node graphics = doc.child("GameConfig").child("GraphicsSettings");
+
+	int width = graphics.child("Window").child("Width").text().as_int();
+	int height = graphics.child("Window").child("Height").text().as_int();
+	bool isFullScreen = graphics.child("Window").child("FullScreen").text().as_bool();
+	int fov = graphics.child("Camera").child("FieldOfView").text().as_int();
+
+	std::cout << "window width: " << width << "\n";
+	std::cout << "window height: " << height << "\n";
+	std::cout << "fullscreen: " << (isFullScreen ? "true" : "false") << "\n";
+	std::cout << "fov: " << fov << "\n";
+
+
+
+
+
 
 	gSceneManager.GoToScene(std::make_unique<GameplayScene>());
 
