@@ -117,8 +117,6 @@ void Player::Update(float dt)
 		}
 	}
 
-	m_camera.Update(dt);
-
 	// make the camera actually follow the character controller
 	btTransform btWorldTransform = m_characterController->getGhostObject()->getWorldTransform();
 
@@ -126,6 +124,8 @@ void Player::Update(float dt)
 
 	glm::vec3 cameraPosition = glm::vec3(origin.x(), origin.y() + m_cameraYOffsetFromOrigin, origin.z());
 	m_camera.SetPosition(cameraPosition);
+
+	m_camera.Update(dt);
 
 	gAudioEngine.SetListenerPosition(cameraPosition);
 	gAudioEngine.SetListenerOrientation(front);
