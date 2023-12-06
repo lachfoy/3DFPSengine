@@ -24,6 +24,5 @@ public:
 protected:
 	Player* m_player;
 	Level* m_level;
-	std::vector<Entity*> m_entities;
 
 };

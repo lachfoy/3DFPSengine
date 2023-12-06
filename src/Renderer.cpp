@@ -73,8 +73,7 @@ void Renderer::Render(Camera* camera)
 	glUseProgram(0);
 
 	// RenderDebug()
-
-
+	m_renderList.clear();
 }
 
 void Renderer::CreateShaderProgram()

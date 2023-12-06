@@ -3,6 +3,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/euler_angles.hpp>
 
+#include "Renderer.h"
 //m_scale(glm::vec3(1.0f, 1.0f, 1.0f)), m_rotation(glm::vec3(0.0f, 0.0f, 0.0f))
 
 Renderable::Renderable() : m_scale(glm::vec3(1.0f, 1.0f, 1.0f)), m_rotation(glm::vec3(0.0f, 0.0f, 0.0f))
@@ -18,4 +19,9 @@ void Renderable::UpdateTransform()
 
 	// Combine the matrices
 	m_transform = translationMatrix * rotationMatrix * scaleMatrix;
+}
+
+void Renderable::Render()
+{
+	gRenderer.AddToRenderList(this);
 }

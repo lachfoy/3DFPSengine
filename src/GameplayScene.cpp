@@ -34,19 +34,19 @@ void GameplayScene::Create()
 
 	Enemy* enemy = new Enemy(glm::vec3(0.0f, 10.0f, 0.0f), m_player);
 	gRenderer.AddToRenderList(enemy);
-	m_entities.push_back(enemy);
+	AddEntity(enemy);
 }
 
 void GameplayScene::FixedUpdate()
 {
 	m_player->FixedUpdate();
 
-	for (Entity* entity : m_entities)
+	for (auto it : m_entities)
 	{
-		entity->FixedUpdate();
+		if (it.second)
+		it.second->FixedUpdate();
 	}
 }
-
 
 void GameplayScene::Update(float dt)
 {
@@ -56,49 +56,17 @@ void GameplayScene::Update(float dt)
 		gRenderer.AddToRenderList(catCube);
 	}
 
-	// TODO!! HANDLE FROM WINDOW CLASS
-	//if (global.input->IsKeyPressed(SDL_SCANCODE_0))
-	//{
-	//	ScreenshotManager::TakeScreenshot(m_windowWidth, m_windowHeight);
-	//}
-
-	//if (global.input->IsKeyPressed(SDL_SCANCODE_F))
-	//{
-	//	// This just switches to fullscreen. But can't switch back (lol)
-	//	// We need to save the windowed configuration to switch back to it.
-	//	SDL_DisplayMode displayMode;
-	//	SDL_GetDesktopDisplayMode(0, &displayMode); // can return int error
-
-	//	m_windowWidth = displayMode.w;
-	//	m_windowHeight = displayMode.h;
-
-	//	m_viewportWidth = m_windowWidth / 2;
-	//	m_viewportHeight = m_windowHeight / 2;
-
-	//	SDL_SetWindowSize(m_window, m_windowWidth, m_windowHeight);
-	//	SDL_SetWindowBordered(m_window, SDL_FALSE);
-
-	//	glViewport(0, 0, m_windowWidth, m_windowHeight);
-
-	//	m_player->GetCamera()->UpdateProjection(static_cast<float>(m_windowWidth) / static_cast<float>(m_windowHeight));
-	//	gTextRenderer.SetProjection(m_viewportWidth, m_viewportHeight);
-	//}
-
 	m_player->Update(dt);
 
-	for (Entity* entity : m_entities)
+	for (auto it : m_entities)
 	{
-		entity->Update(dt);
+		if (it.second)
+		it.second->Update(dt);
 	}
 }
 
 void GameplayScene::Destroy()
 {
-	for (Entity* entity : m_entities)
-	{
-		SAFE_DELETE(entity);
-	}
-
 	SAFE_DELETE(m_player);
 	SAFE_DELETE(m_level);
 	SAFE_DELETE(m_activeCamera);

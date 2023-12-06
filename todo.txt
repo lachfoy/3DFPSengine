@@ -8,6 +8,7 @@ TODO NEW, URGENT
 * Add config (This includes xml loading)
 * Add sound playing
 * Refactor the debug renderer into the renderer class. It doesn't need to be a seperate thing
+* IMPORTANT - Refactor relationship between renderable and entities. Renderables may not be entities and vice versa, therefore they should be seperate and not inherit!!
 
 TODO OLD
 * Add MeshManager, SoundManager classes. Could add a ResourceManager instead, or have ResourceManager keep an intstance of each other manager for organisation

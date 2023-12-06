@@ -23,6 +23,8 @@ public:
 
 	void UpdateTransform();
 
+	void Render() override;
+
 protected:
 	glm::vec3 m_scale;
 	glm::vec3 m_rotation;

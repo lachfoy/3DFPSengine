@@ -5,7 +5,6 @@
 #include <glad/glad.h>
 #include <glm/glm.hpp>
 
-
 class Input;
 class Player;
 
@@ -15,30 +14,15 @@ class Enemy : public Renderable
 {
 public:
 	Enemy(const glm::vec3& position, Player* player);
-	~Enemy() {}
+	~Enemy();
 
 	void Damage(int amount);
 	int GetDamage() const { return rand() % (m_maxDamage - m_minDamage + 1) + m_minDamage; }
 
-	void Think();
-
-
 	void FixedUpdate() override;
 	void Update(float dt) override;
 
-	void Destroy() override;
-
 private:
-	glm::vec3 m_moveDir{ 0.0f };
-	
-	float m_acceleration = 400.0f;
-
-	glm::vec3 m_velocity{ 0.0f };
-	float kFrictionCoef = 8.f;
-
-	float m_thinkTimer = 0.0f;
-	const float kThinkInterval = 0.5f;
-
 	int m_maxHealth = 10;
 	int m_health = m_maxHealth;
 

@@ -102,6 +102,7 @@ void Player::Update(float dt)
 				if (enemy)
 				{
 					printf("Hit enemy\n");
+					enemy->Damage(1);
 				}
 
 				// Check if the collision was static geometry

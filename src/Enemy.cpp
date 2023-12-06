@@ -12,6 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "PhysicsWorld.h"
+#include "Scene.h"
 
 Enemy::Enemy(const glm::vec3& position, Player* player)
 	: m_player(player)
@@ -26,20 +27,21 @@ Enemy::Enemy(const glm::vec3& position, Player* player)
 	m_characterController->getGhostObject()->setUserPointer((void*)this);
 }
 
+Enemy::~Enemy()
+{
+	delete m_characterController;
+}
+
 void Enemy::Damage(int amount)
 {
 	m_health -= amount;
-	printf("enemy damaged for %d. New hp = %d/%d\n", amount, m_health, m_maxHealth);
+	printf("enemy with id %d damaged for %d. New hp = %d/%d\n", m_id, amount, m_health, m_maxHealth);
 
 	if (m_health <= 0)
 	{
-		printf("Enemy destroyed\n");
+		m_scene->RemoveEntity(this); // ENSURE THE COLLISION INFORMATION IS ALSO DELETED
+		// fuck
 	}
-}
-
-void Enemy::Think()
-{
-	
 }
 
 void Enemy::FixedUpdate()
@@ -75,9 +77,4 @@ void Enemy::Update(float dt)
 	m_rotation.y = radiansToPlayer;
 
 	UpdateTransform();
-}
-
-void Enemy::Destroy()
-{
-	
 }
