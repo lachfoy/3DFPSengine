@@ -3,15 +3,23 @@
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 
-#include <list>
-#include "NonCopyable.h"
+#include "Texture.h"
+#include "Mesh.h"
+#include <memory>
+#include <vector>
 
 class Camera;
-class Renderable;
 
-typedef std::list<Renderable*> tRenderList;
+struct RenderObject
+{
+	std::shared_ptr<Mesh> mesh;
+	glm::mat4 transform;
+	std::shared_ptr<Texture> texture;
+};
 
-class Renderer : public NonCopyable
+typedef std::vector<RenderObject> tRenderList;
+
+class Renderer
 {
 public:
 	Renderer() = default;
@@ -19,7 +27,10 @@ public:
 
 	void Init();
 
-	void AddToRenderList(Renderable* renderable);
+	void AddToRenderList(std::shared_ptr<Mesh>& mesh, glm::mat4 transform, std::shared_ptr<Texture>& texture);
+
+	void Blit(std::shared_ptr<Texture> texture, glm::mat4 transformation = glm::mat4(1.0f));
+
 	void Render(Camera* camera);
 
 private:
@@ -27,6 +38,7 @@ private:
 
 	GLuint m_shaderProgram;
 	tRenderList m_renderList;
+
 	GLint m_projectionUniformLocation;
 	GLint m_viewUniformLocation;
 	GLint m_cameraLocalPosUniformLocation;

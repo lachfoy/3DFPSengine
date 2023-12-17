@@ -14,27 +14,19 @@
 #include "Renderable.h"
 #include "NonCopyable.h"
 
-class CatCube : public Renderable, public btMotionState
-{
-public:
-	CatCube(const glm::vec3& position);
-	~CatCube() = default;
-
-	void getWorldTransform(btTransform& worldTrans) const override;
-
-	//Bullet only calls the update of worldtransform for active objects
-	void setWorldTransform(const btTransform& worldTrans) override;
-
-private:
-	//btRigidBody* m_rigidBody; // doesnt need this tbh
-
-};
-
-class Level : public Renderable
+class Level
 {
 public:
 	Level();
 	~Level() = default;
+	
+	void Render();
+
+private:
+	glm::mat4 m_transform;
+
+	std::shared_ptr<Mesh> m_mesh;
+	std::shared_ptr<Texture> m_texture;
 
 };
 
@@ -66,8 +58,6 @@ public:
 	btDiscreteDynamicsWorld* GetDynamicsWorld() const { return m_dynamicsWorld; }
 
 	void StepSimulation(float timeStep, int maxSubSteps = 10);
-
-	CatCube* AddCatCube(const glm::vec3& position);
 
 	btKinematicCharacterController* CreateCharacter(const glm::vec3& position);
 

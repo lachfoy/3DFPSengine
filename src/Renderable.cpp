@@ -23,5 +23,5 @@ void Renderable::UpdateTransform()
 
 void Renderable::Render()
 {
-	gRenderer.AddToRenderList(this);
+	gRenderer.AddToRenderList(m_mesh, m_transform, m_texture);
 }

@@ -7,6 +7,8 @@ class Texture;
 class Mesh;
 class Sound;
 
+#include <memory>
+
 class ResourceManager
 {
 public:
@@ -56,7 +58,7 @@ public:
 		}
 
 		// Call factory method that depends on the resource 
-		T* resource = T::Create(path);
+		std::shared_ptr<T> resource = T::Create(path);
 		if (!resource)
 		{
 			// error loading the resource
@@ -68,20 +70,18 @@ public:
 	}
 
 	template<typename T>
-	T* GetResource(const std::string& id)
+	std::shared_ptr<T> GetResource(const std::string& id)
 	{
 		auto it = m_resources.find(id);
 		if (it != m_resources.end())
 		{
-			return (T*)it->second;
+			return std::static_pointer_cast<T>(it->second);
 		}
 		else
 		{
 			return nullptr; // ERROR
 		}
 	}
-
-	void UnloadResources(); // Explicit unloading of resources (rather than in a destructor?) not sure if this is necessary but for now leave it like this
 
 private:
 	ResourceManager() {}
@@ -97,7 +97,7 @@ private:
 	std::unordered_map<std::string, Mesh*> m_meshMap;
 	std::unordered_map<std::string, Sound*> m_soundMap;
 
-	std::unordered_map<std::string, void*> m_resources;
+	std::unordered_map<std::string, std::shared_ptr<void>> m_resources;
 
 };
 

@@ -3,9 +3,8 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "Common.h"
-#include "Texture.h"
 #include "Camera.h"
-#include "Mesh.h"
+
 #include "Renderable.h"
 
 Renderer gRenderer;
@@ -36,41 +35,42 @@ void Renderer::Init()
 	glUseProgram(0);
 }
 
-void Renderer::AddToRenderList(Renderable *renderable)	
-{	
-	m_renderList.push_back(renderable);
+void Renderer::AddToRenderList(std::shared_ptr<Mesh>& mesh, glm::mat4 transform, std::shared_ptr<Texture>& texture)
+{
+	m_renderList.emplace_back(RenderObject{ mesh, transform, texture });
+}
+
+void Renderer::Blit(std::shared_ptr<Texture> texture, glm::mat4 transformation)
+{
+
 }
 
 void Renderer::Render(Camera* camera)
 {
 	glUseProgram(m_shaderProgram);
-	
-	// todo cache uniform locations
-	GLCALL(glUniformMatrix4fv(m_projectionUniformLocation, 1, false, glm::value_ptr(camera->GetProjection())));
-	GLCALL(glUniformMatrix4fv(m_viewUniformLocation, 1, false, glm::value_ptr(camera->GetView())));
-	GLCALL(glUniform3fv(m_cameraLocalPosUniformLocation, 1, glm::value_ptr(camera->m_position)));
 
-	for (const auto& renderable : m_renderList)
+	glUniformMatrix4fv(m_projectionUniformLocation, 1, false, glm::value_ptr(camera->GetProjection()));
+	glUniformMatrix4fv(m_viewUniformLocation, 1, false, glm::value_ptr(camera->GetView()));
+	glUniform3fv(m_cameraLocalPosUniformLocation, 1, glm::value_ptr(camera->m_position));
+
+	for (const auto& renderObject : m_renderList)
 	{
 		// set transformation
-		GLCALL(glUniformMatrix4fv(m_modelUniformLocation, 1, false, glm::value_ptr(renderable->m_transform)));
+		glUniformMatrix4fv(m_modelUniformLocation, 1, false, glm::value_ptr(renderObject.transform));
 
 		// bind texture 1
 		glActiveTexture(GL_TEXTURE0);
-		renderable->m_texture->Bind();
+		renderObject.texture->Bind();
 
 		// set color
-		GLCALL(glUniform4fv(m_colorUniformLocation, 1, glm::value_ptr(glm::vec4(1.0f))));
+		glUniform4fv(m_colorUniformLocation, 1, glm::value_ptr(glm::vec4(1.0f))); // Use a material
 
 		// draw
-		renderable->m_mesh->Draw();
-
-		// unbind texture 1
-		glActiveTexture(GL_TEXTURE0);
-		glBindTexture(GL_TEXTURE_2D, 0); // unbind texture
+		renderObject.mesh->Bind();
+		glDrawElements(GL_TRIANGLES, (GLsizei)renderObject.mesh->IndexCount(), GL_UNSIGNED_INT, 0);
 	}
 
-	glUseProgram(0);
+	// GL CHECK ERROR
 
 	// RenderDebug()
 	m_renderList.clear();

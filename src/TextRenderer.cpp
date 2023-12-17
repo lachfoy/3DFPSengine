@@ -59,8 +59,8 @@ void TextRenderer::AddStringToBatch(const std::string& string, float x, float y,
 		
 		CharInfo charInfo = m_font->GetInfo(c);
 
-		float textureW = static_cast<float>(m_font->m_texture->GetWidth());
-		float textureH = static_cast<float>(m_font->m_texture->GetHeight());
+		float textureW = static_cast<float>(m_font->texture->GetWidth());
+		float textureH = static_cast<float>(m_font->texture->GetHeight());
 
 		// If we had a previous character, look up the kerning pair and adjust x
 		if (lastChar != UINT_MAX) {
@@ -110,7 +110,7 @@ void TextRenderer::RenderQuads()
 	glBindVertexArray(m_vao);
 
 	// Bind the new texture
-	m_font->m_texture->Bind();
+	m_font->texture->Bind();
 
 	// Update the color and alpha
 	glUniform4fv(m_colorUniformLocation, 1, glm::value_ptr(glm::vec4(1.0f)));

@@ -9,8 +9,9 @@
 #include "Entity.h"
 #include <glm/glm.hpp>
 
-class Mesh;
-class Texture;
+#include <memory>
+#include "Mesh.h"
+#include "Texture.h"
 
 class Renderable : public Entity
 {
@@ -31,7 +32,7 @@ protected:
 
 	glm::mat4 m_transform;
 
-	Mesh* m_mesh = nullptr;
-	Texture* m_texture = nullptr;
+	std::shared_ptr<Mesh> m_mesh;
+	std::shared_ptr<Texture> m_texture;
 
 };

@@ -7,30 +7,18 @@
 #include "Mesh.h"
 #include "DebugRenderer.h"
 
-CatCube::CatCube(const glm::vec3& position)
-{
-	m_mesh = ResourceManager::Instance().GetResource<Mesh>("cube");
-	m_texture = ResourceManager::Instance().GetResource<Texture>("cat");
-	m_transform = glm::translate(glm::mat4(1.0f), position);
-}
-
-void CatCube::getWorldTransform(btTransform& worldTrans) const
-{
-	worldTrans.setFromOpenGLMatrix(glm::value_ptr(m_transform));
-}
-
-void CatCube::setWorldTransform(const btTransform& worldTrans)
-{
-	float mat[16];
-	worldTrans.getOpenGLMatrix(mat);
-	m_transform = glm::make_mat4(mat);
-}
+#include "Renderer.h"
 
 Level::Level()
 {
 	m_mesh = ResourceManager::Instance().GetResource<Mesh>("level");
 	m_texture = ResourceManager::Instance().GetResource<Texture>("missing");
 	m_transform = glm::mat4(1.0f);
+}
+
+void Level::Render()
+{
+	gRenderer.AddToRenderList(m_mesh, m_transform, m_texture);
 }
 
 PhysicsWorld gPhysicsWorld;
@@ -128,37 +116,6 @@ PhysicsWorld::~PhysicsWorld()
 void PhysicsWorld::StepSimulation(float timeStep, int maxSubSteps)
 {
 	m_dynamicsWorld->stepSimulation(timeStep, maxSubSteps);
-}
-
-CatCube* PhysicsWorld::AddCatCube(const glm::vec3& position)
-{
-	btScalar mass = 1.0f;
-	btVector3 btHalfExtents(0.5f, 0.5f, 0.5f);
-
-	// Create the box shape
-	btCollisionShape* boxShape = new btBoxShape(btHalfExtents);
-	m_collisionShapes.push_back(boxShape);
-
-	// Calculate the local inertia
-	btVector3 localInertia(0, 0, 0);
-	if (mass != 0.f)
-	{
-		boxShape->calculateLocalInertia(mass, localInertia);
-	}
-
-	CatCube* catCube = new CatCube(position);
-	m_motionStates.push_back(catCube);
-
-	btRigidBody::btRigidBodyConstructionInfo rbInfo(mass, catCube, boxShape, localInertia);
-
-	// Create the rigid body
-	btRigidBody* body = new btRigidBody(rbInfo);
-
-	// Add the body to the dynamics world
-	m_dynamicsWorld->addRigidBody(body);
-	m_collisionObjects.push_back(body);
-
-	return catCube;
 }
 
 btKinematicCharacterController* PhysicsWorld::CreateCharacter(const glm::vec3& position)

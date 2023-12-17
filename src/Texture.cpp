@@ -12,9 +12,9 @@ Texture::~Texture()
 	}
 }
 
-Texture* Texture::Create(const std::string& path)
+std::shared_ptr<Texture> Texture::Create(const std::string& path)
 {
-	Texture* texture = new Texture();
+	std::shared_ptr<Texture> texture = std::make_shared<Texture>();
 
 	int width, height, numChannels;
 	unsigned char* data = STBImage::Load(path.c_str(), &width, &height, &numChannels, true);
@@ -22,7 +22,6 @@ Texture* Texture::Create(const std::string& path)
 	{
 		printf("Error loading texture %s\n", path.c_str());
 		ASSERT(false);
-		delete texture;
 		return nullptr;
 	}
 
@@ -46,7 +45,6 @@ Texture* Texture::Create(const std::string& path)
 	default:
 	{
 		ASSERT(false && "Unsupported number of channels");
-		delete texture;
 		return nullptr;
 	}
 	}
@@ -66,9 +64,9 @@ Texture* Texture::Create(const std::string& path)
 	return texture;
 }
 
-Texture* Texture::CreateUtilTexture()
+std::shared_ptr<Texture> Texture::CreateUtilTexture()
 {
-	Texture* utilTexture = new Texture();
+	std::shared_ptr<Texture> utilTexture = std::make_shared<Texture>();
 
 	unsigned char data[] = { 255, 255, 255 };
 	utilTexture->m_width = 1;

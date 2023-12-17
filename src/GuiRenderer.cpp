@@ -14,7 +14,7 @@ void GuiRenderer::Init()
 	CreateShaderProgram();
 	CreateRenderData();
 
-	m_utilTexture = Texture::CreateUtilTexture();
+	m_utilTexture = Texture::CreateUtilTexture().get();
 }
 
 void GuiRenderer::SetProjection(int screenWidth, int screenHeight)
@@ -27,8 +27,6 @@ void GuiRenderer::SetProjection(int screenWidth, int screenHeight)
 
 void GuiRenderer::Dispose()
 {
-	delete m_utilTexture;
-
 	glDeleteBuffers(1, &m_ebo);
 	glDeleteBuffers(1, &m_vbo);
 	glDeleteVertexArrays(1, &m_vao);

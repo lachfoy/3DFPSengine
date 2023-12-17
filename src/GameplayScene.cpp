@@ -29,11 +29,9 @@ void GameplayScene::Create()
 
 	// Todo - refactor level object to include its own collision, rather than creating seperately
 	m_level = new Level();
-	gRenderer.AddToRenderList(m_level);
 	gPhysicsWorld.CreateStaticLevelGeometry("data/models/test.obj");
 
 	Enemy* enemy = new Enemy(glm::vec3(0.0f, 10.0f, 0.0f), m_player);
-	gRenderer.AddToRenderList(enemy);
 	AddEntity(enemy);
 }
 
@@ -50,12 +48,6 @@ void GameplayScene::FixedUpdate()
 
 void GameplayScene::Update(float dt)
 {
-	if (global.input->KeyPressed(SDL_SCANCODE_Z))
-	{
-		CatCube* catCube = gPhysicsWorld.AddCatCube(glm::vec3(0, 5.0f, 0)); // these never get deleted but thats ok ig
-		gRenderer.AddToRenderList(catCube);
-	}
-
 	m_player->Update(dt);
 
 	for (auto it : m_entities)

@@ -5,7 +5,7 @@
 
 Font::~Font()
 {
-	delete m_texture;
+	//delete texture;
 }
 
 short Font::GetKerningAmount(unsigned int first, unsigned int second)
@@ -73,7 +73,7 @@ void Font::Load(const std::string& path)
 
 	// Assuming page names are null-terminated strings, not handling multiple pages
 	std::string texturePath(pagesBlock.data());
-	m_texture = Texture::Create(("data/fonts/" + texturePath).c_str()); // hardcoding directory. change this
+	texture = Texture::Create(("data/fonts/" + texturePath).c_str()); // hardcoding directory. change this
 
 	// Chars Block
 	myfile.read(&blockType, 1);

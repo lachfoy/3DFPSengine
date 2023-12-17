@@ -81,14 +81,3 @@ void ResourceManager::UnloadSounds()
 	}
 }
 
-void ResourceManager::UnloadResources()
-{
-	printf("Unloading resources...\n");
-	printf("--------------------------------------------------------\n");
-	for (auto it : m_resources)
-	{
-		SAFE_DELETE(it.second);
-		printf("Deleted resource: %s\n", it.first.c_str());
-	}
-	printf("--------------------------------------------------------\n\n");
-}
