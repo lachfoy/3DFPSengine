@@ -19,8 +19,41 @@
 Player::Player(const glm::vec3& position, Camera& camera)
 	: Entity(position), m_camera(camera)
 {
-	m_characterController = gPhysicsWorld.CreateCharacter(position);
-	m_characterController->getGhostObject()->setUserPointer((void*)this);
+	btScalar characterHeight = 1.8f;  // Height of the character
+	btScalar characterWidth = 0.5f;   // Width (radius) of the character
+	m_capsuleShape = new btCapsuleShape(characterWidth, characterHeight);
+
+	m_collisionObject = new btCollisionObject();
+	m_collisionObject->setCollisionShape(m_capsuleShape);
+	m_collisionObject->setUserPointer((void*)this);
+
+	// Set the initial position and orientation
+	btTransform transform;
+	transform.setIdentity();
+	transform.setOrigin(btVector3(m_position.x, m_position.y, m_position.z)); // Set position
+
+	// Apply the transform to the collision object
+	m_collisionObject->setWorldTransform(transform);
+
+	gPhysicsWorld.GetCollisionWorld()->addCollisionObject(m_collisionObject,
+		btBroadphaseProxy::CharacterFilter, btBroadphaseProxy::StaticFilter | btBroadphaseProxy::DefaultFilter);
+}
+
+Player::~Player()
+{
+	gPhysicsWorld.GetCollisionWorld()->removeCollisionObject(m_collisionObject);
+
+	if (m_collisionObject)
+	{
+		delete m_collisionObject;
+		m_collisionObject = nullptr;
+	}
+
+	if (m_capsuleShape)
+	{
+		delete m_capsuleShape;
+		m_capsuleShape = nullptr;
+	}
 }
 
 void Player::FixedUpdate()
@@ -33,9 +66,6 @@ void Player::FixedUpdate()
 	{
 		m_walkDirection = glm::vec3(0.0f);
 	}
-
-	btVector3 btWalkDirection(m_walkDirection.x, m_walkDirection.y, m_walkDirection.z);
-	m_characterController->setWalkDirection(btWalkDirection);
 
 	//std::string debugString;
 	//debugString += "walk dir:" + std::to_string(m_walkDirection.x) + ", " + std::to_string(m_walkDirection.y) + ", " + std::to_string(m_walkDirection.z) + "\n"; // position is camera position
@@ -66,10 +96,17 @@ void Player::Update(float dt)
 		m_walkDirection += glm::vec3(right.x, 0.0f, right.z);
 	}
 
-	if (global.input->GetCurrentKeyState(SDL_SCANCODE_SPACE) && m_characterController->onGround())
+	if (glm::length(m_walkDirection) > 0.0f)
 	{
-		m_characterController->jump(btVector3(0.0f, m_jumpAmount, 0.0f));
+		m_walkDirection = glm::normalize(m_walkDirection);
+		m_position += m_walkDirection * m_walkSpeed * dt;
 	}
+
+	// Set the initial position and orientation
+	btTransform transform;
+	transform.setIdentity();
+	transform.setOrigin(btVector3(m_position.x, m_position.y, m_position.z)); // Set position
+	m_collisionObject->setWorldTransform(transform);
 
 	if (global.input->LMBClicked())
 	{
@@ -85,7 +122,7 @@ void Player::Update(float dt)
 
 		// Perform raycast
 		btCollisionWorld::ClosestRayResultCallback rayCallback(btFrom, btTo);
-		gPhysicsWorld.GetDynamicsWorld()->rayTest(btFrom, btTo, rayCallback);
+		gPhysicsWorld.GetCollisionWorld()->rayTest(btFrom, btTo, rayCallback);
 		
 		if (rayCallback.hasHit())
 		{
@@ -119,7 +156,7 @@ void Player::Update(float dt)
 	}
 
 	// make the camera actually follow the character controller
-	btTransform btWorldTransform = m_characterController->getGhostObject()->getWorldTransform();
+	btTransform btWorldTransform = m_collisionObject->getWorldTransform();
 
 	btVector3 origin = btWorldTransform.getOrigin();
 

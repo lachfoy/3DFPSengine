@@ -14,6 +14,8 @@ public:
 	Entity(const glm::vec3& position);
 	~Entity() {}
 
+	glm::vec3 GetPosition() const { return m_position; }
+
 	virtual void Create() {}
 	virtual void FixedUpdate() {}
 	virtual void Update(float dt) {}

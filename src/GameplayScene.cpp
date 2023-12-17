@@ -29,7 +29,6 @@ GameplayScene::GameplayScene()
 
 	// Todo - refactor level object to include its own collision, rather than creating seperately
 	m_level = new Level();
-	gPhysicsWorld.CreateStaticLevelGeometry("data/models/test.obj");
 
 	Enemy* enemy = new Enemy(glm::vec3(0.0f, 10.0f, 0.0f), m_player);
 	AddEntity(enemy);

@@ -23,8 +23,7 @@ Enemy::Enemy(const glm::vec3& position, Player* player)
 
 	m_transform = glm::translate(glm::mat4(1.0f), position);
 
-	m_characterController = gPhysicsWorld.CreateCharacter(position);
-	m_characterController->getGhostObject()->setUserPointer((void*)this);
+
 }
 
 Enemy::~Enemy()
@@ -55,16 +54,11 @@ void Enemy::FixedUpdate()
 		m_walkDirection = glm::vec3(0.0f);
 	}
 
-	btVector3 btWalkDirection(m_walkDirection.x, m_walkDirection.y, m_walkDirection.z);
-	m_characterController->setWalkDirection(btWalkDirection);
+
 }
 
 void Enemy::Update(float dt)
 {
-	btTransform btWorldTransform = m_characterController->getGhostObject()->getWorldTransform();
-	btVector3 origin = btWorldTransform.getOrigin();
-
-	m_position = glm::vec3(origin.x(), origin.y(), origin.z());
 
 	glm::vec3 playerPos = m_player->GetPosition();
 

@@ -104,7 +104,7 @@ void Game::Run()
 		while (accumulator >= physicsTimeStep)
 		{
 			m_scene->FixedUpdate();
-			gPhysicsWorld.StepSimulation(physicsTimeStep, 16);
+			gPhysicsWorld.GetCollisionWorld()->performDiscreteCollisionDetection();
 			accumulator -= physicsTimeStep;
 		}
 
