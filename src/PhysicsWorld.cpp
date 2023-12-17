@@ -30,7 +30,7 @@ Level::Level()
 	m_collisionObject->setCollisionShape(m_meshShape);
 
 	gPhysicsWorld.GetCollisionWorld()->addCollisionObject(m_collisionObject,
-		btBroadphaseProxy::StaticFilter, btBroadphaseProxy::DefaultFilter);
+		btBroadphaseProxy::StaticFilter, btBroadphaseProxy::DefaultFilter | btBroadphaseProxy::CharacterFilter);
 }
 
 Level::~Level()
@@ -96,6 +96,34 @@ PhysicsWorld::~PhysicsWorld()
 	SAFE_DELETE(m_debugDrawer);
 
 	printf("--------------------------------------------------------\n\n");
+}
+
+void PhysicsWorld::ResolveCollisions()
+{
+	// Process collision pairs
+	int numManifolds = m_dispatcher->getNumManifolds();
+	for (int i = 0; i < numManifolds; i++)
+	{
+		btPersistentManifold* contactManifold = m_dispatcher->getManifoldByIndexInternal(i);
+		const btCollisionObject* obA = contactManifold->getBody0();
+		const btCollisionObject* obB = contactManifold->getBody1();
+
+		int numContacts = contactManifold->getNumContacts();
+		for (int j = 0; j < numContacts; j++)
+		{
+			btManifoldPoint& pt = contactManifold->getContactPoint(j);
+			if (pt.getDistance() < 0.f)
+			{
+				// There is a collision
+				const btVector3& ptA = pt.getPositionWorldOnA();
+				const btVector3& ptB = pt.getPositionWorldOnB();
+				const btVector3& normalOnB = pt.m_normalWorldOnB;
+
+				// Your collision processing logic here
+			}
+		}
+	}
+
 }
 
 void PhysicsWorld::DebugDraw()

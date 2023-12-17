@@ -34,6 +34,48 @@ private:
 
 };
 
+
+struct CollisionData
+{
+	glm::vec3 contactNormal;
+	float penetrationDepth;
+	// Other relevant data
+};
+
+
+class MyContactResultCallback : public btCollisionWorld::ContactResultCallback {
+public:
+	std::vector<CollisionData> collisions;
+
+	bool HasCollision() const { return m_hasCollision; }
+
+	virtual btScalar addSingleResult(btManifoldPoint& cp,
+		const btCollisionObjectWrapper* colObj0Wrap, int partId0, int index0,
+		const btCollisionObjectWrapper* colObj1Wrap, int partId1, int index1) override {
+
+		m_hasCollision = true;
+		
+		// Process collision point
+		btVector3 contactPoint = cp.getPositionWorldOnA();
+		btVector3 contactNormal = cp.m_normalWorldOnB;
+		btScalar penetrationDepth = cp.getDistance();
+
+		// Your collision handling logic here
+		CollisionData data;
+		data.contactNormal = glm::vec3(contactNormal.x(), contactNormal.y(), contactNormal.z());
+		data.penetrationDepth = penetrationDepth;
+		collisions.push_back(data);
+
+		return 0;
+	}
+
+private:
+	bool m_hasCollision = false;
+
+};
+
+
+
 class PhysicsWorld
 {
 public:
@@ -44,7 +86,13 @@ public:
 	PhysicsWorld& operator=(const PhysicsWorld&) = delete;
 
 	btCollisionWorld* GetCollisionWorld() const { return m_collisionWorld; }
+	
+	void ResolveCollisions();
+	
 	void DebugDraw();
+
+
+
 
 private:
 	btBroadphaseInterface* m_broadphase;

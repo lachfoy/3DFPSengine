@@ -81,11 +81,11 @@ void Player::Update(float dt)
 
 	if (global.input->GetCurrentKeyState(SDL_SCANCODE_W) || global.input->GetCurrentKeyState(SDL_SCANCODE_UP))
 	{
-		m_walkDirection += glm::vec3(front.x, 0.0f, front.z);
+		m_walkDirection += glm::vec3(front.x, front.y, front.z);
 	}
 	if (global.input->GetCurrentKeyState(SDL_SCANCODE_S) || global.input->GetCurrentKeyState(SDL_SCANCODE_DOWN)) 
 	{
-		m_walkDirection -= glm::vec3(front.x, 0.0f, front.z);
+		m_walkDirection -= glm::vec3(front.x, front.y, front.z);
 	}
 	if (global.input->GetCurrentKeyState(SDL_SCANCODE_A) || global.input->GetCurrentKeyState(SDL_SCANCODE_LEFT))
 	{
@@ -96,16 +96,19 @@ void Player::Update(float dt)
 		m_walkDirection += glm::vec3(right.x, 0.0f, right.z);
 	}
 
+	// Initialize velocity
+	glm::vec3 velocity = glm::vec3(0.0f);
 	if (glm::length(m_walkDirection) > 0.0f)
 	{
-		m_walkDirection = glm::normalize(m_walkDirection);
-		m_position += m_walkDirection * m_walkSpeed * dt;
+		velocity = glm::normalize(m_walkDirection) * m_walkSpeed * dt;
 	}
 
-	// Set the initial position and orientation
+	m_position += velocity;
+
+	// Update the object's transform with the final position
 	btTransform transform;
 	transform.setIdentity();
-	transform.setOrigin(btVector3(m_position.x, m_position.y, m_position.z)); // Set position
+	transform.setOrigin(btVector3(m_position.x, m_position.y, m_position.z));
 	m_collisionObject->setWorldTransform(transform);
 
 	if (global.input->LMBClicked())
