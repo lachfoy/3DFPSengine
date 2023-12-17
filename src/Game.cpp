@@ -1,6 +1,8 @@
 #include "Common.h"
 #include "Game.h"
 
+#include <chrono>
+
 #include "Global.h"
 #include "Renderer.h"
 #include "DebugRenderer.h"
@@ -52,7 +54,7 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 	}
 
 	// Hide the cursor. I don't think we wanna expose this to the user
-	SDL_ShowCursor(SDL_DISABLE);
+	//SDL_ShowCursor(SDL_DISABLE);
 
 	SetupGL();
 
@@ -73,14 +75,13 @@ bool Game::Init(int windowedWidth, int windowedHeight, bool fullscreen)
 	//gSceneManager.GoToScene(std::make_unique<GameplayScene>());
 
 	m_scene = std::make_unique<GameplayScene>();
-	m_scene->Create();
 
 	return true;
 }
 
 void Game::Run()
 {
-	Uint64 lastCounter = SDL_GetPerformanceCounter();
+	auto lastTimePoint = std::chrono::high_resolution_clock::now();
 
 	const float physicsTimeStep = 1.0f / 60; // 60 Hz
 	float accumulator = 0.0f;
@@ -91,10 +92,10 @@ void Game::Run()
 		global.input->Update(); // Update input state
 
 		// Calculate delta time
-		Uint64 currentCounter = SDL_GetPerformanceCounter();
-		float dt = float(currentCounter - lastCounter) / SDL_GetPerformanceFrequency();
+		auto currentTimePoint = std::chrono::high_resolution_clock::now();
+		float dt = std::chrono::duration<float>(currentTimePoint - lastTimePoint).count();
 		dt = std::min(dt, 0.25f);
-		lastCounter = currentCounter;
+		lastTimePoint = currentTimePoint;
 
 		// Accumulate time for physics update
 		accumulator += dt;
@@ -116,10 +117,10 @@ void Game::Run()
 		}
 
 		// Alpha is a normalized range of how far to interpolate between physics states
-		const float alpha = accumulator / dt;
+		//const float alpha = accumulator / dt;
 
 		std::string debugString = "frametime: " + std::to_string(dt) + "\n";
-		debugString += "alpha: " + std::to_string(alpha) + "\n";
+		//debugString += "alpha: " + std::to_string(alpha) + "\n";
 		gTextRenderer.AddStringToBatch(debugString, 0, 0, glm::vec3(1.0f));
 
 		// Render

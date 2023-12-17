@@ -9,20 +9,20 @@ class Scene
 {
 public:
 	Scene() {}
-	~Scene() = default;
+	virtual ~Scene();
 
-	virtual void Create() = 0;
+	//virtual void Create() = 0;
 	
 	virtual void FixedUpdate() {}
 	virtual void Update(float dt) {}
-	void Render(); // this actually handles talking to the renderer
-	virtual void Destroy() = 0;
+	virtual void Render() {}
+	//virtual void Destroy() = 0;
 
 	void AddEntity(Entity* entity);
 	void RemoveEntity(Entity* entity);
 
 protected:
-	Camera* m_activeCamera;
+	Camera* m_activeCamera = nullptr;
 
 	// In more complex engines, the scene maintains a "scene graph"
 	// The scene graph is a data structure used to organise the scene objects

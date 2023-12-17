@@ -4,18 +4,14 @@
 #include "DebugRenderer.h"
 #include "Entity.h"
 
-void Scene::Render()
+Scene::~Scene()
 {
-	for (auto it : m_entities)
-	{
-		if (it.second)
-			it.second->Render();
-	}
+	printf("Scene Base destructor\n");
 
-	if (m_activeCamera)
+	for (const auto it : m_entities)
 	{
-		gRenderer.Render(m_activeCamera);
-		gDebugRenderer.Render(m_activeCamera);
+		it.second->Destroy();
+		delete it.second;
 	}
 }
 
@@ -36,6 +32,6 @@ void Scene::RemoveEntity(Entity* entity)
 		printf("Destroying entity with id: %d\n", entity->m_id);
 		entity->Destroy();
 		m_entities.erase(entity->m_id);
-		delete entity; // Use unique pointers for this?
+		delete entity;
 	}
 }

@@ -11,15 +11,17 @@ class Entity;
 class GameplayScene : public Scene
 {
 public:
-	GameplayScene() = default;
-	~GameplayScene() = default;
+	GameplayScene();
+	~GameplayScene();
 
-	void Create() override;
+	//void Create() override;
 	
 	void FixedUpdate() override;
 	void Update(float dt) override;
 
-	void Destroy() override;
+	void Render() override;
+
+	//void Destroy() override;
 
 protected:
 	Player* m_player;

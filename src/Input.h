@@ -1,10 +1,9 @@
 #pragma once
 
-#include "NonCopyable.h"
 #include <SDL.h>
 #include <glm/glm.hpp>
 
-class Input : public NonCopyable
+class Input
 {
 friend class Window;
 public:

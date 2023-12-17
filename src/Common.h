@@ -26,24 +26,3 @@
 
 #define SAFE_DELETE(p) { if(p) { delete (p); (p) = nullptr; } }
 
-#include <glad/glad.h>
-
-static void GLClearError()
-{
-	while (glGetError() != GL_NO_ERROR);
-}
-
-static bool GLLogCall(const char* func, const char* file, int line)
-{
-	while (GLenum error = glGetError())
-	{
-		fprintf(stderr, "OpenGL error: %d\nFunction: %s, File: %s, Line: %d\n", (int)error, func, file, line);
-		return false;
-	}
-	return true;
-}
-
-#define GLCALL(x) \
-	GLClearError(); \
-	x; \
-	ASSERT(GLLogCall(#x, __FILE__, __LINE__));

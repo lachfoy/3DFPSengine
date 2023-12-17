@@ -14,7 +14,7 @@
 #include "Enemy.h"
 #include "Input.h"
 
-void GameplayScene::Create()
+GameplayScene::GameplayScene()
 {
 	ResourceManager::Instance().LoadResource<Texture>("data/images/round_cat.png", "cat");
 	ResourceManager::Instance().LoadResource<Texture>("data/images/missing.png", "missing");
@@ -33,6 +33,15 @@ void GameplayScene::Create()
 
 	Enemy* enemy = new Enemy(glm::vec3(0.0f, 10.0f, 0.0f), m_player);
 	AddEntity(enemy);
+}
+
+GameplayScene::~GameplayScene()
+{
+	printf("Gameplay scene destructor\n");
+
+	SAFE_DELETE(m_player);
+	SAFE_DELETE(m_level);
+	SAFE_DELETE(m_activeCamera);
 }
 
 void GameplayScene::FixedUpdate()
@@ -57,9 +66,19 @@ void GameplayScene::Update(float dt)
 	}
 }
 
-void GameplayScene::Destroy()
+void GameplayScene::Render()
 {
-	SAFE_DELETE(m_player);
-	SAFE_DELETE(m_level);
-	SAFE_DELETE(m_activeCamera);
+	m_level->Render();
+
+	for (auto it : m_entities)
+	{
+		if (it.second)
+			it.second->Render();
+	}
+
+	if (m_activeCamera)
+	{
+		gRenderer.Render(m_activeCamera);
+		gDebugRenderer.Render(m_activeCamera);
+	}
 }

@@ -10,9 +10,9 @@
 #include <BulletDynamics/Character/btKinematicCharacterController.h>
 
 #include <vector>
-
-#include "Renderable.h"
-#include "NonCopyable.h"
+#include <memory>
+#include "Mesh.h"
+#include "Texture.h"
 
 class Level
 {
@@ -46,7 +46,7 @@ struct MyContactCallback : public btCollisionWorld::ContactResultCallback
 	}
 };
 
-class PhysicsWorld : public NonCopyable
+class PhysicsWorld
 {
 public:
 	PhysicsWorld();

@@ -105,7 +105,7 @@ void Renderer::CreateShaderProgram()
 			}
 		)";
 
-		GLCALL(glShaderSource(vertexShader, 1, &vertexSource, 0));
+		glShaderSource(vertexShader, 1, &vertexSource, 0);
 		glCompileShader(vertexShader);
 
 		int success;
@@ -147,7 +147,7 @@ void Renderer::CreateShaderProgram()
 			}
 		)";
 
-		GLCALL(glShaderSource(fragmentShader, 1, &fragmentSource, 0));
+		glShaderSource(fragmentShader, 1, &fragmentSource, 0);
 		glCompileShader(fragmentShader);
 
 		int success;
